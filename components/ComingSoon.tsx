@@ -225,7 +225,7 @@ export function ComingSoon() {
           transition={{ duration: 0.6, delay: 1.1 }}
           className="mx-auto mt-8 max-w-md text-base text-[var(--muted)] sm:text-lg"
         >
-          Traditional Japanese artistry meets contemporary ink. Something extraordinary is in the making.
+          傳統日式刺青藝術與當代墨水交融。非凡之作，即將呈現。
         </motion.p>
 
         {/* Decorative ink dots */}
