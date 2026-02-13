@@ -1,0 +1,166 @@
+// KH Tattoo — Hyper-Luxury Studio Platform
+// PostgreSQL + Prisma — Highly Normalized Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Authentication & Access Control
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         UserRole @default(ADMIN)
+  name         String?
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  artist  Artist?
+  sessions Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+enum UserRole {
+  ADMIN
+  ARTIST
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Artist & Portfolio
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Artist {
+  id            String        @id @default(cuid())
+  userId        String?       @unique @map("user_id")
+  name          String
+  slug          String        @unique
+  bio           String?       @db.Text
+  specialty     String?       // e.g. "Traditional", "Fine-line", "Realism"
+  status        ArtistStatus  @default(AVAILABLE)
+  avatarUrl     String?       @map("avatar_url")
+  instagramUrl  String?       @map("instagram_url")
+  twitterUrl   String?       @map("twitter_url")
+  websiteUrl   String?       @map("website_url")
+  sortOrder     Int           @default(0) @map("sort_order")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  user           User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  portfolioImages PortfolioImage[]
+  bookingRequests BookingRequest[]
+
+  @@map("artists")
+}
+
+enum ArtistStatus {
+  AVAILABLE
+  BOOKS_CLOSED
+  WAITLIST_ONLY
+  INACTIVE
+}
+
+model PortfolioImage {
+  id        String   @id @default(cuid())
+  artistId  String   @map("artist_id")
+  url       String
+  altText   String   @map("alt_text")
+  title     String?  // Display title for gallery
+  category  String?  // e.g. "traditional", "blackwork", "color"
+  tags      String[] @default([]) // e.g. ["Traditional", "Fine-line"]
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+
+  @@index([artistId])
+  @@index([artistId, category])
+  @@map("portfolio_images")
+}
+
+model BlogPost {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  title          String
+  excerpt        String?   @db.Text
+  content        String    @db.Text
+  coverImageUrl  String?   @map("cover_image_url")
+  category       String?
+  isPublished    Boolean   @default(false) @map("is_published")
+  publishedAt    DateTime? @map("published_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@index([isPublished, publishedAt])
+  @@index([slug])
+  @@map("blog_posts")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Booking Engine
+// ─────────────────────────────────────────────────────────────────────────────
+
+model BookingRequest {
+  id               String          @id @default(cuid())
+  artistId         String          @map("artist_id")
+  clientName       String          @map("client_name")
+  clientEmail      String          @map("client_email")
+  clientPhone      String?         @map("client_phone")
+  conceptDescription String         @map("concept_description") @db.Text
+  placement        String?         // Body map selection / placement notes
+  placementDetails Json?           @map("placement_details") // Structured body map data
+  status           BookingStatus   @default(PENDING)
+  adminNotes       String?         @map("admin_notes") @db.Text
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  artist     Artist              @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  references BookingReference[]
+
+  @@index([artistId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("booking_requests")
+}
+
+model BookingReference {
+  id              String        @id @default(cuid())
+  bookingRequestId String       @map("booking_request_id")
+  url             String
+  fileName        String        @map("file_name")
+  fileSize        Int?          @map("file_size")
+  mimeType        String?       @map("mime_type")
+  createdAt       DateTime      @default(now()) @map("created_at")
+
+  bookingRequest BookingRequest @relation(fields: [bookingRequestId], references: [id], onDelete: Cascade)
+
+  @@index([bookingRequestId])
+  @@map("booking_references")
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  WAITLISTED
+  DECLINED
+  CANCELLED
+}

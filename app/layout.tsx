@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,10 +29,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body
-        className={`${inter.variable} ${playfair.variable} min-h-screen bg-[#121212] text-[#f5f5f5] antialiased font-sans`}
-      >
-        {children}
+      <body className={`${inter.variable} ${playfair.variable} min-h-screen bg-background text-foreground antialiased font-sans`}>
+        <div className="grain-overlay" aria-hidden />
+        <Navbar />
+        <main className="pt-16">{children}</main>
+        <Footer />
       </body>
     </html>
   );

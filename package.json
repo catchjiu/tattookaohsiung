@@ -1,5 +1,5 @@
 {
-  "name": "honkaku-tattoo-studio",
+  "name": "kh-tattoo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,19 +9,39 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.19.0",
+    "@prisma/adapter-pg": "^7.4.0",
+    "@prisma/client": "^7.4.0",
+    "@tiptap/extension-file-handler": "^3.19.0",
+    "@tiptap/extension-image": "^3.19.0",
+    "@tiptap/extension-youtube": "^3.19.0",
+    "@tiptap/pm": "^3.19.0",
+    "@tiptap/react": "^3.19.0",
+    "@tiptap/starter-kit": "^3.19.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.3.1",
     "framer-motion": "^12.34.0",
+    "lucide-react": "^0.563.0",
     "next": "16.1.6",
+    "pg": "^8.18.0",
+    "prisma": "^7.4.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "react-easy-crop": "^5.5.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

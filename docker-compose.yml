@@ -1,0 +1,48 @@
+# Honkaku Tattoo — Prisma + PostgreSQL
+# 1. cp .env.docker.example .env && edit .env
+# 2. docker compose up -d
+# For local dev (Prisma only): docker compose up -d db
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://kh_tattoo:${POSTGRES_PASSWORD:-changeme}@db:5432/kh_tattoo
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
+      - GCP_STORAGE_BUCKET=${GCP_STORAGE_BUCKET:-}
+      - GCP_CLIENT_EMAIL=${GCP_CLIENT_EMAIL:-}
+      - GCP_PRIVATE_KEY=${GCP_PRIVATE_KEY:-}
+      - ADMIN_SESSION_SECRET=${ADMIN_SESSION_SECRET:-}
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - EMAIL_FROM=${EMAIL_FROM:-}
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=kh_tattoo
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_DB=kh_tattoo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kh_tattoo -d kh_tattoo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
