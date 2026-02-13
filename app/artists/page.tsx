@@ -47,7 +47,7 @@ export default async function ArtistsPage() {
               <Link
                 key={artist.id}
                 href={`/artists/${artist.slug}`}
-                className="group block overflow-hidden bg-ivory-warm transition-colors hover:bg-ivory-muted"
+                className="group block overflow-hidden bg-card transition-colors hover:bg-card-hover"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
                   {artist.avatarUrl ? (

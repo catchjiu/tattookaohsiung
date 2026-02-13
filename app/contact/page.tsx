@@ -30,7 +30,7 @@ export default async function ContactPage() {
       <Section>
         <div className="grid gap-16 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <div className="border border-border bg-ivory-warm p-10 md:p-12">
+            <div className="border border-border bg-card p-10 md:p-12">
               <BookingForm artists={artists} />
             </div>
           </div>

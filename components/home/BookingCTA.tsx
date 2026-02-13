@@ -12,7 +12,7 @@ export function BookingCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden border border-border bg-ivory-warm py-24 md:py-32 lg:py-40"
+          className="relative overflow-hidden border border-border bg-card py-24 md:py-32 lg:py-40"
         >
           <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-bronze-subtle blur-3xl" />
           <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-bronze-subtle blur-3xl" />
@@ -32,7 +32,7 @@ export function BookingCTA() {
             </p>
             <Link
               href="/contact"
-              className="mt-12 inline-flex items-center justify-center border border-accent bg-accent-muted px-12 py-4 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:bg-accent hover:text-white"
+              className="mt-12 inline-flex items-center justify-center border border-accent bg-accent-muted px-12 py-4 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:bg-accent hover:text-ivory"
             >
               Start Your Journey
             </Link>

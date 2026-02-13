@@ -2,7 +2,7 @@
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Honkaku Tattoo Studio — Art Gallery × Luxury Watch
-   Light as default. Warm ivory. Charcoal. Burnished bronze.
+   Dark by default. Charcoal. Ivory. Burnished bronze.
    Unapologetically minimalist. Negative space breathes.
    ───────────────────────────────────────────────────────────────────────────── */
 
@@ -31,21 +31,7 @@
   --bronze-muted: rgba(139, 115, 85, 0.12);
   --bronze-subtle: rgba(139, 115, 85, 0.06);
 
-  /* Semantic mapping — light mode (default) */
-  --background: var(--ivory);
-  --foreground: var(--charcoal);
-  --foreground-muted: var(--warm-500);
-  --foreground-subtle: var(--warm-400);
-  --border: var(--warm-200);
-  --border-subtle: var(--warm-100);
-  --card: var(--ivory-warm);
-  --card-hover: var(--ivory-muted);
-  --accent: var(--bronze);
-  --accent-muted: var(--bronze-muted);
-}
-
-/* Dark mode — optional, for contrast sections */
-[data-theme="dark"] {
+  /* Semantic mapping — dark mode (default) */
   --background: var(--charcoal);
   --foreground: var(--ivory);
   --foreground-muted: var(--warm-400);
@@ -56,6 +42,32 @@
   --card-hover: var(--charcoal-muted);
   --accent: var(--bronze);
   --accent-muted: var(--bronze-muted);
+
+  /* Legacy aliases (admin, etc.) */
+  --muted: var(--foreground-muted);
+  --accent-gold: var(--bronze);
+  --accent-gold-muted: var(--bronze-muted);
+  --accent-crimson: #c94a4a;
+  --accent-crimson-muted: rgba(201, 74, 74, 0.15);
+}
+
+/* Light mode — optional */
+[data-theme="light"] {
+  --background: var(--ivory);
+  --foreground: var(--charcoal);
+  --foreground-muted: var(--warm-500);
+  --foreground-subtle: var(--warm-400);
+  --border: var(--warm-200);
+  --border-subtle: var(--warm-100);
+  --card: var(--ivory-warm);
+  --card-hover: var(--ivory-muted);
+  --accent: var(--bronze);
+  --accent-muted: var(--bronze-muted);
+  --muted: var(--foreground-muted);
+  --accent-gold: var(--bronze);
+  --accent-gold-muted: var(--bronze-muted);
+  --accent-crimson: #c94a4a;
+  --accent-crimson-muted: rgba(201, 74, 74, 0.15);
 }
 
 @theme inline {

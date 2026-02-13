@@ -24,7 +24,10 @@ export async function uploadBlogImage(
   }
 
   if (!isGCPConfigured()) {
-    return { error: "GCP Storage is not configured. Add GCP_* env vars." };
+    return {
+      error:
+        "GCP Storage is not configured. Set GCP_STORAGE_BUCKET and either: (1) GCP_CLIENT_EMAIL + GCP_PRIVATE_KEY, or (2) run `gcloud auth application-default login` for ADC.",
+    };
   }
   const result = await uploadToGCP(file, "blog-images");
   if ("error" in result) return { error: result.error };

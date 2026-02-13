@@ -47,8 +47,8 @@ export function ArtistForm({ artist, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="w-full max-w-lg rounded-md border border-[var(--border)] bg-[var(--card)] p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-lg rounded-md border border-border bg-card p-6">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="font-serif text-xl font-medium">
             {isEditing ? "Edit Artist" : "Add Artist"}
@@ -56,7 +56,7 @@ export function ArtistForm({ artist, onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded p-2 text-[var(--muted)] hover:bg-[var(--border)] hover:text-[var(--foreground)]"
+            className="rounded p-2 text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
           >
             <X size={20} strokeWidth={1.5} />
           </button>
@@ -64,13 +64,13 @@ export function ArtistForm({ artist, onClose }: Props) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-md border border-[var(--accent-crimson)] bg-[var(--accent-crimson-muted)] px-4 py-2 text-sm text-[var(--accent-crimson)]">
+            <div className="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-400">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Name *
             </label>
             <input
@@ -81,60 +81,60 @@ export function ArtistForm({ artist, onClose }: Props) {
                 const slugInput = e.target.form?.querySelector('[name="slug"]') as HTMLInputElement;
                 if (slugInput && !artist) slugInput.value = slugify(e.target.value);
               }}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Slug *
             </label>
             <input
               name="slug"
               required
               defaultValue={artist?.slug}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Bio
             </label>
             <textarea
               name="bio"
               rows={3}
               defaultValue={artist?.bio ?? ""}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Specialty
             </label>
             <input
               name="specialty"
               defaultValue={artist?.specialty ?? ""}
               placeholder="e.g. Traditional, Fine-line, Realism"
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Instagram Handle
             </label>
             <input
               name="ig_handle"
               defaultValue={artist?.ig_handle ?? ""}
               placeholder="username (without @)"
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Avatar Photo
             </label>
             <div className="mt-2">
@@ -145,14 +145,14 @@ export function ArtistForm({ artist, onClose }: Props) {
 
           <div className="flex gap-6">
             <div>
-              <label className="block text-sm font-medium text-[var(--muted)]">
+              <label className="block text-sm font-medium text-foreground-muted">
                 Display Order
               </label>
               <input
                 name="display_order"
                 type="number"
                 defaultValue={artist?.display_order ?? 0}
-                className="mt-1 w-24 rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+                className="mt-1 w-24 rounded-md border border-border bg-card-hover px-3 py-2 text-foreground"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -160,9 +160,9 @@ export function ArtistForm({ artist, onClose }: Props) {
                 name="is_active"
                 type="checkbox"
                 defaultChecked={artist?.is_active ?? true}
-                className="h-4 w-4 rounded border-[var(--border)]"
+                className="h-4 w-4 rounded border-border bg-card-hover text-accent"
               />
-              <label className="text-sm text-[var(--muted)]">Active</label>
+              <label className="text-sm text-foreground-muted">Active</label>
             </div>
           </div>
 
@@ -170,13 +170,13 @@ export function ArtistForm({ artist, onClose }: Props) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded-md border border-[var(--border)] px-4 py-2 text-sm hover:bg-[var(--border)]"
+              className="rounded-md border border-border px-4 py-2 text-sm text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-md bg-[var(--accent-gold)] px-4 py-2 text-sm font-medium text-[#121212] hover:bg-[#d4af37]"
+              className="rounded-md border border-accent bg-accent-muted px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-ivory"
             >
               {isEditing ? "Save" : "Create"}
             </button>

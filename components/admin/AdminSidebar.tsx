@@ -30,15 +30,15 @@ export function AdminSidebar() {
   return (
     <>
       {/* Mobile header bar with hamburger */}
-      <div className="fixed left-0 right-0 top-16 z-30 flex items-center justify-between border-b border-[var(--border)] bg-[#0d0d0d] px-4 py-3 md:hidden">
+      <div className="fixed left-0 right-0 top-16 z-30 flex items-center justify-between border-b border-border bg-background px-4 py-3 md:hidden">
         <button
           onClick={() => setMobileOpen(true)}
-          className="flex p-2 -ml-2 text-[var(--foreground)]"
+          className="flex p-2 -ml-2 text-foreground"
           aria-label="Open menu"
         >
           <Menu size={24} strokeWidth={1.5} />
         </button>
-        <span className="font-medium text-[var(--foreground)]">Admin</span>
+        <span className="font-medium text-foreground">Admin</span>
         <div className="w-10" /> {/* Spacer for centering */}
       </div>
 
@@ -58,13 +58,13 @@ export function AdminSidebar() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.2 }}
-              className="fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64 border-r border-[var(--border)] bg-[#121212] md:hidden"
+              className="fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64 border-r border-border bg-card md:hidden"
             >
-              <div className="flex items-center justify-between border-b border-[var(--border)] p-4">
-                <span className="font-medium text-[var(--foreground)]">Menu</span>
+                <div className="flex items-center justify-between border-b border-border p-4">
+                <span className="font-medium text-foreground">Menu</span>
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="rounded p-2 text-[var(--muted)] hover:bg-[var(--border)] hover:text-[var(--foreground)]"
+                  className="rounded p-2 text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
                   aria-label="Close menu"
                 >
                   <X size={20} strokeWidth={1.5} />
@@ -80,8 +80,8 @@ export function AdminSidebar() {
                       onClick={() => setMobileOpen(false)}
                       className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-colors ${
                         isActive
-                          ? "bg-[var(--accent-gold-muted)] text-[var(--accent-gold)]"
-                          : "text-[var(--muted)] hover:bg-[var(--card)] hover:text-[var(--foreground)]"
+                          ? "bg-accent-muted text-accent"
+                          : "text-foreground-muted hover:bg-card-hover hover:text-foreground"
                       }`}
                     >
                       <Icon size={18} strokeWidth={1.5} />
@@ -93,7 +93,7 @@ export function AdminSidebar() {
                   <form action="/api/auth/signout" method="post">
                     <button
                       type="submit"
-                      className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm text-[var(--muted)] transition-colors hover:bg-[var(--card)] hover:text-[var(--accent-crimson)]"
+                      className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm text-foreground-muted transition-colors hover:bg-card-hover hover:text-red-400"
                     >
                       <LogOut size={18} strokeWidth={1.5} />
                       Sign out
@@ -107,7 +107,7 @@ export function AdminSidebar() {
       </AnimatePresence>
 
       {/* Desktop sidebar - always visible */}
-      <aside className="fixed left-0 top-16 z-40 hidden h-[calc(100vh-4rem)] w-56 border-r border-[var(--border)] bg-[#121212] md:block">
+      <aside className="fixed left-0 top-16 z-40 hidden h-[calc(100vh-4rem)] w-56 border-r border-border bg-card md:block">
         <nav className="flex flex-col gap-1 p-4">
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href || (href !== "/admin" && pathname.startsWith(href));
@@ -117,8 +117,8 @@ export function AdminSidebar() {
                 href={href}
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
                   isActive
-                    ? "bg-[var(--accent-gold-muted)] text-[var(--accent-gold)]"
-                    : "text-[var(--muted)] hover:bg-[var(--card)] hover:text-[var(--foreground)]"
+                    ? "bg-accent-muted text-accent"
+                    : "text-foreground-muted hover:bg-card-hover hover:text-foreground"
                 }`}
               >
                 <Icon size={18} strokeWidth={1.5} />
@@ -130,7 +130,7 @@ export function AdminSidebar() {
             <form action="/api/auth/signout" method="post">
               <button
                 type="submit"
-                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-[var(--muted)] transition-colors hover:bg-[var(--card)] hover:text-[var(--accent-crimson)]"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground-muted transition-colors hover:bg-card-hover hover:text-red-400"
               >
                 <LogOut size={18} strokeWidth={1.5} />
                 Sign out

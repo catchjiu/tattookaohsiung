@@ -48,7 +48,7 @@ export function ArtistShowcase({ artists }: Props) {
         ];
 
   return (
-    <section className="border-t border-border bg-ivory-warm py-32 md:py-40">
+    <section className="border-t border-border bg-card py-32 md:py-40">
       <div className="mx-auto max-w-6xl px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -80,7 +80,7 @@ export function ArtistShowcase({ artists }: Props) {
               className="group"
             >
               <Link href={`/artists/${artist.slug}`} className="block">
-                <div className="relative overflow-hidden bg-ivory-muted">
+                <div className="relative overflow-hidden bg-card-hover">
                   <div className="aspect-[4/5] overflow-hidden">
                     {artist.avatar_url ? (
                       <img
@@ -98,7 +98,7 @@ export function ArtistShowcase({ artists }: Props) {
                       />
                     )}
                   </div>
-                  <div className="border-t border-border bg-background p-6 transition-colors group-hover:bg-ivory-warm">
+                  <div className="border-t border-border bg-background p-6 transition-colors group-hover:bg-card-hover">
                     <h3 className="font-serif text-xl font-medium tracking-tight text-foreground">
                       {artist.name}
                     </h3>

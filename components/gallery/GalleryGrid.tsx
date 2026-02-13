@@ -52,7 +52,7 @@ export function GalleryGrid({ artworks, showArtistName = true }: Props) {
                   onClick={() => setLightboxItem(item)}
                   className="group relative block w-full cursor-pointer text-left"
                 >
-                  <div className="relative aspect-[3/4] overflow-hidden bg-ivory-muted">
+                  <div className="relative aspect-[3/4] overflow-hidden bg-card-hover">
                     <Image
                       src={item.image_url}
                       alt={item.title || "Artwork"}

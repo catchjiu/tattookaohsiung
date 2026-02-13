@@ -112,7 +112,7 @@ export function AvatarUpload({ value, onChange }: Props) {
   if (file) {
     return (
       <div className="space-y-4">
-        <div className="relative h-64 w-full overflow-hidden rounded-md border border-[var(--border)] bg-[#0d0d0d]">
+        <div className="relative h-64 w-full overflow-hidden rounded-md border border-border bg-charcoal">
           <Cropper
             image={file}
             crop={crop}
@@ -122,7 +122,7 @@ export function AvatarUpload({ value, onChange }: Props) {
             onCropComplete={onCropComplete}
             onZoomChange={setZoom}
             objectFit="contain"
-            style={{ containerStyle: { backgroundColor: "#0d0d0d" } }}
+            style={{ containerStyle: { backgroundColor: "#0c0c0c" } }}
           />
         </div>
         <div className="flex items-center gap-2">
@@ -135,16 +135,16 @@ export function AvatarUpload({ value, onChange }: Props) {
             onChange={(e) => setZoom(Number(e.target.value))}
             className="flex-1"
           />
-          <span className="text-xs text-[var(--muted)]">Zoom</span>
+          <span className="text-xs text-foreground-muted">Zoom</span>
         </div>
         {error && (
-          <p className="text-sm text-[var(--accent-crimson)]">{error}</p>
+          <p className="text-sm text-red-400">{error}</p>
         )}
         <div className="flex gap-2">
           <button
             type="button"
             onClick={handleCancelCrop}
-            className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--border)]"
+            className="rounded-md border border-border px-3 py-1.5 text-sm text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
           >
             Cancel
           </button>
@@ -152,7 +152,7 @@ export function AvatarUpload({ value, onChange }: Props) {
             type="button"
             onClick={handleConfirmCrop}
             disabled={uploading}
-            className="rounded-md bg-[var(--accent-gold)] px-3 py-1.5 text-sm font-medium text-[#121212] hover:bg-[#d4af37] disabled:opacity-50"
+            className="rounded-md border border-accent bg-accent-muted px-3 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-ivory disabled:opacity-50"
           >
             {uploading ? "Uploading…" : "Apply crop & upload"}
           </button>
@@ -166,7 +166,7 @@ export function AvatarUpload({ value, onChange }: Props) {
       {value ? (
         <div className="relative inline-block">
           <div
-            className="overflow-hidden rounded-md border border-[var(--border)]"
+            className="overflow-hidden rounded-md border border-border bg-card-hover"
             style={{ aspectRatio: "3/4", width: 120 }}
           >
             <img
@@ -178,13 +178,13 @@ export function AvatarUpload({ value, onChange }: Props) {
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute -right-2 -top-2 rounded-full bg-[var(--accent-crimson)] p-1 text-white hover:bg-[var(--accent-crimson)]/90"
+            className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white transition-colors hover:bg-red-600"
           >
             <X size={14} strokeWidth={2} />
           </button>
         </div>
       ) : null}
-      <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--accent-gold)]">
+      <label className="flex cursor-pointer items-center gap-2 text-sm text-foreground-muted transition-colors hover:text-accent">
         <Upload size={18} strokeWidth={1.5} />
         <span>{value ? "Change photo" : "Upload photo"}</span>
         <input
@@ -194,7 +194,7 @@ export function AvatarUpload({ value, onChange }: Props) {
           className="hidden"
         />
       </label>
-      <p className="text-xs text-[var(--muted-foreground)]">
+      <p className="text-xs text-foreground-subtle">
         3:4 portrait ratio, cropped to fit homepage cards
       </p>
     </div>

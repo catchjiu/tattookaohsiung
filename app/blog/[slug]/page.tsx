@@ -26,7 +26,7 @@ function BlogContent({ content }: { content: string }) {
         );
   return (
     <div
-      className="prose prose-neutral mt-10 max-w-none text-foreground [&_img]:rounded [&_iframe]:aspect-video [&_iframe]:w-full [&_iframe]:max-w-2xl [&_p]:text-[17px] [&_p]:leading-relaxed [&_p]:text-foreground-muted"
+      className="prose prose-invert mt-10 max-w-none text-foreground [&_img]:rounded [&_iframe]:aspect-video [&_iframe]:w-full [&_iframe]:max-w-2xl [&_p]:text-[17px] [&_p]:leading-relaxed [&_p]:text-foreground-muted"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -81,7 +81,7 @@ export default async function BlogPostPage({
         )}
 
         {post.coverImageUrl && (
-          <div className="mt-10 aspect-[3/2] overflow-hidden bg-ivory-muted">
+          <div className="mt-10 aspect-[3/2] overflow-hidden bg-card-hover">
             <img
               src={post.coverImageUrl}
               alt=""

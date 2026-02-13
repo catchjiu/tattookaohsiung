@@ -18,7 +18,7 @@ export function Footer() {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="border-t border-border bg-ivory-warm"
+      className="border-t border-border bg-card"
     >
       <div className="mx-auto max-w-6xl px-8 py-24">
         <div className="grid gap-16 md:grid-cols-3">

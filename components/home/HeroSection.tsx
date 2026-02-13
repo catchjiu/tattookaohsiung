@@ -68,7 +68,7 @@ export function HeroSection() {
           >
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center border border-bronze bg-bronze/10 px-10 py-4 text-[13px] font-medium tracking-[0.15em] uppercase text-bronze transition-colors hover:bg-bronze hover:text-white"
+              className="inline-flex items-center justify-center border border-bronze bg-bronze/10 px-10 py-4 text-[13px] font-medium tracking-[0.15em] uppercase text-bronze transition-colors hover:bg-bronze hover:text-ivory"
             >
               Book a Session
             </Link>

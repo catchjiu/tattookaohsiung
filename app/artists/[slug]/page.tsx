@@ -47,7 +47,7 @@ export default async function ArtistGalleryPage({
 
       <div className="mb-16 flex flex-col gap-8 sm:flex-row sm:items-end sm:gap-12">
         {artist.avatarUrl && (
-          <div className="h-36 w-36 shrink-0 overflow-hidden bg-ivory-muted">
+          <div className="h-36 w-36 shrink-0 overflow-hidden bg-card-hover">
             <img
               src={artist.avatarUrl}
               alt={artist.name}

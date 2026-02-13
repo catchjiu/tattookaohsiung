@@ -1,6 +1,9 @@
 /**
  * Google Cloud Storage — secure file uploads for portfolio & booking references.
- * Uses service account credentials from env.
+ * Supports two auth methods:
+ * 1. Service account key (GCP_CLIENT_EMAIL + GCP_PRIVATE_KEY) — when org allows keys
+ * 2. Application Default Credentials — when keys are disabled; use:
+ *    gcloud auth application-default login
  */
 
 import { Storage } from "@google-cloud/storage";
@@ -10,14 +13,25 @@ const PROJECT_ID = process.env.GCP_PROJECT_ID;
 const CLIENT_EMAIL = process.env.GCP_CLIENT_EMAIL;
 const PRIVATE_KEY = process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
+const HAS_EXPLICIT_CREDS = !!(CLIENT_EMAIL && PRIVATE_KEY);
+
 function getStorage(): Storage | null {
-  if (!BUCKET || !CLIENT_EMAIL || !PRIVATE_KEY) return null;
+  if (!BUCKET) return null;
+
+  if (HAS_EXPLICIT_CREDS) {
+    return new Storage({
+      projectId: PROJECT_ID || undefined,
+      credentials: {
+        client_email: CLIENT_EMAIL!,
+        private_key: PRIVATE_KEY!,
+      },
+    });
+  }
+
+  // Fallback: Application Default Credentials (ADC)
+  // Use: gcloud auth application-default login
   return new Storage({
     projectId: PROJECT_ID || undefined,
-    credentials: {
-      client_email: CLIENT_EMAIL,
-      private_key: PRIVATE_KEY,
-    },
   });
 }
 
@@ -89,5 +103,5 @@ export async function uploadToGCP(
 }
 
 export function isGCPConfigured(): boolean {
-  return !!(BUCKET && CLIENT_EMAIL && PRIVATE_KEY);
+  return !!BUCKET;
 }

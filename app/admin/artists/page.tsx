@@ -33,10 +33,10 @@ export default async function AdminArtistsPage() {
 
   return (
     <div className="p-4 sm:p-6 md:p-8">
-      <h1 className="font-serif text-2xl font-medium text-[var(--foreground)] sm:text-3xl">
+      <h1 className="font-serif text-2xl font-medium text-foreground sm:text-3xl">
         Artists
       </h1>
-      <p className="mt-2 text-[var(--muted)]">
+      <p className="mt-2 text-foreground-muted">
         Manage artist profiles (Bio, Specialty, IG Handle).
       </p>
       <div className="mt-8">

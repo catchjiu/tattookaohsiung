@@ -46,7 +46,7 @@ export default async function BlogPage() {
             >
               <Link href={`/blog/${post.slug}`} className="group block">
                 {post.coverImageUrl && (
-                  <div className="aspect-[3/2] overflow-hidden bg-ivory-muted">
+                  <div className="aspect-[3/2] overflow-hidden bg-card-hover">
                     <img
                       src={post.coverImageUrl}
                       alt=""

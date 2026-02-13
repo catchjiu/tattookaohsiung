@@ -11,7 +11,7 @@ export default async function AdminLayout({
   const user = await getSession();
 
   return (
-    <div className="min-h-screen bg-[#0d0d0d]">
+    <div className="min-h-screen bg-background text-foreground">
       {user && <AdminSidebar />}
       <div
         className={`pt-14 md:pt-0 ${user ? "md:pl-56" : ""}`}
