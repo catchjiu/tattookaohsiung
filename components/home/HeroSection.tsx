@@ -45,9 +45,9 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
             className="font-serif text-5xl font-medium leading-[1.08] tracking-tight text-ivory sm:text-6xl md:text-7xl lg:text-8xl"
           >
-            Art on
+            Honkaku
             <br />
-            <span className="text-bronze">Skin</span>
+            <span className="text-bronze">Tattoo Studio</span>
           </motion.h1>
 
           <motion.p
