@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { X } from "lucide-react";
 
 type Props = {
@@ -14,6 +14,7 @@ type Props = {
 
 /**
  * Distraction-free lightbox for gallery images.
+ * Rendered via portal to avoid parent overflow/transform issues.
  * Click outside or press Escape to close.
  */
 export function Lightbox({ src, alt, isOpen, onClose }: Props) {
@@ -35,7 +36,7 @@ export function Lightbox({ src, alt, isOpen, onClose }: Props) {
     };
   }, [isOpen, handleEscape]);
 
-  return (
+  const content = (
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -43,12 +44,19 @@ export function Lightbox({ src, alt, isOpen, onClose }: Props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] as const }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-charcoal/95 backdrop-blur-sm"
+          className="fixed inset-0 z-[10000] flex items-center justify-center bg-charcoal/95 backdrop-blur-sm"
           onClick={onClose}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image lightbox"
         >
           <button
-            onClick={onClose}
-            className="absolute right-8 top-8 z-10 p-2 text-white/70 transition-colors hover:text-white"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            className="absolute right-4 top-4 z-10 rounded-full p-2 text-white/70 transition-colors hover:bg-white/10 hover:text-white md:right-8 md:top-8"
             aria-label="Close"
           >
             <X size={24} strokeWidth={1.5} />
@@ -59,22 +67,22 @@ export function Lightbox({ src, alt, isOpen, onClose }: Props) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
-            className="relative mx-4 max-h-[90vh] max-w-[90vw]"
+            className="relative mx-4 flex max-h-[90vh] max-w-[90vw] items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative h-[85vh] w-full max-w-4xl overflow-hidden rounded-sm">
-              <Image
-                src={src}
-                alt={alt}
-                fill
-                sizes="90vw"
-                className="object-contain"
-                priority
-              />
-            </div>
+            <img
+              src={src}
+              alt={alt}
+              className="max-h-[85vh] max-w-full object-contain"
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
+            />
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
   );
+
+  if (typeof document === "undefined") return null;
+  return createPortal(content, document.body);
 }

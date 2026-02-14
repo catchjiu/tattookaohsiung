@@ -1,14 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1568515041317-4c1a7c936ee0?w=1920&q=80";
-const HERO_BLUR =
-  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBEQACEQADAD8A0p//2Q==";
 
 export function HeroSection() {
   const { t } = useLanguage();
@@ -16,18 +13,12 @@ export function HeroSection() {
   return (
     <section className="relative min-h-[100dvh] overflow-hidden bg-charcoal">
       <div className="absolute inset-0">
-        <div className="absolute inset-0 animate-hero-pan">
-          <Image
-            src={HERO_IMAGE}
-            alt=""
-            fill
-            sizes="100vw"
-            className="object-cover opacity-40"
-            priority
-            placeholder="blur"
-            blurDataURL={HERO_BLUR}
-          />
-        </div>
+        <div
+          className="absolute inset-0 animate-hero-pan bg-cover bg-center bg-no-repeat opacity-40"
+          style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+          role="presentation"
+          aria-hidden
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-charcoal/60 to-charcoal" />
       </div>
 
