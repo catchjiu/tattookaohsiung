@@ -23,20 +23,11 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 flex min-h-[100dvh] flex-col justify-end px-8 pb-24 pt-32 md:px-16 lg:px-24">
-        <div className="mx-auto w-full max-w-4xl">
-          <motion.p
+        <div className="mx-auto w-full max-w-4xl text-center">
+          <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="mb-6 text-[11px] font-medium tracking-[0.25em] uppercase text-ivory/70"
-          >
-            {t("hero.location")}
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 32 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="font-display text-5xl font-bold leading-[1.08] tracking-tight text-ivory sm:text-6xl md:text-7xl lg:text-8xl"
           >
             Tattoo
@@ -48,7 +39,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-10 max-w-md text-[17px] leading-relaxed text-ivory/80"
+            className="mx-auto mt-10 max-w-md text-[17px] leading-relaxed text-ivory/80"
           >
             {t("hero.tagline")}
           </motion.p>
@@ -57,7 +48,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.75, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-14 flex flex-col gap-4 sm:flex-row sm:gap-6"
+            className="mt-14 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6"
           >
             <Link
               href="/contact"
