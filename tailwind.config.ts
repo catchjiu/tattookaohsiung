@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Honkaku Tattoo Studio — Art Gallery × Luxury Watch
+ * Tattoo Kaohsiung — Cyberpunk-Industrial Dark Mode
  * Design tokens live in globals.css; this config extends for content paths
  * and JS-based overrides.
  */
@@ -17,24 +17,42 @@ const config: Config = {
       colors: {
         ivory: {
           DEFAULT: "#fafaf9",
-          warm: "#f5f4f0",
-          muted: "#ebe9e4",
+          warm: "#f0f0f0",
+          muted: "#e0e0e0",
         },
         charcoal: {
           DEFAULT: "#0c0c0c",
+          deep: "#1a1a1a",
           soft: "#1a1a1a",
           muted: "#2d2d2d",
         },
-        bronze: {
-          DEFAULT: "#8b7355",
-          muted: "rgba(139, 115, 85, 0.12)",
-          subtle: "rgba(139, 115, 85, 0.06)",
+        neon: {
+          DEFAULT: "#00e5ff",
+          muted: "rgba(0, 229, 255, 0.15)",
+          subtle: "rgba(0, 229, 255, 0.08)",
         },
+        industrial: {
+          DEFAULT: "#4a4a4a",
+          100: "#e8e8e8",
+          200: "#9e9e9e",
+          300: "#6b6b6b",
+          400: "#4a4a4a",
+          500: "#333333",
+        },
+        bronze: {
+          DEFAULT: "#00e5ff",
+          muted: "rgba(0, 229, 255, 0.15)",
+          subtle: "rgba(0, 229, 255, 0.08)",
+        },
+      },
+      borderRadius: {
+        none: "0",
+        sharp: "0",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         serif: ["var(--font-serif)", "Georgia", "serif"],
-        display: ["var(--font-display)", "var(--font-serif)", "serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "sans-serif"],
       },
       letterSpacing: {
         "tracking-tightest": "-0.03em",

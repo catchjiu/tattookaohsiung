@@ -17,8 +17,8 @@ export function Card({
   hover = false,
 }: Props) {
   const base =
-    "overflow-hidden rounded-sm border border-border bg-card transition-colors";
-  const hoverClass = hover ? "hover:border-accent/50 hover:bg-card-hover" : "";
+    "overflow-hidden rounded-none border-2 border-border bg-card transition-colors";
+  const hoverClass = hover ? "hover:border-accent hover:bg-card-hover" : "";
   const combined = `${base} ${hoverClass} ${className}`;
 
   if (hover) {

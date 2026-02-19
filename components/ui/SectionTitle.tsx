@@ -13,7 +13,7 @@ const sizeStyles = {
 };
 
 /**
- * Serif display heading. Flawless typography.
+ * Bold display heading. Industrial typography.
  */
 export function SectionTitle({
   children,
@@ -21,7 +21,7 @@ export function SectionTitle({
   as: Tag = "h2",
 }: Props) {
   return (
-    <Tag className={`font-serif text-foreground ${sizeStyles[Tag]} ${className}`}>
+    <Tag className={`font-display font-semibold text-foreground ${sizeStyles[Tag]} ${className}`}>
       {children}
     </Tag>
   );

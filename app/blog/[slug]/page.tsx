@@ -14,15 +14,15 @@ function BlogContent({ content }: { content: string }) {
         .replace(/\*(.*?)\*/g, "<em>$1</em>")
         .replace(
           /^### (.*$)/gm,
-          "<h3 class='font-serif text-xl font-medium mt-8 mb-3 text-foreground'>$1</h3>"
+          "<h3 class='font-display text-xl font-semibold mt-8 mb-3 text-foreground'>$1</h3>"
         )
         .replace(
           /^## (.*$)/gm,
-          "<h2 class='font-serif text-2xl font-medium mt-10 mb-3 text-foreground'>$1</h2>"
+          "<h2 class='font-display text-2xl font-semibold mt-10 mb-3 text-foreground'>$1</h2>"
         )
         .replace(
           /^# (.*$)/gm,
-          "<h1 class='font-serif text-3xl font-medium mt-10 mb-3 text-foreground'>$1</h1>"
+          "<h1 class='font-display text-3xl font-semibold mt-10 mb-3 text-foreground'>$1</h1>"
         );
   return (
     <div
@@ -64,7 +64,7 @@ export default async function BlogPostPage({
             {post.category}
           </span>
         )}
-        <h1 className="mt-3 font-serif text-4xl font-medium tracking-tight text-foreground md:text-5xl">
+        <h1 className="mt-3 font-display text-4xl font-bold tracking-tight text-foreground md:text-5xl">
           {post.title}
         </h1>
         {post.publishedAt && (
@@ -84,7 +84,7 @@ export default async function BlogPostPage({
           <div className="mt-10 aspect-[3/2] overflow-hidden bg-card-hover">
             <img
               src={post.coverImageUrl}
-              alt=""
+              alt={post.title ? `${post.title} — Tattoo Kaohsiung` : "Tattoo Kaohsiung blog cover"}
               className="h-full w-full object-cover"
             />
           </div>

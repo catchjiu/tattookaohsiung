@@ -37,11 +37,11 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-5xl font-medium leading-[1.08] tracking-tight text-ivory sm:text-6xl md:text-7xl lg:text-8xl"
+            className="font-display text-5xl font-bold leading-[1.08] tracking-tight text-ivory sm:text-6xl md:text-7xl lg:text-8xl"
           >
-            Honkaku
+            Tattoo
             <br />
-            <span className="text-bronze">Tattoo Studio</span>
+            <span className="text-accent">Kaohsiung</span>
           </motion.h1>
 
           <motion.p
@@ -61,13 +61,13 @@ export function HeroSection() {
           >
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center border border-bronze bg-bronze/10 px-10 py-4 text-[13px] font-medium tracking-[0.15em] uppercase text-bronze transition-colors hover:bg-bronze hover:text-ivory"
+              className="inline-flex items-center justify-center border-2 border-accent bg-accent-muted px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase text-accent transition-colors hover:bg-accent hover:text-charcoal rounded-none"
             >
               {t("hero.bookSession")}
             </Link>
             <Link
               href="/gallery"
-              className="inline-flex items-center justify-center border border-ivory/40 px-10 py-4 text-[13px] font-medium tracking-[0.15em] uppercase text-ivory/90 transition-colors hover:border-ivory hover:text-ivory"
+              className="inline-flex items-center justify-center border-2 border-ivory/40 px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase text-ivory/90 transition-colors hover:border-accent hover:text-accent rounded-none"
             >
               {t("hero.viewGallery")}
             </Link>

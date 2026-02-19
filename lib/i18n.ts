@@ -1,6 +1,6 @@
 export type Locale = "en" | "zh-TW";
 
-const STORAGE_KEY = "honkaku-locale";
+const STORAGE_KEY = "tattookaohsiung-locale";
 
 /**
  * Detect preferred locale from browser.

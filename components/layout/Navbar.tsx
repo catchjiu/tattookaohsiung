@@ -29,9 +29,9 @@ export function Navbar() {
       <nav className="mx-auto flex h-20 max-w-6xl items-center justify-between px-8">
         <Link
           href="/"
-          className="font-serif text-xl font-medium tracking-[0.02em] text-foreground transition-colors hover:text-accent"
+          className="font-display text-xl font-semibold tracking-wide text-foreground transition-colors hover:text-accent"
         >
-          Honkaku
+          Tattoo Kaohsiung
         </Link>
 
         {/* Desktop nav */}

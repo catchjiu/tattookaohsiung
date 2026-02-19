@@ -17,7 +17,7 @@
     "explore": "Explore",
     "connect": "Connect",
     "bookSession": "Book a Session",
-    "copyright": "Honkaku Tattoo Studio"
+    "copyright": "Tattoo Kaohsiung"
   },
   "artistShowcase": {
     "label": "Studio",
@@ -133,7 +133,7 @@
     "description": "Browse our portfolio of tattoo artistry. Click any image to view in full.",
     "noArtwork": "No artwork yet. Check back soon.",
     "untitled": "Untitled",
-    "artwork": "Artwork"
+    "artwork": "Tattoo artwork — Tattoo Kaohsiung"
   },
   "blog": {
     "label": "Studio",
@@ -143,7 +143,7 @@
     "readMore": "Read more →"
   },
   "metadata": {
-    "title": "Honkaku Tattoo Studio | Coming Soon",
-    "description": "Honkaku Tattoo Studio — Authentic traditional Japanese artistry meets contemporary ink. Coming soon."
+    "title": "Tattoo Kaohsiung | Coming Soon",
+    "description": "Tattoo Kaohsiung — Authentic traditional Japanese artistry meets contemporary ink. Kaohsiung. Coming soon."
   }
 }

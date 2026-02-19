@@ -59,7 +59,7 @@ export async function uploadToCloudinary(
     const dataUri = `data:${file.type};base64,${base64}`;
 
     const result = await cloudinary.uploader.upload(dataUri, {
-      folder: `honkaku/${folder}`,
+      folder: `tattookaohsiung/${folder}`,
       resource_type: "image",
     });
 

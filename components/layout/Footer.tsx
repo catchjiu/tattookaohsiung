@@ -29,9 +29,9 @@ export function Footer() {
           <div>
             <Link
               href="/"
-              className="font-serif text-2xl font-medium tracking-[0.02em] text-foreground"
+              className="font-display text-2xl font-semibold tracking-wide text-foreground"
             >
-              Honkaku
+              Tattoo Kaohsiung
             </Link>
             <p className="mt-6 max-w-xs text-[15px] leading-relaxed text-foreground-muted">
               {t("footer.tagline")}
@@ -64,13 +64,13 @@ export function Footer() {
             </h4>
             <div className="space-y-4">
               <a
-                href="https://instagram.com/honkakutattoostudio"
+                href="https://instagram.com/tattookaohsiung"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-3 text-[15px] text-foreground-muted transition-colors hover:text-foreground"
               >
                 <Instagram size={18} strokeWidth={1.5} />
-                @honkakutattoostudio
+                @tattookaohsiung
               </a>
               <p className="flex items-start gap-3 text-[15px] text-foreground-muted">
                 <MapPin size={18} strokeWidth={1.5} className="mt-0.5 shrink-0" />

@@ -29,7 +29,7 @@ export function ContactContent({ artists }: Props) {
       <Section>
         <div className="grid gap-16 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <div className="border border-border bg-card p-10 md:p-12">
+            <div className="border-2 border-border bg-card p-10 md:p-12 rounded-none">
               <BookingForm artists={artists} />
             </div>
           </div>
@@ -52,12 +52,12 @@ export function ContactContent({ artists }: Props) {
               <p className="mt-6 text-[15px] text-foreground-muted">
                 {t("contact.contactDm")}{" "}
                 <a
-                  href="https://instagram.com/honkakutattoostudio"
+                  href="https://instagram.com/tattookaohsiung"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-accent hover:underline"
                 >
-                  @honkakutattoostudio
+                  @tattookaohsiung
                 </a>
               </p>
             </div>

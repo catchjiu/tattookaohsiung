@@ -6,13 +6,13 @@ type Variant = "primary" | "secondary" | "ghost" | "outline";
 
 const variantStyles: Record<Variant, string> = {
   primary:
-    "border border-accent bg-accent-muted text-accent transition-colors hover:bg-accent hover:text-ivory active:scale-[0.99]",
+    "border-2 border-accent bg-accent-muted text-accent transition-colors hover:bg-accent hover:text-charcoal active:scale-[0.99] rounded-none",
   secondary:
-    "border border-border bg-transparent text-foreground transition-colors hover:border-accent hover:text-accent active:scale-[0.99]",
+    "border-2 border-border bg-transparent text-foreground transition-colors hover:border-accent hover:text-accent active:scale-[0.99] rounded-none",
   ghost:
-    "border border-transparent text-foreground-muted transition-colors hover:text-foreground active:scale-[0.99]",
+    "border-2 border-transparent text-foreground-muted transition-colors hover:text-foreground active:scale-[0.99] rounded-none",
   outline:
-    "border border-border bg-card text-foreground transition-colors hover:border-accent hover:bg-card-hover active:scale-[0.99]",
+    "border-2 border-border bg-card text-foreground transition-colors hover:border-accent hover:bg-card-hover active:scale-[0.99] rounded-none",
 };
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -46,7 +46,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
     ref
   ) => {
     const base =
-      "inline-flex items-center justify-center gap-2 font-medium tracking-wide transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none rounded-sm hover:scale-[1.01]";
+      "inline-flex items-center justify-center gap-2 font-semibold tracking-wide transition-all duration-150 disabled:opacity-50 disabled:pointer-events-none rounded-none hover:scale-[1.02]";
     const combined = `${base} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`;
 
     return (

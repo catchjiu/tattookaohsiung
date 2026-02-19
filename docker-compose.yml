@@ -1,4 +1,4 @@
-# Honkaku Tattoo — Prisma + PostgreSQL
+# Tattoo Kaohsiung — Prisma + PostgreSQL
 # 1. cp .env.docker.example .env && edit .env
 # 2. docker compose up -d
 # For local dev (Prisma only): docker compose up -d db

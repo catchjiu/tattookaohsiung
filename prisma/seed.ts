@@ -1,5 +1,5 @@
 /**
- * Honkaku Tattoo Studio — Curated Seed
+ * Tattoo Kaohsiung — Curated Seed
  * Kaohsiung's flagship destination for world-class ink.
  * Editorial-grade copy. No placeholders.
  */
@@ -20,7 +20,7 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
   // Admin User — Default login for admin panel
   // ─────────────────────────────────────────────────────────────────────────
-  const adminEmail = process.env.ADMIN_EMAIL ?? "admin@honkakutattoo.com";
+  const adminEmail = process.env.ADMIN_EMAIL ?? "admin@tattookaohsiung.com";
   const adminPassword = process.env.ADMIN_PASSWORD ?? "changeme123";
   const passwordHash = await hash(adminPassword, 12);
 
@@ -47,7 +47,7 @@ async function main() {
       specialty: "Brutalist Blackwork",
       status: "AVAILABLE",
       avatarUrl: "https://images.unsplash.com/photo-1568515041317-4c1a7c936ee0?w=800&q=80",
-      instagramUrl: "https://instagram.com/honkaku_lin",
+      instagramUrl: "https://instagram.com/tattookaohsiung_lin",
       sortOrder: 0,
     },
     update: {},
@@ -271,7 +271,7 @@ I would like to commission a single-needle piece: a detailed study of a camellia
       clientName: "Marcus Chen",
       clientEmail: "marcus@fluid.studio",
       clientPhone: "+886 912 345 678",
-      conceptDescription: `I run a contemporary art gallery in Taipei. Mika Tanaka's residency at Honkaku is precisely the kind of cross-pollination the regional scene needs. Her fluid, brush-stroke approach has influenced my own thinking about form and movement.
+      conceptDescription: `I run a contemporary art gallery in Taipei. Mika Tanaka's residency at Tattoo Kaohsiung is precisely the kind of cross-pollination the regional scene needs. Her fluid, brush-stroke approach has influenced my own thinking about form and movement.
 
 I am seeking a piece for my upper arm: something that captures the feeling of ink meeting water—that moment of diffusion before control gives way. I have no fixed image in mind; I trust Mika's vision entirely. I am available for consultation and multiple sessions. Budget is not a constraint; I value the work.`,
       placement: "Upper arm, right — wrapping",

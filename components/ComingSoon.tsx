@@ -194,10 +194,10 @@ export function ComingSoon() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="font-serif text-5xl font-medium leading-tight tracking-tight sm:text-6xl md:text-7xl lg:text-8xl"
+          className="font-display text-5xl font-bold leading-tight tracking-tight sm:text-6xl md:text-7xl lg:text-8xl"
         >
-          <span className="block">Honkaku</span>
-          <span className="mt-2 block text-[var(--accent-gold)]">Tattoo Studio</span>
+          <span className="block">Tattoo</span>
+          <span className="mt-2 block text-[var(--accent)]">Kaohsiung</span>
         </motion.h1>
 
         <motion.div
@@ -207,7 +207,7 @@ export function ComingSoon() {
           className="mt-12"
         >
           <span className="relative inline-block">
-            <span className="font-serif text-2xl tracking-widest text-[var(--foreground)] sm:text-3xl">
+            <span className="font-display text-2xl font-semibold tracking-widest text-[var(--foreground)] sm:text-3xl">
               COMING SOON
             </span>
             <motion.span

@@ -1,26 +1,26 @@
 import type { Metadata } from "next";
-import { DM_Sans, Cormorant_Garamond } from "next/font/google";
+import { Inter, Oswald } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
-const dmSans = DM_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sans",
 });
 
-const cormorant = Cormorant_Garamond({
+const oswald = Oswald({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-serif",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
-  title: "Honkaku Tattoo Studio | Coming Soon",
+  title: "Tattoo Kaohsiung | Coming Soon",
   description:
-    "Honkaku Tattoo Studio — Authentic traditional Japanese artistry meets contemporary ink. Coming soon.",
+    "Tattoo Kaohsiung — Authentic traditional Japanese artistry meets contemporary ink. Kaohsiung. Coming soon.",
 };
 
 export default function RootLayout({
@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${dmSans.variable} ${cormorant.variable} min-h-screen bg-background text-foreground antialiased font-sans`}
+        className={`${inter.variable} ${oswald.variable} min-h-screen bg-background text-foreground antialiased font-sans`}
       >
         <LanguageProvider>
           <div className="grain-overlay" aria-hidden />
