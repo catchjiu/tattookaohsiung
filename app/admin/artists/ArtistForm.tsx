@@ -47,22 +47,25 @@ export function ArtistForm({ artist, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-lg rounded-md border border-border bg-card p-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-serif text-xl font-medium">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-4 backdrop-blur-sm">
+      <div className="flex w-full max-w-lg max-h-[90dvh] sm:max-h-[85vh] flex-col rounded-t-xl sm:rounded-md border border-border border-b-0 sm:border-b bg-card shadow-xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-4 sm:px-6">
+          <h2 className="font-display text-lg font-semibold sm:text-xl">
             {isEditing ? "Edit Artist" : "Add Artist"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded p-2 text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
+            className="-mr-2 rounded-full p-2.5 text-foreground-muted transition-colors hover:bg-border hover:text-foreground touch-manipulation"
+            aria-label="Close"
           >
-            <X size={20} strokeWidth={1.5} />
+            <X size={22} strokeWidth={1.5} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-4">
+            <div className="space-y-4">
           {error && (
             <div className="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-400">
               {error}
@@ -81,7 +84,7 @@ export function ArtistForm({ artist, onClose }: Props) {
                 const slugInput = e.target.form?.querySelector('[name="slug"]') as HTMLInputElement;
                 if (slugInput && !artist) slugInput.value = slugify(e.target.value);
               }}
-              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
@@ -93,7 +96,7 @@ export function ArtistForm({ artist, onClose }: Props) {
               name="slug"
               required
               defaultValue={artist?.slug}
-              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
@@ -105,7 +108,7 @@ export function ArtistForm({ artist, onClose }: Props) {
               name="bio"
               rows={3}
               defaultValue={artist?.bio ?? ""}
-              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
+              className="mt-1.5 w-full min-h-[88px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle resize-y"
             />
           </div>
 
@@ -117,7 +120,7 @@ export function ArtistForm({ artist, onClose }: Props) {
               name="specialty"
               defaultValue={artist?.specialty ?? ""}
               placeholder="e.g. Traditional, Fine-line, Realism"
-              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
@@ -129,7 +132,7 @@ export function ArtistForm({ artist, onClose }: Props) {
               name="ig_handle"
               defaultValue={artist?.ig_handle ?? ""}
               placeholder="username (without @)"
-              className="mt-1 w-full rounded-md border border-border bg-card-hover px-3 py-2 text-foreground placeholder:text-foreground-subtle"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
@@ -165,21 +168,26 @@ export function ArtistForm({ artist, onClose }: Props) {
               <label className="text-sm text-foreground-muted">Active</label>
             </div>
           </div>
+            </div>
+          </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-md border border-border px-4 py-2 text-sm text-foreground-muted transition-colors hover:bg-border hover:text-foreground"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="rounded-md border border-accent bg-accent-muted px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-ivory"
-            >
-              {isEditing ? "Save" : "Create"}
-            </button>
+          {/* Sticky save bar - always visible, safe-area padding for mobile browser chrome */}
+          <div className="shrink-0 border-t border-border bg-card px-4 py-4 sm:px-6 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 sm:flex-none rounded-md border-2 border-border px-5 py-3 text-sm font-medium text-foreground-muted transition-colors hover:bg-border hover:text-foreground touch-manipulation"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 sm:flex-none rounded-md border-2 border-accent bg-accent-muted px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-charcoal touch-manipulation"
+              >
+                {isEditing ? "Save" : "Create"}
+              </button>
+            </div>
           </div>
         </form>
       </div>

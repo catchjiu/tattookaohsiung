@@ -72,10 +72,13 @@ export function Footer() {
                 <Instagram size={18} strokeWidth={1.5} />
                 @tattookaohsiung
               </a>
-              <p className="flex items-start gap-3 text-[15px] text-foreground-muted">
+              <div className="flex items-start gap-3 text-[15px] text-foreground-muted">
                 <MapPin size={18} strokeWidth={1.5} className="mt-0.5 shrink-0" />
-                前金區自強一路46號2樓
-              </p>
+                <span className="flex flex-col gap-0.5">
+                  <span>{t("footer.addressEn")}</span>
+                  <span>{t("footer.addressZh")}</span>
+                </span>
+              </div>
             </div>
           </div>
         </div>

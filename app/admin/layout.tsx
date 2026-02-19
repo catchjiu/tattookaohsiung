@@ -14,7 +14,7 @@ export default async function AdminLayout({
     <div className="min-h-screen bg-background text-foreground">
       {user && <AdminSidebar />}
       <div
-        className={`pt-14 md:pt-0 ${user ? "md:pl-56" : ""}`}
+        className={`min-h-screen pt-14 md:pt-0 pb-[env(safe-area-inset-bottom,1rem)] ${user ? "md:pl-56" : ""}`}
       >
         {children}
       </div>
