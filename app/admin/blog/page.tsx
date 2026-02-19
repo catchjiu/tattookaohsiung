@@ -27,11 +27,11 @@ export default async function AdminBlogPage() {
   }));
 
   return (
-    <div className="p-4 sm:p-6 md:p-8">
-      <h1 className="font-serif text-2xl font-medium text-[var(--foreground)] sm:text-3xl">
+    <div className="p-4 pb-8 sm:p-6 md:p-8">
+      <h1 className="font-display text-2xl font-semibold text-foreground sm:text-3xl">
         Blog
       </h1>
-      <p className="mt-2 text-[var(--muted)]">
+      <p className="mt-2 text-foreground-muted">
         Manage studio news and aftercare tips. Markdown supported.
       </p>
       <div className="mt-8">

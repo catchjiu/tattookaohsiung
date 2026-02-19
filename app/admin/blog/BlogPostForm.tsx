@@ -56,30 +56,33 @@ export function BlogPostForm({ post, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-md border border-[var(--border)] bg-[var(--card)] p-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-serif text-xl font-medium">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-4 backdrop-blur-sm">
+      <div className="flex w-full max-w-2xl max-h-[90dvh] sm:max-h-[85vh] flex-col rounded-t-xl sm:rounded-md border border-border border-b-0 sm:border-b bg-card shadow-xl">
+        <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-4 sm:px-6">
+          <h2 className="font-display text-lg font-semibold sm:text-xl">
             {isEditing ? "Edit Post" : "New Post"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded p-2 text-[var(--muted)] hover:bg-[var(--border)] hover:text-[var(--foreground)]"
+            className="-mr-2 rounded-full p-2.5 text-foreground-muted transition-colors hover:bg-border hover:text-foreground touch-manipulation"
+            aria-label="Close"
           >
-            <X size={20} strokeWidth={1.5} />
+            <X size={22} strokeWidth={1.5} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-4">
+            <div className="space-y-4">
           {error && (
-            <div className="rounded-md border border-[var(--accent-crimson)] bg-[var(--accent-crimson-muted)] px-4 py-2 text-sm text-[var(--accent-crimson)]">
+            <div className="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-400">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Title *
             </label>
             <input
@@ -90,39 +93,39 @@ export function BlogPostForm({ post, onClose }: Props) {
                 const slugInput = e.target.form?.querySelector('[name="slug"]') as HTMLInputElement;
                 if (slugInput && !post) slugInput.value = slugify(e.target.value);
               }}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Slug *
             </label>
             <input
               name="slug"
               required
               defaultValue={post?.slug}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Excerpt
             </label>
             <textarea
               name="excerpt"
               rows={2}
               defaultValue={post?.excerpt ?? ""}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              className="mt-1.5 w-full min-h-[60px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle resize-y"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Content *
             </label>
-            <p className="mt-1 mb-2 text-xs text-[var(--muted)]">
+            <p className="mt-1.5 mb-2 text-xs text-foreground-muted">
               Use the toolbar to format text, add images (upload or paste), and embed YouTube videos.
             </p>
             <RichTextEditor content={content} onChange={setContent} />
@@ -130,10 +133,10 @@ export function BlogPostForm({ post, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
+            <label className="block text-sm font-medium text-foreground-muted">
               Cover Image
             </label>
-            <p className="mt-1 mb-2 text-xs text-[var(--muted)]">
+            <p className="mt-1.5 mb-2 text-xs text-foreground-muted">
               Optional. 3:2 landscape for blog post headers.
             </p>
             <BlogCoverUpload
@@ -142,43 +145,48 @@ export function BlogPostForm({ post, onClose }: Props) {
             />
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-6">
             <div className="flex-1">
-              <label className="block text-sm font-medium text-[var(--muted)]">
+              <label className="block text-sm font-medium text-foreground-muted">
                 Category
               </label>
               <input
                 name="category"
                 defaultValue={post?.category ?? ""}
                 placeholder="Studio News, Aftercare Tips"
-                className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+                className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
               />
             </div>
-            <div className="flex items-center gap-2 pt-6">
+            <div className="flex items-center gap-2">
               <input
                 name="is_published"
                 type="checkbox"
                 defaultChecked={post?.is_published ?? false}
-                className="h-4 w-4 rounded border-[var(--border)]"
+                className="h-4 w-4 rounded border-border bg-card-hover text-accent"
               />
-              <label className="text-sm text-[var(--muted)]">Published</label>
+              <label className="text-sm text-foreground-muted">Published</label>
+            </div>
+          </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-md border border-[var(--border)] px-4 py-2 text-sm hover:bg-[var(--border)]"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="rounded-md bg-[var(--accent-gold)] px-4 py-2 text-sm font-medium text-[#121212] hover:bg-[#d4af37]"
-            >
-              {isEditing ? "Save" : "Create"}
-            </button>
+          {/* Sticky save bar - always visible, safe-area padding for mobile browser chrome */}
+          <div className="shrink-0 border-t border-border bg-card px-4 py-4 sm:px-6 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 sm:flex-none rounded-md border-2 border-border px-5 py-3 text-sm font-medium text-foreground-muted transition-colors hover:bg-border hover:text-foreground touch-manipulation"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 sm:flex-none rounded-md border-2 border-accent bg-accent-muted px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-charcoal touch-manipulation"
+              >
+                {isEditing ? "Save" : "Create"}
+              </button>
+            </div>
           </div>
         </form>
       </div>
