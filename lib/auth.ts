@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { compare } from "bcryptjs";
 
@@ -46,10 +46,15 @@ export async function login(email: string, password: string): Promise<{ error?: 
     data: { userId: user.id, token, expiresAt },
   });
 
+  const headersList = await headers();
+  const forwardedProto = headersList.get("x-forwarded-proto");
+  const isHttps = forwardedProto === "https";
+  const secureCookie = process.env.NODE_ENV === "production" ? isHttps : false;
+
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: secureCookie,
     sameSite: "lax",
     maxAge: SESSION_DAYS * 24 * 60 * 60,
     path: "/",
