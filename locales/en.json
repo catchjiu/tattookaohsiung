@@ -8,18 +8,21 @@
   },
   "hero": {
     "location": "Kaohsiung",
-    "tagline": "Where tradition meets contemporary design. Premium tattoo artistry by master artists.",
+    "tagline": "Precision realism meets contemporary ink. Where every detail matters.",
     "bookSession": "Book a Session",
     "viewGallery": "View Gallery"
   },
   "footer": {
-    "tagline": "Authentic traditional Japanese artistry meets contemporary ink. Kaohsiung.",
+    "tagline": "Precision realism meets contemporary ink. Kaohsiung.",
+    "specialty": "The studio specialises in realism.",
     "explore": "Explore",
     "connect": "Connect",
     "bookSession": "Book a Session",
     "copyright": "Tattoo Kaohsiung",
     "addressEn": "No. 18, Shijian Rd, Zuoying District, Kaohsiung City, 813",
-    "addressZh": "813高雄市左營區實踐路18號"
+    "addressZh": "813高雄市左營區實踐路18號",
+    "phoneEn": "0967071750",
+    "phoneZh": "0980495145"
   },
   "artistShowcase": {
     "label": "Studio",
@@ -146,6 +149,6 @@
   },
   "metadata": {
     "title": "Tattoo Kaohsiung | Coming Soon",
-    "description": "Tattoo Kaohsiung — Authentic traditional Japanese artistry meets contemporary ink. Kaohsiung. Coming soon."
+    "description": "Tattoo Kaohsiung — Precision realism meets contemporary ink. Kaohsiung."
   }
 }

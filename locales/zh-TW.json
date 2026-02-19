@@ -8,18 +8,21 @@
   },
   "hero": {
     "location": "高雄",
-    "tagline": "傳統與當代設計的交匯。大師級刺青藝術。",
+    "tagline": "精準寫實與當代墨藝交會。每個細節都至關重要。",
     "bookSession": "預約諮詢",
     "viewGallery": "瀏覽作品"
   },
   "footer": {
-    "tagline": "正宗日式傳統刺青藝術與當代墨藝。高雄。",
+    "tagline": "精準寫實與當代墨藝交會。高雄。",
+    "specialty": "本工作室專精寫實刺青。",
     "explore": "探索",
     "connect": "聯絡我們",
     "bookSession": "預約諮詢",
     "copyright": "Tattoo Kaohsiung",
     "addressEn": "No. 18, Shijian Rd, Zuoying District, Kaohsiung City, 813",
-    "addressZh": "813高雄市左營區實踐路18號"
+    "addressZh": "813高雄市左營區實踐路18號",
+    "phoneEn": "0967071750",
+    "phoneZh": "0980495145"
   },
   "artistShowcase": {
     "label": "工作室",
@@ -146,6 +149,6 @@
   },
   "metadata": {
     "title": "Tattoo Kaohsiung | 即將開幕",
-    "description": "Tattoo Kaohsiung — 正宗日式傳統刺青藝術與當代墨藝。高雄。即將開幕。"
+    "description": "Tattoo Kaohsiung — 精準寫實與當代墨藝交會。高雄。"
   }
 }

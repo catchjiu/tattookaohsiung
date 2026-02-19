@@ -20,7 +20,7 @@ const oswald = Oswald({
 export const metadata: Metadata = {
   title: "Tattoo Kaohsiung | Coming Soon",
   description:
-    "Tattoo Kaohsiung — Authentic traditional Japanese artistry meets contemporary ink. Kaohsiung. Coming soon.",
+    "Tattoo Kaohsiung — Precision realism meets contemporary ink. Kaohsiung.",
 };
 
 export default function RootLayout({
