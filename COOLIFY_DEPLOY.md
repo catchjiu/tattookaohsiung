@@ -50,10 +50,13 @@ In Coolify, go to your application → **Environment Variables** and add:
 
 | Variable | Value |
 |---------|-------|
+| `DATABASE_URL` | PostgreSQL connection string (e.g. `postgresql://user:pass@host:5432/db`) |
+| `ADMIN_EMAIL` | Your admin login email (e.g. `you@example.com`) |
+| `ADMIN_PASSWORD` | Your admin password |
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key |
 
-Copy these from your `.env.local` or Supabase Dashboard → Settings → API.
+**Important:** Enable **"Available at Runtime"** for `ADMIN_EMAIL` and `ADMIN_PASSWORD` so the admin user is synced when the container starts. Copy other values from your `.env.local` or Supabase Dashboard → Settings → API.
 
 ---
 
