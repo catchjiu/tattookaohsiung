@@ -74,7 +74,7 @@ export function Footer() {
               </a>
               <span className="text-foreground-subtle">·</span>
               <a
-                href="https://line.me/R/ti/p/yvonnetrzen"
+                href="https://line.me/ti/p/yvonnetrzen"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
