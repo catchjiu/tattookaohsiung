@@ -4,11 +4,26 @@ export const dynamic = "force-dynamic";
 import { ComingSoon } from "@/components/home/ComingSoon";
 
 export default async function HomePage() {
-  const artists = await prisma.artist.findMany({
-    where: { status: { not: "INACTIVE" } },
-    select: { id: true, name: true, specialty: true, avatarUrl: true, slug: true },
-    orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
-  });
+  const [artists, portfolioImages] = await Promise.all([
+    prisma.artist.findMany({
+      where: { status: { not: "INACTIVE" } },
+      select: {
+        id: true,
+        name: true,
+        specialty: true,
+        avatarUrl: true,
+        slug: true,
+      },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    }),
+    prisma.portfolioImage.findMany({
+      select: { url: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      take: 12,
+    }),
+  ]);
+
+  const imageUrls = portfolioImages.map((img) => img.url);
 
   return (
     <ComingSoon
@@ -19,6 +34,7 @@ export default async function HomePage() {
         avatar_url: a.avatarUrl,
         slug: a.slug,
       }))}
+      imageUrls={imageUrls}
     />
   );
 }

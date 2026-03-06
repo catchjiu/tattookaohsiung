@@ -14,12 +14,14 @@ type Artist = {
 
 type Props = {
   artists?: Artist[];
+  /** Gallery image URLs for hero carousel background */
+  imageUrls?: string[];
 };
 
-export function ComingSoon({ artists = [] }: Props) {
+export function ComingSoon({ artists = [], imageUrls = [] }: Props) {
   return (
     <>
-      <HeroSection />
+      <HeroSection imageUrls={imageUrls} />
       <ArtistShowcase artists={artists} />
       <BookingCTA />
     </>

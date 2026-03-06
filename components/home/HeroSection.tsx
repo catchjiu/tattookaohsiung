@@ -3,24 +3,21 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { HeroSlider } from "./HeroSlider";
 
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1568515041317-4c1a7c936ee0?w=1920&q=80";
+const CYAN = "#00e5ff";
 
-export function HeroSection() {
+type Props = {
+  /** Gallery image URLs for hero background carousel */
+  imageUrls?: string[];
+};
+
+export function HeroSection({ imageUrls = [] }: Props) {
   const { t } = useLanguage();
 
   return (
     <section className="relative min-h-[100dvh] overflow-hidden bg-charcoal">
-      <div className="absolute inset-0">
-        <div
-          className="absolute inset-0 animate-hero-pan bg-cover bg-center bg-no-repeat opacity-40"
-          style={{ backgroundImage: `url(${HERO_IMAGE})` }}
-          role="presentation"
-          aria-hidden
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-charcoal/40 via-charcoal/60 to-charcoal" />
-      </div>
+      <HeroSlider imageUrls={imageUrls} intervalMs={5000} />
 
       <div className="relative z-10 flex min-h-[100dvh] flex-col justify-end px-8 pb-24 pt-32 md:px-16 lg:px-24">
         <div className="mx-auto w-full max-w-4xl text-center">
@@ -32,7 +29,7 @@ export function HeroSection() {
           >
             Tattoo
             <br />
-            <span className="text-accent">Kaohsiung</span>
+            <span style={{ color: CYAN }}>Kaohsiung</span>
           </motion.h1>
 
           <motion.p
@@ -52,15 +49,20 @@ export function HeroSection() {
           >
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center border-2 border-accent bg-accent-muted px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase text-accent transition-colors hover:bg-accent hover:text-charcoal rounded-none"
+              className="inline-flex items-center justify-center rounded-none border-2 px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase transition-colors"
+              style={{
+                borderColor: CYAN,
+                backgroundColor: CYAN,
+                color: "#0a0a0a",
+              }}
             >
-              {t("hero.bookSession")}
+              {t("hero.bookSession").toUpperCase()}
             </Link>
             <Link
               href="/gallery"
-              className="inline-flex items-center justify-center border-2 border-ivory/40 px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase text-ivory/90 transition-colors hover:border-accent hover:text-accent rounded-none"
+              className="inline-flex items-center justify-center rounded-none border-2 border-ivory/40 px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase text-ivory/90 transition-colors hover:border-ivory/60 hover:bg-ivory/5 hover:text-ivory"
             >
-              {t("hero.viewGallery")}
+              {t("hero.viewGallery").toUpperCase()}
             </Link>
           </motion.div>
         </div>
