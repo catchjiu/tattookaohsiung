@@ -14,6 +14,7 @@ export async function createArtUpload(formData: FormData) {
     .map((t) => t.trim())
     .filter(Boolean);
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
+  const showInHeroSlider = formData.get("show_in_hero_slider") === "on";
 
   if (!imageUrl) return { error: "Image URL is required" };
   if (!artistId) return { error: "Artist is required" };
@@ -27,6 +28,7 @@ export async function createArtUpload(formData: FormData) {
         title,
         tags,
         sortOrder,
+        showInHeroSlider,
       },
     });
   } catch (err) {
@@ -49,6 +51,7 @@ export async function updateArtUpload(id: string, formData: FormData) {
     .map((t) => t.trim())
     .filter(Boolean);
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
+  const showInHeroSlider = formData.get("show_in_hero_slider") === "on";
 
   if (!imageUrl) return { error: "Image URL is required" };
   if (!artistId) return { error: "Artist is required" };
@@ -63,6 +66,7 @@ export async function updateArtUpload(id: string, formData: FormData) {
         title,
         tags,
         sortOrder,
+        showInHeroSlider,
       },
     });
   } catch (err) {

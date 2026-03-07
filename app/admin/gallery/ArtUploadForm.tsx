@@ -134,7 +134,7 @@ export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
             />
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-6">
             <div>
               <label className="block text-sm font-medium text-[var(--muted)]">
                 Display Order
@@ -154,6 +154,17 @@ export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
                 className="h-4 w-4 rounded border-[var(--border)]"
               />
               <label className="text-sm text-[var(--muted)]">Featured</label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                name="show_in_hero_slider"
+                type="checkbox"
+                defaultChecked={artUpload?.show_in_hero_slider ?? false}
+                className="h-4 w-4 rounded border-[var(--border)]"
+              />
+              <label className="text-sm text-[var(--muted)]">
+                Show in Hero Slider
+              </label>
             </div>
           </div>
 

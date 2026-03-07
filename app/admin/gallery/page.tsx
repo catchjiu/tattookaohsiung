@@ -33,6 +33,7 @@ export default async function AdminGalleryPage() {
     tags: img.tags,
     display_order: img.sortOrder,
     is_featured: false,
+    show_in_hero_slider: img.showInHeroSlider,
     created_at: img.createdAt.toISOString(),
     updated_at: img.createdAt.toISOString(),
     artists: { name: img.artist.name },

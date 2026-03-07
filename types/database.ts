@@ -22,6 +22,7 @@ export type ArtUpload = {
   tags: string[];
   display_order: number;
   is_featured: boolean;
+  show_in_hero_slider: boolean;
   created_at: string;
   updated_at: string;
 };

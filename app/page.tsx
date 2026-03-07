@@ -17,6 +17,7 @@ export default async function HomePage() {
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     prisma.portfolioImage.findMany({
+      where: { showInHeroSlider: true },
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,

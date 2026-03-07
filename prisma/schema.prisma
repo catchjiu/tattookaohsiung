@@ -80,15 +80,16 @@ enum ArtistStatus {
 }
 
 model PortfolioImage {
-  id        String   @id @default(cuid())
-  artistId  String   @map("artist_id")
-  url       String
-  altText   String   @map("alt_text")
-  title     String?  // Display title for gallery
-  category  String?  // e.g. "traditional", "blackwork", "color"
-  tags      String[] @default([]) // e.g. ["Traditional", "Fine-line"]
-  sortOrder Int      @default(0) @map("sort_order")
-  createdAt DateTime @default(now()) @map("created_at")
+  id               String   @id @default(cuid())
+  artistId         String   @map("artist_id")
+  url              String
+  altText          String   @map("alt_text")
+  title            String?  // Display title for gallery
+  category         String?  // e.g. "traditional", "blackwork", "color"
+  tags             String[] @default([]) // e.g. ["Traditional", "Fine-line"]
+  sortOrder        Int      @default(0) @map("sort_order")
+  showInHeroSlider Boolean  @default(false) @map("show_in_hero_slider")
+  createdAt        DateTime @default(now()) @map("created_at")
 
   artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
 
