@@ -74,14 +74,17 @@ export function Footer() {
               </a>
               <span className="text-foreground-subtle">·</span>
               <a
-                href="https://line.me/ti/p/yvonnetrzen"
+                href={
+                  process.env.NEXT_PUBLIC_LINE_ADD_URL ??
+                  "https://line.me/ti/p/1b_FFfIqvY"
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
                 aria-label="Message us on Line"
               >
                 <MessageCircle size={18} strokeWidth={1.5} />
-                Line: yvonnetrzen
+                Line
               </a>
               <span className="text-foreground-subtle">·</span>
               <a
