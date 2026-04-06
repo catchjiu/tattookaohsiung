@@ -95,7 +95,7 @@ export function GalleryGrid({ artworks, showArtistName = true }: Props) {
                     </div>
                     {showArtistName && (
                       <div className="mt-1 text-[13px] text-foreground-muted">
-                        {getArtistName(item) || "—"}
+                        {getArtistField(item, "name") || "—"}
                       </div>
                     )}
                     {item.tags && item.tags.length > 0 && (
