@@ -1,8 +1,47 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await prisma.blogPost.findFirst({
+    where: { slug, isPublished: true, publishedAt: { not: null, lte: new Date() } },
+    select: { title: true, excerpt: true, coverImageUrl: true, publishedAt: true },
+  });
+  if (!post) return {};
+  return {
+    title: post.title,
+    description:
+      post.excerpt ??
+      `Read about ${post.title} on the Tattoo Kaohsiung blog — tips, aftercare, and studio news.`,
+    alternates: {
+      canonical: `/blog/${slug}`,
+      languages: {
+        en: `/blog/${slug}`,
+        "zh-TW": `/blog/${slug}`,
+        "x-default": `/blog/${slug}`,
+      },
+    },
+    openGraph: {
+      title: `${post.title} | Tattoo Kaohsiung`,
+      description: post.excerpt ?? undefined,
+      url: `/blog/${slug}`,
+      type: "article",
+      publishedTime: post.publishedAt?.toISOString(),
+      images: post.coverImageUrl
+        ? [{ url: post.coverImageUrl, alt: `${post.title} — Tattoo Kaohsiung` }]
+        : undefined,
+    },
+  };
+}
 
 function BlogContent({ content }: { content: string }) {
   const isHtml = /<[a-z][\s\S]*>/i.test(content);
@@ -81,11 +120,14 @@ export default async function BlogPostPage({
         )}
 
         {post.coverImageUrl && (
-          <div className="mt-10 aspect-[3/2] overflow-hidden bg-card-hover">
-            <img
+          <div className="relative mt-10 aspect-[3/2] overflow-hidden bg-card-hover">
+            <Image
               src={post.coverImageUrl}
               alt={post.title ? `${post.title} — Tattoo Kaohsiung` : "Tattoo Kaohsiung blog cover"}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 672px"
+              priority
             />
           </div>
         )}

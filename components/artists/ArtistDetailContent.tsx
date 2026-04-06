@@ -86,7 +86,7 @@ export function ArtistDetailContent({ artist, artworks }: Props) {
         <GalleryGrid
           artworks={artworks.map((a) => ({
             ...a,
-            artists: { name: artist.name },
+            artists: { name: artist.name, specialty: artist.specialty },
           }))}
           showArtistName={false}
         />

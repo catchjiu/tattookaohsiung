@@ -95,16 +95,18 @@ export function Footer() {
                 {locale === "zh-TW" ? t("footer.phoneZh") : t("footer.phoneEn")}
               </a>
               <span className="text-foreground-subtle">·</span>
-              <a
-                href="https://www.google.com/maps/search/?api=1&query=18+Shijian+Rd,+Zuoying+District,+Kaohsiung+City,+813+Taiwan"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
-                aria-label="View on Google Maps"
-              >
-                <MapPin size={18} strokeWidth={1.5} />
-                {locale === "zh-TW" ? t("footer.addressZh") : t("footer.addressEn")}
-              </a>
+              <address className="not-italic">
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=18+Shijian+Rd,+Zuoying+District,+Kaohsiung+City,+813+Taiwan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
+                  aria-label="View Tattoo Kaohsiung on Google Maps — No. 18, Shijian Rd, Zuoying District"
+                >
+                  <MapPin size={18} strokeWidth={1.5} />
+                  {locale === "zh-TW" ? t("footer.addressZh") : t("footer.addressEn")}
+                </a>
+              </address>
             </div>
           </div>
         </div>

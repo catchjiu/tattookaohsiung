@@ -17,10 +17,62 @@ const oswald = Oswald({
   variable: "--font-display",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tattookaohsiung.com";
+
 export const metadata: Metadata = {
-  title: "Tattoo Kaohsiung | Coming Soon",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
+    template: "%s | Tattoo Kaohsiung",
+  },
   description:
-    "Tattoo Kaohsiung — Precision realism meets contemporary ink. Kaohsiung.",
+    "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art. Book a consultation with artists Casper and Stan in Zuoying District.",
+  keywords: [
+    "tattoo Kaohsiung",
+    "tattoo Taiwan",
+    "realism tattoo",
+    "fine-line tattoo",
+    "portrait tattoo Taiwan",
+    "tattoo tourism Taiwan",
+    "best tattoo shop Kaohsiung",
+    "刺青高雄",
+    "紋身高雄",
+    "高雄刺青工作室",
+    "左營刺青",
+    "寫實刺青",
+    "細線刺青",
+    "Zuoying tattoo studio",
+    "tattoo artist Taiwan",
+  ],
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en": "/",
+      "zh-TW": "/",
+      "x-default": "/",
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    alternateLocale: "zh_TW",
+    siteName: "Tattoo Kaohsiung",
+    url: SITE_URL,
+    title: "Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
+    description:
+      "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
+    description:
+      "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+  },
 };
 
 export default function RootLayout({

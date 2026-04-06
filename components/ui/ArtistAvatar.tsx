@@ -26,33 +26,30 @@ export function ArtistAvatar({
   sizes,
 }: Props) {
   const [failed, setFailed] = useState(false);
-  const usePlaceholder = !src || failed;
+  const imgSrc = !src || failed ? PLACEHOLDER : src;
 
-  if (usePlaceholder) {
-    return fill ? (
+  if (fill) {
+    return (
       <Image
-        src={PLACEHOLDER}
+        src={imgSrc}
         alt={alt}
         fill
         sizes={sizes}
         className={className}
-      />
-    ) : (
-      <Image
-        src={PLACEHOLDER}
-        alt={alt}
-        width={width}
-        height={height}
-        className={className}
+        loading="lazy"
+        onError={() => setFailed(true)}
       />
     );
   }
 
   return (
-    <img
-      src={src}
+    <Image
+      src={imgSrc}
       alt={alt}
+      width={width}
+      height={height}
       className={className}
+      loading="lazy"
       onError={() => setFailed(true)}
     />
   );
