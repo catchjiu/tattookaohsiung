@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Instagram, MapPin, Phone, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { LanguageToggle } from "./LanguageToggle";
 
@@ -12,12 +12,19 @@ const navLinks = [
   { href: "/artists", labelKey: "nav.artists" },
   { href: "/gallery", labelKey: "nav.gallery" },
   { href: "/blog", labelKey: "nav.blog" },
-  { href: "/contact", labelKey: "nav.book" },
 ];
+
+const LINE_URL =
+  process.env.NEXT_PUBLIC_LINE_ADD_URL ?? "https://line.me/ti/p/1b_FFfIqvY";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { t } = useLanguage();
+  const [contactOpen, setContactOpen] = useState(false);
+  const { t, locale } = useLanguage();
+
+  const phone = locale === "zh-TW" ? t("footer.phoneZh") : t("footer.phoneEn");
+  const phoneHref = `tel:+886${locale === "zh-TW" ? "980495145" : "967071750"}`;
+  const address = locale === "zh-TW" ? t("footer.addressZh") : t("footer.addressEn");
 
   return (
     <motion.header
@@ -38,7 +45,7 @@ export function Navbar() {
         <div className="hidden items-center gap-8 md:flex">
           <ul className="flex items-center gap-12">
             {navLinks.map((link) => (
-              <li key={link.href}>
+              <li key={link.labelKey}>
                 <Link
                   href={link.href}
                   className="text-[13px] font-medium tracking-[0.12em] uppercase text-foreground-muted transition-colors hover:text-foreground"
@@ -47,7 +54,89 @@ export function Navbar() {
                 </Link>
               </li>
             ))}
+
+            {/* Contact — hover panel */}
+            <li
+              className="relative"
+              onMouseEnter={() => setContactOpen(true)}
+              onMouseLeave={() => setContactOpen(false)}
+            >
+              <Link
+                href="/contact"
+                className="text-[13px] font-medium tracking-[0.12em] uppercase text-foreground-muted transition-colors hover:text-foreground"
+              >
+                {t("nav.contact")}
+              </Link>
+
+              <AnimatePresence>
+                {contactOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute right-0 top-full mt-4 w-80 rounded-xl border border-border bg-card p-6 shadow-2xl shadow-black/40"
+                  >
+                    <p className="mb-5 text-[11px] font-medium tracking-[0.2em] uppercase text-foreground-muted">
+                      {t("footer.connect")}
+                    </p>
+
+                    <div className="space-y-4 text-[14px] text-foreground-muted">
+                      <a
+                        href="https://instagram.com/tattookaohsiung"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 transition-colors hover:text-foreground"
+                      >
+                        <Instagram size={16} strokeWidth={1.5} />
+                        @tattookaohsiung
+                      </a>
+
+                      <a
+                        href={LINE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 transition-colors hover:text-foreground"
+                        aria-label="Message us on Line"
+                      >
+                        <MessageCircle size={16} strokeWidth={1.5} />
+                        Line
+                      </a>
+
+                      <a
+                        href={phoneHref}
+                        className="flex items-center gap-3 transition-colors hover:text-foreground"
+                      >
+                        <Phone size={16} strokeWidth={1.5} />
+                        {phone}
+                      </a>
+
+                      <address className="not-italic">
+                        <a
+                          href="https://www.google.com/maps/search/?api=1&query=18+Shijian+Rd,+Zuoying+District,+Kaohsiung+City,+813+Taiwan"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-start gap-3 transition-colors hover:text-foreground"
+                          aria-label="View on Google Maps"
+                        >
+                          <MapPin size={16} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+                          {address}
+                        </a>
+                      </address>
+                    </div>
+
+                    <Link
+                      href="/contact"
+                      className="mt-6 block border-t border-border pt-5 text-[13px] font-medium tracking-[0.1em] uppercase text-foreground transition-colors hover:text-accent"
+                    >
+                      {t("contact.title")} →
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </li>
           </ul>
+
           <LanguageToggle />
         </div>
 
@@ -75,22 +164,80 @@ export function Navbar() {
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden border-t border-border bg-background md:hidden"
           >
-            <ul className="flex flex-col gap-1 px-8 py-6">
-              <li className="mb-4 flex justify-end">
+            <div className="px-8 py-6">
+              <div className="mb-6 flex justify-end">
                 <LanguageToggle />
-              </li>
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
+              </div>
+
+              <ul className="flex flex-col gap-1">
+                {[...navLinks, { href: "/contact", labelKey: "nav.contact" }].map((link) => (
+                  <li key={link.labelKey}>
+                    <Link
+                      href={link.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="block py-3 text-sm font-medium tracking-wide text-foreground-muted transition-colors hover:text-foreground"
+                    >
+                      {t(link.labelKey)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Contact info section */}
+              <div className="mt-6 border-t border-border pt-6">
+                <p className="mb-4 text-[11px] font-medium tracking-[0.2em] uppercase text-foreground-muted">
+                  {t("footer.connect")}
+                </p>
+
+                <div className="flex flex-col gap-4 text-[14px] text-foreground-muted">
+                  <a
+                    href="https://instagram.com/tattookaohsiung"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => setMobileOpen(false)}
-                    className="block py-3 text-sm font-medium tracking-wide text-foreground-muted transition-colors hover:text-foreground"
+                    className="flex items-center gap-3 transition-colors hover:text-foreground"
                   >
-                    {t(link.labelKey)}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+                    <Instagram size={16} strokeWidth={1.5} />
+                    @tattookaohsiung
+                  </a>
+
+                  <a
+                    href={LINE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 transition-colors hover:text-foreground"
+                    aria-label="Message us on Line"
+                  >
+                    <MessageCircle size={16} strokeWidth={1.5} />
+                    Line
+                  </a>
+
+                  <a
+                    href={phoneHref}
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 transition-colors hover:text-foreground"
+                  >
+                    <Phone size={16} strokeWidth={1.5} />
+                    {phone}
+                  </a>
+
+                  <address className="not-italic">
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=18+Shijian+Rd,+Zuoying+District,+Kaohsiung+City,+813+Taiwan"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-start gap-3 transition-colors hover:text-foreground"
+                      aria-label="View on Google Maps"
+                    >
+                      <MapPin size={16} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+                      {address}
+                    </a>
+                  </address>
+                </div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
