@@ -23,24 +23,27 @@ type Artist = {
 
 type Props = {
   artists: Artist[];
+  showHeader?: boolean;
 };
 
-export function ArtistsContent({ artists }: Props) {
+export function ArtistsContent({ artists, showHeader = true }: Props) {
   const { t } = useLanguage();
 
   return (
     <div className="mx-auto max-w-6xl px-8">
-      <Section size="narrow">
-        <ArtistsPageClient>
-          <SectionLabel>{t("artists.label")}</SectionLabel>
-          <SectionTitle as="h1" className="mt-3">
-            {t("artists.title")}
-          </SectionTitle>
-          <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-foreground-muted">
-            {t("artists.description")}
-          </p>
-        </ArtistsPageClient>
-      </Section>
+      {showHeader && (
+        <Section size="narrow">
+          <ArtistsPageClient>
+            <SectionLabel>{t("artists.label")}</SectionLabel>
+            <SectionTitle as="h1" className="mt-3">
+              {t("artists.title")}
+            </SectionTitle>
+            <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-foreground-muted">
+              {t("artists.description")}
+            </p>
+          </ArtistsPageClient>
+        </Section>
+      )}
 
       <Section>
         {artists.length === 0 ? (
@@ -58,7 +61,7 @@ export function ArtistsContent({ artists }: Props) {
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <ArtistAvatar
                     src={artist.avatarUrl}
-                    alt={artist.name}
+                    alt={`${artist.name} — ${artist.specialty ?? "Tattoo Artist"} at Tattoo Kaohsiung`}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
