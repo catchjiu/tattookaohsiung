@@ -21,10 +21,10 @@ function getArtistField<K extends "name" | "specialty">(
 function buildAlt(item: { title?: string | null; artists?: unknown }): string {
   const artist = getArtistField(item, "name");
   const specialty = getArtistField(item, "specialty");
-  const studioSuffix = "Tattoo Kaohsiung";
+  const studioSuffix = "Casper Tattoo Kaohsiung";
 
-  // e.g. "Portrait realism tattoo by Casper at Tattoo Kaohsiung"
-  // or   "Dragon sleeve — Fine-line tattoo by Stan at Tattoo Kaohsiung"
+  // e.g. "Portrait realism tattoo by Casper at Casper Tattoo Kaohsiung"
+  // or   "Dragon sleeve — Fine-line tattoo by Stan at Casper Tattoo Kaohsiung"
   const stylePart = specialty ? `${specialty} tattoo` : "tattoo";
 
   if (item.title && artist)

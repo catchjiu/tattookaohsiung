@@ -22,7 +22,7 @@ export async function generateMetadata({
   const specialty = artist.specialty ?? "Tattoo Artist";
   return {
     title: `${artist.name} — ${specialty}`,
-    description: `View ${artist.name}'s ${specialty.toLowerCase()} portfolio at Tattoo Kaohsiung, Zuoying District, Kaohsiung, Taiwan.`,
+    description: `View ${artist.name}'s ${specialty.toLowerCase()} portfolio at Casper Tattoo Kaohsiung, Zuoying District, Kaohsiung, Taiwan.`,
     alternates: {
       canonical: `/artists/${slug}`,
       languages: {
@@ -32,7 +32,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${artist.name} — ${specialty} | Tattoo Kaohsiung`,
+      title: `${artist.name} — ${specialty} | Casper Tattoo Kaohsiung`,
       description: `Explore ${artist.name}'s tattoo portfolio — ${specialty.toLowerCase()} art from Kaohsiung's premier studio.`,
       url: `/artists/${slug}`,
       images: artist.avatarUrl ? [{ url: artist.avatarUrl }] : undefined,
@@ -72,7 +72,7 @@ export default async function ArtistGalleryPage({
     jobTitle: artist.specialty ?? "Tattoo Artist",
     worksFor: {
       "@type": "LocalBusiness",
-      name: "Tattoo Kaohsiung",
+      name: "Casper Tattoo Kaohsiung",
       url: SITE_URL,
     },
     knowsAbout: artist.specialty ? [artist.specialty, "Tattooing", "Body art"] : ["Tattooing", "Body art"],

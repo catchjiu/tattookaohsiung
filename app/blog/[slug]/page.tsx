@@ -21,7 +21,7 @@ export async function generateMetadata({
     title: post.title,
     description:
       post.excerpt ??
-      `Read about ${post.title} on the Tattoo Kaohsiung blog — tips, aftercare, and studio news.`,
+      `Read about ${post.title} on the Casper Tattoo Kaohsiung blog — tips, aftercare, and studio news.`,
     alternates: {
       canonical: `/blog/${slug}`,
       languages: {
@@ -31,13 +31,13 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${post.title} | Tattoo Kaohsiung`,
+      title: `${post.title} | Casper Tattoo Kaohsiung`,
       description: post.excerpt ?? undefined,
       url: `/blog/${slug}`,
       type: "article",
       publishedTime: post.publishedAt?.toISOString(),
       images: post.coverImageUrl
-        ? [{ url: post.coverImageUrl, alt: `${post.title} — Tattoo Kaohsiung` }]
+        ? [{ url: post.coverImageUrl, alt: `${post.title} — Casper Tattoo Kaohsiung` }]
         : undefined,
     },
   };
@@ -123,7 +123,7 @@ export default async function BlogPostPage({
           <div className="relative mt-10 aspect-[3/2] overflow-hidden bg-card-hover">
             <Image
               src={post.coverImageUrl}
-              alt={post.title ? `${post.title} — Tattoo Kaohsiung` : "Tattoo Kaohsiung blog cover"}
+              alt={post.title ? `${post.title} — Casper Tattoo Kaohsiung` : "Casper Tattoo Kaohsiung blog cover"}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 672px"

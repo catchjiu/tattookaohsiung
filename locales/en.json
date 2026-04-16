@@ -4,6 +4,7 @@
     "artists": "Artists",
     "gallery": "Gallery",
     "blog": "Blog",
+    "contact": "Contact",
     "book": "Book"
   },
   "hero": {
@@ -17,7 +18,7 @@
     "explore": "Explore",
     "connect": "Connect",
     "bookSession": "Book a Session",
-    "copyright": "Tattoo Kaohsiung",
+    "copyright": "Casper Tattoo Kaohsiung",
     "addressEn": "No. 18, Shijian Rd, Zuoying District, Kaohsiung City, 813",
     "addressZh": "813高雄市左營區實踐路18號",
     "phoneEn": "0967071750",
@@ -137,7 +138,7 @@
     "description": "Browse our portfolio of tattoo artistry. Click any image to view in full.",
     "noArtwork": "No artwork yet. Check back soon.",
     "untitled": "Untitled",
-    "artwork": "Tattoo artwork — Tattoo Kaohsiung"
+    "artwork": "Tattoo artwork — Casper Tattoo Kaohsiung"
   },
   "blog": {
     "label": "Studio",
@@ -147,7 +148,7 @@
     "readMore": "Read more →"
   },
   "metadata": {
-    "title": "Tattoo Kaohsiung | Coming Soon",
-    "description": "Tattoo Kaohsiung — Precision realism meets contemporary ink. Kaohsiung."
+    "title": "Casper Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
+    "description": "Casper Tattoo Kaohsiung — Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art."
   }
 }

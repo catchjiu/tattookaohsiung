@@ -31,7 +31,7 @@ export function Footer() {
               href="/"
               className="font-display text-2xl font-semibold tracking-wide text-foreground"
             >
-              Tattoo Kaohsiung
+              Casper Tattoo Kaohsiung
             </Link>
             <p className="mt-6 max-w-xs text-[15px] leading-relaxed text-foreground-muted">
               {t("footer.tagline")}
@@ -101,7 +101,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
-                  aria-label="View Tattoo Kaohsiung on Google Maps — No. 18, Shijian Rd, Zuoying District"
+                  aria-label="View Casper Tattoo Kaohsiung on Google Maps — No. 18, Shijian Rd, Zuoying District"
                 >
                   <MapPin size={18} strokeWidth={1.5} />
                   {locale === "zh-TW" ? t("footer.addressZh") : t("footer.addressEn")}

@@ -39,7 +39,7 @@ export function Navbar() {
           href="/"
           className="font-display text-xl font-semibold tracking-wide text-foreground transition-colors hover:text-accent"
         >
-          Tattoo Kaohsiung
+          Casper Tattoo Kaohsiung
         </Link>
 
         {/* Desktop nav */}

@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 import { ComingSoon } from "@/components/home/ComingSoon";
 
 export const metadata: Metadata = {
-  title: "Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
+  title: "Casper Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
   description:
     "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art. Book a consultation with artists Casper and Stan in Zuoying District.",
   alternates: {
@@ -21,7 +21,7 @@ const structuredData = {
   "@context": "https://schema.org",
   // HealthAndBeautyBusiness is the closest official schema.org type for a tattoo parlor
   "@type": ["LocalBusiness", "HealthAndBeautyBusiness"],
-  name: "Tattoo Kaohsiung",
+  name: "Casper Tattoo Kaohsiung",
   description:
     "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art.",
   url: SITE_URL,

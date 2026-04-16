@@ -22,8 +22,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tattookaohsiun
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
-    template: "%s | Tattoo Kaohsiung",
+    default: "Casper Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
+    template: "%s | Casper Tattoo Kaohsiung",
   },
   description:
     "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art. Book a consultation with artists Casper and Stan in Zuoying District.",
@@ -56,15 +56,15 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     alternateLocale: "zh_TW",
-    siteName: "Tattoo Kaohsiung",
+    siteName: "Casper Tattoo Kaohsiung",
     url: SITE_URL,
-    title: "Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
+    title: "Casper Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
     description:
       "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
+    title: "Casper Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
     description:
       "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art.",
   },

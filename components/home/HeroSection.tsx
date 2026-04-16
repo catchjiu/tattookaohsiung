@@ -27,7 +27,7 @@ export function HeroSection({ imageUrls = [] }: Props) {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="font-display text-5xl font-bold leading-[1.08] tracking-tight text-ivory sm:text-6xl md:text-7xl lg:text-8xl"
           >
-            Tattoo
+            Casper Tattoo
             <br />
             <span style={{ color: CYAN }}>Kaohsiung</span>
           </motion.h1>

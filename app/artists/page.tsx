@@ -8,13 +8,13 @@ import { PageHero } from "@/components/ui/PageHero";
 export const metadata: Metadata = {
   title: "Our Tattoo Artists",
   description:
-    "Meet Casper (precision realism) and Stan (single-needle fine-line) — the resident artists at Tattoo Kaohsiung, Zuoying District, Kaohsiung, Taiwan.",
+    "Meet Casper (precision realism) and Stan (single-needle fine-line) — the resident artists at Casper Tattoo Kaohsiung, Zuoying District, Kaohsiung, Taiwan.",
   alternates: {
     canonical: "/artists",
     languages: { en: "/artists", "zh-TW": "/artists", "x-default": "/artists" },
   },
   openGraph: {
-    title: "Our Tattoo Artists | Tattoo Kaohsiung",
+    title: "Our Tattoo Artists | Casper Tattoo Kaohsiung",
     description:
       "Meet Casper and Stan — master tattoo artists specialising in realism and fine-line at our Kaohsiung studio.",
     url: "/artists",

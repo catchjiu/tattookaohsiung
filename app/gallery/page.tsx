@@ -11,13 +11,13 @@ const SITE_URL =
 const gallerySchema = {
   "@context": "https://schema.org",
   "@type": "ImageGallery",
-  name: "Tattoo Portfolio Gallery — Tattoo Kaohsiung",
+  name: "Tattoo Portfolio Gallery — Casper Tattoo Kaohsiung",
   description:
     "Browse our portfolio of precision realism and fine-line tattoo art from Kaohsiung's premier studio.",
   url: `${SITE_URL}/gallery`,
   provider: {
     "@type": "LocalBusiness",
-    name: "Tattoo Kaohsiung",
+    name: "Casper Tattoo Kaohsiung",
     url: SITE_URL,
   },
 };
@@ -25,13 +25,13 @@ const gallerySchema = {
 export const metadata: Metadata = {
   title: "Tattoo Portfolio Gallery",
   description:
-    "Browse our portfolio of precision realism and fine-line tattoo art from Tattoo Kaohsiung. Each piece crafted by artists Casper and Stan in Zuoying District, Kaohsiung.",
+    "Browse our portfolio of precision realism and fine-line tattoo art from Casper Tattoo Kaohsiung. Each piece crafted by artists Casper and Stan in Zuoying District, Kaohsiung.",
   alternates: {
     canonical: "/gallery",
     languages: { en: "/gallery", "zh-TW": "/gallery", "x-default": "/gallery" },
   },
   openGraph: {
-    title: "Tattoo Portfolio Gallery | Tattoo Kaohsiung",
+    title: "Tattoo Portfolio Gallery | Casper Tattoo Kaohsiung",
     description:
       "Browse realism and fine-line tattoo artwork from our Kaohsiung studio.",
     url: "/gallery",

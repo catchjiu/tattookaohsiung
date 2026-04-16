@@ -61,7 +61,7 @@ export function ArtistsContent({ artists, showHeader = true }: Props) {
                 <div className="relative aspect-[4/5] overflow-hidden">
                   <ArtistAvatar
                     src={artist.avatarUrl}
-                    alt={`${artist.name} — ${artist.specialty ?? "Tattoo Artist"} at Tattoo Kaohsiung`}
+                    alt={`${artist.name} — ${artist.specialty ?? "Tattoo Artist"} at Casper Tattoo Kaohsiung`}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"

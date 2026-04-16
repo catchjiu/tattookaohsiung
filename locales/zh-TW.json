@@ -4,6 +4,7 @@
     "artists": "藝術家",
     "gallery": "作品集",
     "blog": "部落格",
+    "contact": "聯絡",
     "book": "預約"
   },
   "hero": {
@@ -17,7 +18,7 @@
     "explore": "探索",
     "connect": "聯絡我們",
     "bookSession": "預約諮詢",
-    "copyright": "Tattoo Kaohsiung",
+    "copyright": "Casper Tattoo Kaohsiung",
     "addressEn": "No. 18, Shijian Rd, Zuoying District, Kaohsiung City, 813",
     "addressZh": "813高雄市左營區實踐路18號",
     "phoneEn": "0967071750",
@@ -137,7 +138,7 @@
     "description": "瀏覽我們的刺青作品。點擊任一圖片可全螢幕檢視。",
     "noArtwork": "尚無作品。敬請期待。",
     "untitled": "無題",
-    "artwork": "Tattoo Kaohsiung 刺青作品"
+    "artwork": "Casper Tattoo Kaohsiung 刺青作品"
   },
   "blog": {
     "label": "工作室",
@@ -147,7 +148,7 @@
     "readMore": "閱讀更多 →"
   },
   "metadata": {
-    "title": "Tattoo Kaohsiung | 即將開幕",
-    "description": "Tattoo Kaohsiung — 精準寫實與當代墨藝交會。高雄。"
+    "title": "Casper Tattoo Kaohsiung | 高雄寫實與細線刺青工作室",
+    "description": "Casper Tattoo Kaohsiung — 高雄專業刺青工作室，專精精準寫實與單針細線刺青。"
   }
 }
