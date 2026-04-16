@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getSiteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { ArtistDetailContent } from "@/components/artists/ArtistDetailContent";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tattookaohsiung.com";
+const SITE_URL = getSiteUrl();
 
 export async function generateMetadata({
   params,

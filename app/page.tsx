@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getSiteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 import { ComingSoon } from "@/components/home/ComingSoon";
@@ -14,8 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tattookaohsiung.com";
+const SITE_URL = getSiteUrl();
 
 const structuredData = {
   "@context": "https://schema.org",

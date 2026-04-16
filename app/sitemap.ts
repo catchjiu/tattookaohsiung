@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { getSiteUrl } from "@/lib/site-url";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tattookaohsiung.com";
+const SITE_URL = getSiteUrl();
 
 export const dynamic = "force-dynamic";
 

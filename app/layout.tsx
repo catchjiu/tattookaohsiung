@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { getSiteUrl } from "@/lib/site-url";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,7 +18,7 @@ const oswald = Oswald({
   variable: "--font-display",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.tattookaohsiung.com";
+const SITE_URL = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -27,6 +28,11 @@ export const metadata: Metadata = {
   },
   description:
     "Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art. Book a consultation with artists Casper and Stan in Zuoying District.",
+  icons: {
+    icon: "/casper.jpg",
+    shortcut: "/casper.jpg",
+    apple: "/casper.jpg",
+  },
   keywords: [
     "tattoo Kaohsiung",
     "tattoo Taiwan",
