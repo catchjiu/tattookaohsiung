@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const PLACEHOLDER =
@@ -26,6 +26,11 @@ export function ArtistAvatar({
   sizes,
 }: Props) {
   const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    // If the avatar URL changes (e.g. user uploads a new photo),
+    // allow the new image to attempt loading even if the previous one failed.
+    setFailed(false);
+  }, [src]);
   const imgSrc = !src || failed ? PLACEHOLDER : src;
 
   if (fill) {
