@@ -21,8 +21,16 @@ export async function generateMetadata({
   if (!artist) return {};
   const specialty = artist.specialty ?? "Tattoo Artist";
   return {
-    title: `${artist.name} — ${specialty}`,
-    description: `View ${artist.name}'s ${specialty.toLowerCase()} portfolio at Casper Tattoo Kaohsiung, Zuoying District, Kaohsiung, Taiwan.`,
+    title: `${artist.name} — Professional Tattoo Artist Kaohsiung | ${specialty}`,
+    description: `${artist.name} is a professional tattoo artist at Casper Tattoo Kaohsiung, specialising in ${specialty.toLowerCase()}. View the portfolio and book a consultation in Zuoying District, Kaohsiung. 高雄專業刺青師 ${artist.name} — ${specialty}。`,
+    keywords: [
+      `${artist.name} tattoo Kaohsiung`,
+      "professional tattoo artist Kaohsiung",
+      "professional tattoo Kaohsiung",
+      `${specialty} Kaohsiung`,
+      "高雄專業刺青師",
+      "高雄刺青師",
+    ],
     alternates: {
       canonical: `/artists/${slug}`,
       languages: {
@@ -32,8 +40,8 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${artist.name} — ${specialty} | Casper Tattoo Kaohsiung`,
-      description: `Explore ${artist.name}'s tattoo portfolio — ${specialty.toLowerCase()} art from Kaohsiung's premier studio.`,
+      title: `${artist.name} — Professional Tattoo Artist Kaohsiung | Casper Tattoo`,
+      description: `Explore ${artist.name}'s portfolio — professional ${specialty.toLowerCase()} tattoo art from Kaohsiung's premier studio.`,
       url: `/artists/${slug}`,
       images: artist.avatarUrl ? [{ url: artist.avatarUrl }] : undefined,
     },
@@ -69,13 +77,26 @@ export default async function ArtistGalleryPage({
     "@context": "https://schema.org",
     "@type": "Person",
     name: artist.name,
-    jobTitle: artist.specialty ?? "Tattoo Artist",
+    jobTitle: `Professional Tattoo Artist — ${artist.specialty ?? "Tattooing"} | 高雄專業刺青師`,
     worksFor: {
       "@type": "LocalBusiness",
       name: "Casper Tattoo Kaohsiung",
+      alternateName: "高雄刺青",
       url: SITE_URL,
     },
-    knowsAbout: artist.specialty ? [artist.specialty, "Tattooing", "Body art"] : ["Tattooing", "Body art"],
+    knowsAbout: artist.specialty
+      ? [
+          artist.specialty,
+          `${artist.specialty} Kaohsiung`,
+          "Professional tattoo Kaohsiung",
+          "Tattoo Kaohsiung",
+          "Kaohsiung tattoo",
+          "Tattooing",
+          "Body art",
+          "高雄專業刺青",
+          "高雄刺青師",
+        ]
+      : ["Professional tattoo Kaohsiung", "Kaohsiung tattoo", "Tattooing", "Body art", "高雄刺青師"],
     url: `${SITE_URL}/artists/${artist.slug}`,
     ...(artist.instagramUrl ? { sameAs: [artist.instagramUrl] } : {}),
     ...(artist.avatarUrl ? { image: artist.avatarUrl } : {}),

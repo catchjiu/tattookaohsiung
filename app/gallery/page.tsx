@@ -11,29 +11,42 @@ const SITE_URL = getSiteUrl();
 const gallerySchema = {
   "@context": "https://schema.org",
   "@type": "ImageGallery",
-  name: "Tattoo Portfolio Gallery — Casper Tattoo Kaohsiung",
+  name: "Realistic Tattoo Portfolio Gallery — Casper Tattoo Kaohsiung | 高雄寫實刺青作品集",
   description:
-    "Browse our portfolio of precision realism and fine-line tattoo art from Kaohsiung's premier studio.",
+    "Portfolio of realistic tattoos, fine-line artistry, and custom designs from Kaohsiung's premier professional tattoo studio. 高雄專業刺青工作室寫實刺青與細線刺青作品集。",
   url: `${SITE_URL}/gallery`,
   provider: {
     "@type": "LocalBusiness",
     name: "Casper Tattoo Kaohsiung",
+    alternateName: "高雄刺青",
     url: SITE_URL,
   },
 };
 
 export const metadata: Metadata = {
-  title: "Tattoo Portfolio Gallery",
+  title: "Realistic Tattoo Gallery Kaohsiung | Realism & Fine-Line Portfolio",
   description:
-    "Browse our portfolio of precision realism and fine-line tattoo art from Casper Tattoo Kaohsiung. Each piece crafted by artists Casper and Stan in Zuoying District, Kaohsiung.",
+    "Browse our portfolio of realistic tattoos and fine-line artistry from Casper Tattoo Kaohsiung — professional tattoo studio in Zuoying District. 高雄寫實刺青｜細線刺青作品集，高雄專業刺青工作室 Casper Tattoo。",
+  keywords: [
+    "realistic tattoo Kaohsiung",
+    "realism tattoo Kaohsiung gallery",
+    "professional tattoo Kaohsiung",
+    "fine-line tattoo Kaohsiung",
+    "tattoo portfolio Kaohsiung",
+    "Kaohsiung tattoo gallery",
+    "高雄寫實刺青",
+    "高雄刺青作品",
+    "高雄刺青作品集",
+    "高雄細線刺青",
+  ],
   alternates: {
     canonical: "/gallery",
     languages: { en: "/gallery", "zh-TW": "/gallery", "x-default": "/gallery" },
   },
   openGraph: {
-    title: "Tattoo Portfolio Gallery | Casper Tattoo Kaohsiung",
+    title: "Realistic Tattoo Gallery Kaohsiung | Casper Tattoo",
     description:
-      "Browse realism and fine-line tattoo artwork from our Kaohsiung studio.",
+      "Portfolio of realistic tattoos, fine-line artistry, and custom designs from Kaohsiung's premier professional tattoo studio.",
     url: "/gallery",
   },
 };

@@ -6,17 +6,27 @@ import { ArtistsContent } from "@/components/artists/ArtistsContent";
 import { PageHero } from "@/components/ui/PageHero";
 
 export const metadata: Metadata = {
-  title: "Our Tattoo Artists",
+  title: "Professional Tattoo Artists Kaohsiung | Casper & Stan",
   description:
-    "Meet Casper (precision realism) and Stan (single-needle fine-line) — the resident artists at Casper Tattoo Kaohsiung, Zuoying District, Kaohsiung, Taiwan.",
+    "Meet Kaohsiung's professional tattoo artists — Casper (realistic tattoo specialist) and Stan (fine-line expert) at Casper Tattoo, Zuoying District, Kaohsiung. 高雄專業刺青師｜寫實刺青師 Casper 與細線刺青師 Stan。",
+  keywords: [
+    "professional tattoo artist Kaohsiung",
+    "professional tattoo Kaohsiung",
+    "realistic tattoo Kaohsiung",
+    "tattoo artist Kaohsiung",
+    "Kaohsiung tattoo artist",
+    "高雄專業刺青師",
+    "高雄刺青師",
+    "高雄寫實刺青師",
+  ],
   alternates: {
     canonical: "/artists",
     languages: { en: "/artists", "zh-TW": "/artists", "x-default": "/artists" },
   },
   openGraph: {
-    title: "Our Tattoo Artists | Casper Tattoo Kaohsiung",
+    title: "Professional Tattoo Artists Kaohsiung | Casper Tattoo",
     description:
-      "Meet Casper and Stan — master tattoo artists specialising in realism and fine-line at our Kaohsiung studio.",
+      "Kaohsiung's professional tattoo artists — Casper (realism) and Stan (fine-line) — crafting exceptional work in Zuoying District.",
     url: "/artists",
   },
 };

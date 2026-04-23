@@ -9,12 +9,12 @@
   },
   "hero": {
     "location": "高雄",
-    "tagline": "精準寫實與當代墨藝交會。每個細節都至關重要。",
+    "tagline": "高雄專業刺青工作室｜精準寫實刺青與細線條藝術，每個細節都至關重要。",
     "bookSession": "預約諮詢",
     "viewGallery": "瀏覽作品"
   },
   "footer": {
-    "tagline": "精準寫實與當代墨藝交會。高雄。",
+    "tagline": "高雄專業刺青工作室｜寫實刺青・細線刺青・客製化設計。",
     "explore": "探索",
     "connect": "聯絡我們",
     "bookSession": "預約諮詢",
@@ -27,10 +27,10 @@
   "artistShowcase": {
     "label": "工作室",
     "title": "我們的藝術家",
-    "description": "每位藝術家都以獨特的視野與數十年經驗，為每件作品注入靈魂。",
+    "description": "高雄專業刺青師，以獨特視野與數十年經驗，為每件作品注入靈魂。",
     "viewPortfolio": "查看作品集 →",
     "viewAll": "查看所有藝術家",
-    "tattooArtist": "刺青師"
+    "tattooArtist": "高雄專業刺青師"
   },
   "bookingCTA": {
     "label": "預約諮詢",
@@ -120,10 +120,10 @@
   "bodySelected": "已選：",
   "artists": {
     "label": "工作室",
-    "title": "我們的藝術家",
-    "description": "認識我們工作室的大師級藝術家。每位都以獨特的視野與數十年經驗，為每件作品注入靈魂。",
+    "title": "高雄專業刺青師",
+    "description": "認識高雄專業刺青師——Casper 專精寫實刺青（高雄寫實刺青），Stan 專精細線條藝術。工作室位於高雄市左營區。",
     "noArtists": "尚無藝術家。敬請期待。",
-    "tattooArtist": "刺青師"
+    "tattooArtist": "高雄專業刺青師"
   },
   "artistDetail": {
     "backToArtists": "← 返回藝術家",
@@ -134,11 +134,11 @@
   },
   "gallery": {
     "label": "作品集",
-    "title": "作品集",
-    "description": "瀏覽我們的刺青作品。點擊任一圖片可全螢幕檢視。",
+    "title": "高雄寫實刺青作品集",
+    "description": "瀏覽高雄專業刺青工作室的寫實刺青與細線刺青作品。點擊任一圖片可全螢幕檢視。",
     "noArtwork": "尚無作品。敬請期待。",
     "untitled": "無題",
-    "artwork": "Casper Tattoo Kaohsiung 刺青作品"
+    "artwork": "高雄寫實刺青作品｜Casper Tattoo Kaohsiung 高雄專業刺青工作室"
   },
   "blog": {
     "label": "工作室",
@@ -148,7 +148,7 @@
     "readMore": "閱讀更多 →"
   },
   "metadata": {
-    "title": "Casper Tattoo Kaohsiung | 高雄寫實與細線刺青工作室",
-    "description": "Casper Tattoo Kaohsiung — 高雄專業刺青工作室，專精精準寫實與單針細線刺青。"
+    "title": "Casper Tattoo Kaohsiung | 高雄專業刺青工作室｜寫實刺青・細線刺青",
+    "description": "Casper Tattoo Kaohsiung — 高雄專業刺青工作室，專精高雄寫實刺青與細線刺青。高雄刺青｜高雄紋身｜高雄專業刺青師推薦。"
   }
 }

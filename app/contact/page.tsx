@@ -5,17 +5,27 @@ export const dynamic = "force-dynamic";
 import { ContactContent } from "@/components/contact/ContactContent";
 
 export const metadata: Metadata = {
-  title: "Book a Consultation",
+  title: "Book a Professional Tattoo Artist in Kaohsiung | Casper Tattoo",
   description:
-    "Book a tattoo consultation at Casper Tattoo Kaohsiung. Visit us at No. 18, Shijian Rd, Zuoying District, Kaohsiung City 813, or DM us on Instagram @tattookaohsiung.",
+    "Book a consultation with a professional tattoo artist in Kaohsiung. Visit Casper Tattoo at No. 18, Shijian Rd, Zuoying District, Kaohsiung 813 — specialists in realistic tattoos and fine-line art. 高雄刺青預約｜高雄專業刺青師諮詢預約。",
+  keywords: [
+    "book tattoo Kaohsiung",
+    "tattoo consultation Kaohsiung",
+    "professional tattoo artist Kaohsiung",
+    "professional tattoo Kaohsiung",
+    "Kaohsiung tattoo booking",
+    "高雄刺青預約",
+    "高雄刺青諮詢",
+    "高雄專業刺青師預約",
+  ],
   alternates: {
     canonical: "/contact",
     languages: { en: "/contact", "zh-TW": "/contact", "x-default": "/contact" },
   },
   openGraph: {
-    title: "Book a Consultation | Casper Tattoo Kaohsiung",
+    title: "Book a Professional Tattoo Artist in Kaohsiung | Casper Tattoo",
     description:
-      "Book your tattoo session at our studio in Zuoying District, Kaohsiung. Specialising in realism and fine-line art.",
+      "Book your session with Kaohsiung's professional tattoo artists — specialists in realistic tattoos and fine-line art in Zuoying District.",
     url: "/contact",
   },
 };

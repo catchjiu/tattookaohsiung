@@ -9,12 +9,12 @@
   },
   "hero": {
     "location": "Kaohsiung",
-    "tagline": "Precision realism meets contemporary ink. Where every detail matters.",
+    "tagline": "Professional tattoo studio in Kaohsiung. Precision realism and fine-line artistry where every detail matters.",
     "bookSession": "Book a Session",
     "viewGallery": "View Gallery"
   },
   "footer": {
-    "tagline": "Precision realism meets contemporary ink. Kaohsiung.",
+    "tagline": "Professional tattoo studio Kaohsiung — precision realism & fine-line.",
     "explore": "Explore",
     "connect": "Connect",
     "bookSession": "Book a Session",
@@ -27,10 +27,10 @@
   "artistShowcase": {
     "label": "Studio",
     "title": "Our Artists",
-    "description": "Each artist brings a unique vision and decades of experience to every piece.",
+    "description": "Our professional tattoo artists in Kaohsiung bring unique vision and decades of experience to every piece.",
     "viewPortfolio": "View Portfolio →",
     "viewAll": "View All Artists",
-    "tattooArtist": "Tattoo Artist"
+    "tattooArtist": "Professional Tattoo Artist"
   },
   "bookingCTA": {
     "label": "Concierge",
@@ -120,10 +120,10 @@
   "bodySelected": "Selected:",
   "artists": {
     "label": "Studio",
-    "title": "Our Artists",
-    "description": "Meet the master artists behind our studio. Each brings a unique vision and decades of experience to every piece.",
+    "title": "Professional Tattoo Artists — Kaohsiung",
+    "description": "Meet Kaohsiung's professional tattoo artists. Casper specialises in realistic tattoos; Stan in fine-line artistry. Based in Zuoying District, Kaohsiung.",
     "noArtists": "No artists yet. Check back soon.",
-    "tattooArtist": "Tattoo Artist"
+    "tattooArtist": "Professional Tattoo Artist"
   },
   "artistDetail": {
     "backToArtists": "← Back to Artists",
@@ -134,11 +134,11 @@
   },
   "gallery": {
     "label": "Portfolio",
-    "title": "Gallery",
-    "description": "Browse our portfolio of tattoo artistry. Click any image to view in full.",
+    "title": "Realistic Tattoo Gallery — Kaohsiung",
+    "description": "Browse our portfolio of realistic tattoos and fine-line artistry from Kaohsiung's professional tattoo studio. Click any image to view in full.",
     "noArtwork": "No artwork yet. Check back soon.",
     "untitled": "Untitled",
-    "artwork": "Tattoo artwork — Casper Tattoo Kaohsiung"
+    "artwork": "Realistic tattoo artwork — Casper Tattoo Kaohsiung | Professional Tattoo Studio"
   },
   "blog": {
     "label": "Studio",
@@ -148,7 +148,7 @@
     "readMore": "Read more →"
   },
   "metadata": {
-    "title": "Casper Tattoo Kaohsiung | Precision Realism & Fine-Line Studio Taiwan",
-    "description": "Casper Tattoo Kaohsiung — Premier tattoo studio in Kaohsiung specializing in precision realism and single-needle fine-line art."
+    "title": "Casper Tattoo Kaohsiung | Professional Tattoo Studio — Realistic & Fine-Line",
+    "description": "Casper Tattoo Kaohsiung — professional tattoo studio specialising in realistic tattoos and fine-line artistry. Tattoo Kaohsiung | Kaohsiung tattoo | professional tattoo artist Kaohsiung."
   }
 }

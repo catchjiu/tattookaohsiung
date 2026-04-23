@@ -46,8 +46,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${SITE_URL}/contact`,
       lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.6,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
   ];
 
