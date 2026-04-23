@@ -43,8 +43,8 @@ const zhStructuredData = {
   "@context": "https://schema.org",
   "@type": ["LocalBusiness", "HealthAndBeautyBusiness"],
   additionalType: "https://www.wikidata.org/wiki/Q11645",
-  name: "Casper Tattoo Kaohsiung",
-  alternateName: "高雄刺青",
+  name: "Casper Tattoo Kaohsiung 高雄刺青",
+  alternateName: ["Casper Tattoo Kaohsiung", "高雄刺青", "高雄刺青工作室"],
   description:
     "高雄專業刺青工作室，專精高雄寫實刺青與細線刺青。Professional tattoo studio in Kaohsiung specialising in realistic tattoos and fine-line artistry.",
   url: `${SITE_URL}/zh-TW`,
@@ -87,7 +87,10 @@ const zhStructuredData = {
       url: `${SITE_URL}/zh-TW/artists/stan`,
     },
   ],
-  sameAs: ["https://www.instagram.com/tattookaohsiung"],
+  sameAs: [
+    "https://www.instagram.com/tattookaohsiung",
+    "https://www.google.com/maps/place/Casper+Tattoo+Kaohsiung+%E9%AB%98%E9%9B%84%E5%88%BA%E9%9D%92/@22.6896,120.2986,17z",
+  ],
 };
 
 export default async function ZhTWHomePage() {

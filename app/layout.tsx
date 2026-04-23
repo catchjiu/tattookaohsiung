@@ -35,8 +35,8 @@ const localBusinessStructuredData = {
   // TattooShop is not a native schema.org type; additionalType maps to the
   // Wikidata entity for "tattoo parlour" so validators can identify the niche.
   additionalType: "https://www.wikidata.org/wiki/Q11645",
-  name: "Casper Tattoo Kaohsiung",
-  alternateName: "高雄刺青",
+  name: "Casper Tattoo Kaohsiung 高雄刺青",
+  alternateName: ["Casper Tattoo Kaohsiung", "高雄刺青", "高雄刺青工作室"],
   description:
     "A premier tattoo studio in Kaohsiung specializing in high-end realism and intricate fine-line artistry. We provide custom tattoo designs that blend technical precision with artistic soul. " +
     "高雄頂級刺青工作室，專注於高端寫實風格與精緻細線條藝術，提供結合技術精準與藝術靈魂的客製化刺青設計。",
@@ -140,7 +140,10 @@ const localBusinessStructuredData = {
       url: `${SITE_URL}/artists/stan`,
     },
   ],
-  sameAs: ["https://www.instagram.com/tattookaohsiung"],
+  sameAs: [
+    "https://www.instagram.com/tattookaohsiung",
+    "https://www.google.com/maps/place/Casper+Tattoo+Kaohsiung+%E9%AB%98%E9%9B%84%E5%88%BA%E9%9D%92/@22.6896,120.2986,17z",
+  ],
   keywords:
     "tattoo Kaohsiung, 高雄刺青, realism tattoo, fine-line tattoo, 寫實刺青, 細線條刺青, custom tattoo design, 客製化刺青設計",
 };

@@ -80,8 +80,8 @@ export default async function ArtistGalleryPage({
     jobTitle: `Professional Tattoo Artist — ${artist.specialty ?? "Tattooing"} | 高雄專業刺青師`,
     worksFor: {
       "@type": "LocalBusiness",
-      name: "Casper Tattoo Kaohsiung",
-      alternateName: "高雄刺青",
+      name: "Casper Tattoo Kaohsiung 高雄刺青",
+      alternateName: ["Casper Tattoo Kaohsiung", "高雄刺青"],
       url: SITE_URL,
     },
     knowsAbout: artist.specialty

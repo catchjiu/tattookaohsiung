@@ -17,8 +17,8 @@ const gallerySchema = {
   url: `${SITE_URL}/gallery`,
   provider: {
     "@type": "LocalBusiness",
-    name: "Casper Tattoo Kaohsiung",
-    alternateName: "高雄刺青",
+    name: "Casper Tattoo Kaohsiung 高雄刺青",
+    alternateName: ["Casper Tattoo Kaohsiung", "高雄刺青"],
     url: SITE_URL,
   },
 };

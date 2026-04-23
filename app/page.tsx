@@ -35,8 +35,8 @@ const structuredData = {
   "@context": "https://schema.org",
   // HealthAndBeautyBusiness is the closest official schema.org type for a tattoo parlor
   "@type": ["LocalBusiness", "HealthAndBeautyBusiness"],
-  name: "Casper Tattoo Kaohsiung",
-  alternateName: "高雄刺青",
+  name: "Casper Tattoo Kaohsiung 高雄刺青",
+  alternateName: ["Casper Tattoo Kaohsiung", "高雄刺青", "高雄刺青工作室"],
   description:
     "Kaohsiung's premier professional tattoo studio specialising in realistic tattoos and fine-line artistry. 高雄頂級專業刺青工作室，專精寫實刺青（高雄寫實刺青）與細線條紋身，提供客製化刺青設計。",
   url: SITE_URL,
@@ -101,7 +101,10 @@ const structuredData = {
       url: `${SITE_URL}/artists/stan`,
     },
   ],
-  sameAs: ["https://www.instagram.com/tattookaohsiung"],
+  sameAs: [
+    "https://www.instagram.com/tattookaohsiung",
+    "https://www.google.com/maps/place/Casper+Tattoo+Kaohsiung+%E9%AB%98%E9%9B%84%E5%88%BA%E9%9D%92/@22.6896,120.2986,17z",
+  ],
 };
 
 export default async function HomePage() {
