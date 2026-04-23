@@ -1,0 +1,38 @@
+# Casper Tattoo Kaohsiung
+
+> Premier professional tattoo studio in Kaohsiung, Taiwan (高雄刺青), specialising in precision realism and single-needle fine-line artistry. Studio is located at No. 18, Shijian Rd, Zuoying District, Kaohsiung City 813. Also known as 高雄刺青 / 高雄專業刺青工作室.
+
+Casper Tattoo Kaohsiung is home to two resident artists:
+
+- **Casper** — precision realism specialist (portraits, nature, 3D architectural, black & grey).
+- **Stan** — single-needle fine-line specialist (minimalist, delicate linework, geometric).
+
+The studio offers three core services: Realism Tattoos (寫實風格紋身), Fine Line Artistry (細線條藝術), and Custom Tattoo Design (客製化刺青設計). Consultations are available in-person or via video. A deposit secures the booking.
+
+Opening hours: Tuesday–Saturday, 12:00–21:00. Contact via Instagram @tattookaohsiung or phone +886-967-071-750.
+
+## Studio Pages
+
+- [Homepage (English)](https://tattookaohsiung.com/): Studio overview, artist showcase, and booking call-to-action.
+- [Homepage (Traditional Chinese)](https://tattookaohsiung.com/zh-TW): 高雄刺青工作室首頁，刺青師介紹與預約資訊。
+- [Gallery (English)](https://tattookaohsiung.com/gallery): Portfolio of realistic tattoos and fine-line artistry.
+- [Gallery (Traditional Chinese)](https://tattookaohsiung.com/zh-TW/gallery): 高雄寫實刺青與細線刺青作品集。
+- [Artists (English)](https://tattookaohsiung.com/artists): Profiles of resident professional tattoo artists Casper and Stan.
+- [Artists (Traditional Chinese)](https://tattookaohsiung.com/zh-TW/artists): 高雄專業刺青師 Casper 與 Stan 的介紹頁面。
+- [Book / Contact (English)](https://tattookaohsiung.com/contact): Multi-step booking form and studio contact details.
+- [Book / Contact (Traditional Chinese)](https://tattookaohsiung.com/zh-TW/contact): 高雄刺青預約表單與工作室聯絡資訊。
+
+## Artist Profiles
+
+- [Casper — Realism Artist](https://tattookaohsiung.com/artists/casper): Portfolio and bio for Casper, precision realism tattoo artist.
+- [Stan — Fine-Line Artist](https://tattookaohsiung.com/artists/stan): Portfolio and bio for Stan, single-needle fine-line tattoo artist.
+
+## Technical
+
+- [Sitemap](https://tattookaohsiung.com/sitemap.xml): Full XML sitemap covering English and Traditional Chinese routes.
+- [robots.txt](https://tattookaohsiung.com/robots.txt): Crawl policy — public pages allowed; /admin/ and /api/ disallowed.
+
+## Optional
+
+- [Instagram @tattookaohsiung](https://www.instagram.com/tattookaohsiung): Studio Instagram with the latest work and booking enquiries.
+- [Google Maps — Casper Tattoo Kaohsiung](https://www.google.com/maps/search/?api=1&query=18+Shijian+Rd,+Zuoying+District,+Kaohsiung+City,+813+Taiwan): Studio location at No. 18, Shijian Rd, Zuoying District, Kaohsiung 813.
