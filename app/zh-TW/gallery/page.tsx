@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
-
-export const dynamic = "force-dynamic";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { PageHero } from "@/components/ui/PageHero";
 
+export const dynamic = "force-dynamic";
+
 const SITE_URL = getSiteUrl();
 
-const gallerySchema = {
+const zhGallerySchema = {
   "@context": "https://schema.org",
   "@type": "ImageGallery",
-  name: "Realistic Tattoo Portfolio Gallery — Casper Tattoo Kaohsiung | 高雄寫實刺青作品集",
+  name: "高雄寫實刺青作品集｜Casper Tattoo Kaohsiung 高雄刺青工作室",
   description:
-    "Portfolio of realistic tattoos, fine-line artistry, and custom designs from Kaohsiung's premier professional tattoo studio. 高雄專業刺青工作室寫實刺青與細線刺青作品集。",
-  url: `${SITE_URL}/gallery`,
+    "高雄專業刺青工作室寫實刺青與細線刺青作品集。Realistic tattoo and fine-line portfolio from Kaohsiung's professional tattoo studio.",
+  url: `${SITE_URL}/zh-TW/gallery`,
   provider: {
     "@type": "LocalBusiness",
     name: "Casper Tattoo Kaohsiung",
@@ -24,34 +24,31 @@ const gallerySchema = {
 };
 
 export const metadata: Metadata = {
-  title: "Realistic Tattoo Gallery Kaohsiung | Realism & Fine-Line Portfolio",
+  title: "高雄寫實刺青作品集｜高雄刺青師作品 — Casper Tattoo",
   description:
-    "Browse our portfolio of realistic tattoos and fine-line artistry from Casper Tattoo Kaohsiung — professional tattoo studio in Zuoying District. 高雄寫實刺青｜細線刺青作品集，高雄專業刺青工作室 Casper Tattoo。",
+    "瀏覽 Casper Tattoo 高雄專業刺青工作室的寫實刺青與細線刺青作品集。高雄刺青師 Casper 與 Stan 的精彩作品。高雄寫實刺青｜高雄細線刺青。",
   keywords: [
-    "realistic tattoo Kaohsiung",
-    "realism tattoo Kaohsiung gallery",
-    "professional tattoo Kaohsiung",
-    "fine-line tattoo Kaohsiung",
-    "tattoo portfolio Kaohsiung",
-    "Kaohsiung tattoo gallery",
-    "高雄寫實刺青",
-    "高雄刺青作品",
+    "高雄寫實刺青作品",
     "高雄刺青作品集",
+    "高雄刺青師作品",
     "高雄細線刺青",
+    "高雄刺青",
+    "realistic tattoo Kaohsiung gallery",
+    "Kaohsiung tattoo portfolio",
   ],
   alternates: {
-    canonical: "/gallery",
+    canonical: "/zh-TW/gallery",
     languages: { en: "/gallery", "zh-TW": "/zh-TW/gallery", "x-default": "/gallery" },
   },
   openGraph: {
-    title: "Realistic Tattoo Gallery Kaohsiung | Casper Tattoo",
-    description:
-      "Portfolio of realistic tattoos, fine-line artistry, and custom designs from Kaohsiung's premier professional tattoo studio.",
-    url: "/gallery",
+    title: "高雄寫實刺青作品集｜Casper Tattoo 高雄刺青",
+    description: "高雄專業刺青工作室寫實刺青與細線刺青作品集。",
+    url: `${SITE_URL}/zh-TW/gallery`,
+    locale: "zh_TW",
   },
 };
 
-export default async function GalleryPage() {
+export default async function ZhTWGalleryPage() {
   const [images, heroImages] = await Promise.all([
     prisma.portfolioImage.findMany({
       include: { artist: { select: { name: true, specialty: true } } },
@@ -73,16 +70,14 @@ export default async function GalleryPage() {
     artists: { name: img.artist.name, specialty: img.artist.specialty },
   }));
 
-  const heroUrls = heroImages.map((img) => img.url);
-
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(gallerySchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(zhGallerySchema) }}
       />
       <PageHero
-        imageUrls={heroUrls}
+        imageUrls={heroImages.map((img) => img.url)}
         labelKey="gallery.label"
         titleKey="gallery.title"
         descriptionKey="gallery.description"

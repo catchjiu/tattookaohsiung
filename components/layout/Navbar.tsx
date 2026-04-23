@@ -7,12 +7,12 @@ import { Menu, X, Instagram, MapPin, Phone, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { LanguageToggle } from "./LanguageToggle";
 
-const navLinks = [
-  { href: "/", labelKey: "nav.home", dropdown: false },
-  { href: "/artists", labelKey: "nav.artists", dropdown: false },
-  { href: "/gallery", labelKey: "nav.gallery", dropdown: false },
-  { href: "/blog", labelKey: "nav.blog", dropdown: false },
-  { href: "/contact", labelKey: "nav.contact", dropdown: true },
+const BASE_NAV = [
+  { path: "/", labelKey: "nav.home", dropdown: false },
+  { path: "/artists", labelKey: "nav.artists", dropdown: false },
+  { path: "/gallery", labelKey: "nav.gallery", dropdown: false },
+  { path: "/blog", labelKey: "nav.blog", dropdown: false },
+  { path: "/contact", labelKey: "nav.contact", dropdown: true },
 ] as const;
 
 const LINE_URL =
@@ -27,6 +27,13 @@ export function Navbar() {
   const phoneHref = `tel:+886${locale === "zh-TW" ? "980495145" : "967071750"}`;
   const address = locale === "zh-TW" ? t("footer.addressZh") : t("footer.addressEn");
 
+  // Prefix all internal paths with /zh-TW when in Chinese mode
+  const p = locale === "zh-TW" ? "/zh-TW" : "";
+  const navLinks = BASE_NAV.map((l) => ({
+    ...l,
+    href: l.path === "/" ? (p || "/") : `${p}${l.path}`,
+  }));
+
   return (
     <motion.header
       initial={{ y: -16, opacity: 0 }}
@@ -36,7 +43,7 @@ export function Navbar() {
     >
       <nav className="mx-auto flex h-20 max-w-6xl items-center justify-between px-8">
         <Link
-          href="/"
+          href={p || "/"}
           className="font-display text-xl font-semibold tracking-wide text-foreground transition-colors hover:text-accent"
         >
           Casper Tattoo Kaohsiung
@@ -119,7 +126,7 @@ export function Navbar() {
                         </div>
 
                         <Link
-                          href="/contact"
+                          href={`${p}/contact`}
                           className="mt-6 block border-t border-border pt-5 text-[13px] font-medium tracking-[0.1em] uppercase text-foreground transition-colors hover:text-accent"
                         >
                           {t("contact.title")} →

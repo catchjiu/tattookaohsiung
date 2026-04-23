@@ -5,15 +5,17 @@ import { motion } from "framer-motion";
 import { Instagram, MapPin, Phone, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 
-const footerLinks = [
-  { href: "/artists", labelKey: "nav.artists" },
-  { href: "/gallery", labelKey: "nav.gallery" },
-  { href: "/blog", labelKey: "nav.blog" },
-  { href: "/contact", labelKey: "footer.bookSession" },
+const FOOTER_PATHS = [
+  { path: "/artists", labelKey: "nav.artists" },
+  { path: "/gallery", labelKey: "nav.gallery" },
+  { path: "/blog", labelKey: "nav.blog" },
+  { path: "/contact", labelKey: "footer.bookSession" },
 ];
 
 export function Footer() {
   const { t, locale } = useLanguage();
+  const p = locale === "zh-TW" ? "/zh-TW" : "";
+  const footerLinks = FOOTER_PATHS.map((l) => ({ ...l, href: `${p}${l.path}` }));
 
   return (
     <motion.footer
@@ -28,7 +30,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <Link
-              href="/"
+              href={p || "/"}
               className="font-display text-2xl font-semibold tracking-wide text-foreground"
             >
               Casper Tattoo Kaohsiung

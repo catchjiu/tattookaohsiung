@@ -1,37 +1,36 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-
-export const dynamic = "force-dynamic";
 import { ArtistsContent } from "@/components/artists/ArtistsContent";
 import { PageHero } from "@/components/ui/PageHero";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
-  title: "Professional Tattoo Artists Kaohsiung | Casper & Stan",
+  title: "高雄專業刺青師｜Casper（寫實刺青）& Stan（細線刺青）",
   description:
-    "Meet Kaohsiung's professional tattoo artists — Casper (realistic tattoo specialist) and Stan (fine-line expert) at Casper Tattoo, Zuoying District, Kaohsiung. 高雄專業刺青師｜寫實刺青師 Casper 與細線刺青師 Stan。",
+    "認識高雄專業刺青師 — Casper 專精高雄寫實刺青（人物肖像・自然景物），Stan 專精高雄細線刺青（單針極簡藝術）。Casper Tattoo 位於高雄市左營區。",
   keywords: [
-    "professional tattoo artist Kaohsiung",
-    "professional tattoo Kaohsiung",
-    "realistic tattoo Kaohsiung",
-    "tattoo artist Kaohsiung",
-    "Kaohsiung tattoo artist",
     "高雄專業刺青師",
     "高雄刺青師",
     "高雄寫實刺青師",
+    "高雄細線刺青師",
+    "高雄刺青",
+    "professional tattoo artist Kaohsiung",
+    "Kaohsiung tattoo artist",
   ],
   alternates: {
-    canonical: "/artists",
+    canonical: "/zh-TW/artists",
     languages: { en: "/artists", "zh-TW": "/zh-TW/artists", "x-default": "/artists" },
   },
   openGraph: {
-    title: "Professional Tattoo Artists Kaohsiung | Casper Tattoo",
-    description:
-      "Kaohsiung's professional tattoo artists — Casper (realism) and Stan (fine-line) — crafting exceptional work in Zuoying District.",
-    url: "/artists",
+    title: "高雄專業刺青師｜Casper Tattoo 高雄刺青",
+    description: "高雄專業刺青師 Casper（寫實）與 Stan（細線），位於高雄市左營區。",
+    url: "/zh-TW/artists",
+    locale: "zh_TW",
   },
 };
 
-export default async function ArtistsPage() {
+export default async function ZhTWArtistsPage() {
   const [artists, heroImages] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" } },
@@ -45,12 +44,10 @@ export default async function ArtistsPage() {
     }),
   ]);
 
-  const heroUrls = heroImages.map((img) => img.url);
-
   return (
     <>
       <PageHero
-        imageUrls={heroUrls}
+        imageUrls={heroImages.map((img) => img.url)}
         labelKey="artists.label"
         titleKey="artists.title"
         descriptionKey="artists.description"

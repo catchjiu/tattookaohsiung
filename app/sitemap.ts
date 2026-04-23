@@ -19,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
+    // ── English (canonical) ──────────────────────────────────────────────
     {
       url: SITE_URL,
       lastModified: new Date(),
@@ -49,14 +50,47 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    // ── Traditional Chinese (/zh-TW/*) ───────────────────────────────────
+    {
+      url: `${SITE_URL}/zh-TW`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 1.0,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/gallery`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/artists`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/contact`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
   ];
 
-  const artistRoutes: MetadataRoute.Sitemap = artists.map((artist) => ({
-    url: `${SITE_URL}/artists/${artist.slug}`,
-    lastModified: artist.updatedAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
+  const artistRoutes: MetadataRoute.Sitemap = artists.flatMap((artist) => [
+    {
+      url: `${SITE_URL}/artists/${artist.slug}`,
+      lastModified: artist.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/artists/${artist.slug}`,
+      lastModified: artist.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+  ]);
 
   const blogRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${SITE_URL}/blog/${post.slug}`,

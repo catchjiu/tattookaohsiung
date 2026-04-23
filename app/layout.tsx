@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Inter, Oswald } from "next/font/google";
 import Script from "next/script";
+import { headers } from "next/headers";
 import "./globals.css";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { getSiteUrl } from "@/lib/site-url";
+import type { Locale } from "@/lib/i18n";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -188,7 +190,7 @@ export const metadata: Metadata = {
     canonical: "/",
     languages: {
       "en": "/",
-      "zh-TW": "/",
+      "zh-TW": "/zh-TW",
       "x-default": "/",
     },
   },
@@ -215,13 +217,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Read locale set by middleware so <html lang> and LanguageProvider
+  // both reflect the correct language in the SSR response.
+  const headersList = await headers();
+  const locale = (headersList.get("x-locale") ?? "en") as Locale;
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${inter.variable} ${oswald.variable} min-h-screen bg-background text-foreground antialiased font-sans`}
       >
@@ -233,7 +240,7 @@ export default function RootLayout({
             __html: JSON.stringify(localBusinessStructuredData),
           }}
         />
-        <LanguageProvider>
+        <LanguageProvider initialLocale={locale}>
           <div className="grain-overlay" aria-hidden />
           <Navbar />
           <main className="pt-16">{children}</main>

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
-
-export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { ArtistDetailContent } from "@/components/artists/ArtistDetailContent";
+
+export const dynamic = "force-dynamic";
 
 const SITE_URL = getSiteUrl();
 
@@ -19,20 +19,20 @@ export async function generateMetadata({
     select: { name: true, specialty: true, avatarUrl: true },
   });
   if (!artist) return {};
-  const specialty = artist.specialty ?? "Tattoo Artist";
+  const specialty = artist.specialty ?? "刺青師";
   return {
-    title: `${artist.name} — Professional Tattoo Artist Kaohsiung | ${specialty}`,
-    description: `${artist.name} is a professional tattoo artist at Casper Tattoo Kaohsiung, specialising in ${specialty.toLowerCase()}. View the portfolio and book a consultation in Zuoying District, Kaohsiung. 高雄專業刺青師 ${artist.name} — ${specialty}。`,
+    title: `${artist.name}｜高雄專業刺青師 — ${specialty}`,
+    description: `${artist.name} 是 Casper Tattoo 高雄專業刺青師，專精${specialty}。查看作品集並預約諮詢，工作室位於高雄市左營區。高雄專業刺青師｜${specialty}高雄。`,
     keywords: [
-      `${artist.name} tattoo Kaohsiung`,
-      "professional tattoo artist Kaohsiung",
-      "professional tattoo Kaohsiung",
-      `${specialty} Kaohsiung`,
+      `${artist.name} 高雄刺青`,
       "高雄專業刺青師",
       "高雄刺青師",
+      `${specialty}高雄`,
+      "高雄刺青",
+      `professional tattoo artist Kaohsiung`,
     ],
     alternates: {
-      canonical: `/artists/${slug}`,
+      canonical: `/zh-TW/artists/${slug}`,
       languages: {
         en: `/artists/${slug}`,
         "zh-TW": `/zh-TW/artists/${slug}`,
@@ -40,15 +40,16 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${artist.name} — Professional Tattoo Artist Kaohsiung | Casper Tattoo`,
-      description: `Explore ${artist.name}'s portfolio — professional ${specialty.toLowerCase()} tattoo art from Kaohsiung's premier studio.`,
-      url: `/artists/${slug}`,
+      title: `${artist.name}｜高雄專業刺青師 | Casper Tattoo`,
+      description: `${artist.name} — 高雄專業刺青師，專精${specialty}。查看作品集。`,
+      url: `/zh-TW/artists/${slug}`,
+      locale: "zh_TW",
       images: artist.avatarUrl ? [{ url: artist.avatarUrl }] : undefined,
     },
   };
 }
 
-export default async function ArtistGalleryPage({
+export default async function ZhTWArtistPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -66,18 +67,11 @@ export default async function ArtistGalleryPage({
 
   if (!artist) notFound();
 
-  const artworks = artist.portfolioImages.map((img) => ({
-    id: img.id,
-    title: img.title ?? img.altText,
-    image_url: img.url,
-    tags: img.tags,
-  }));
-
-  const personSchema = {
+  const zhPersonSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: artist.name,
-    jobTitle: `Professional Tattoo Artist — ${artist.specialty ?? "Tattooing"} | 高雄專業刺青師`,
+    jobTitle: `高雄專業刺青師｜${artist.specialty ?? "刺青"}`,
     worksFor: {
       "@type": "LocalBusiness",
       name: "Casper Tattoo Kaohsiung",
@@ -86,18 +80,14 @@ export default async function ArtistGalleryPage({
     },
     knowsAbout: artist.specialty
       ? [
-          artist.specialty,
-          `${artist.specialty} Kaohsiung`,
-          "Professional tattoo Kaohsiung",
-          "Tattoo Kaohsiung",
-          "Kaohsiung tattoo",
-          "Tattooing",
-          "Body art",
+          `${artist.specialty}高雄`,
           "高雄專業刺青",
           "高雄刺青師",
+          "professional tattoo Kaohsiung",
+          artist.specialty,
         ]
-      : ["Professional tattoo Kaohsiung", "Kaohsiung tattoo", "Tattooing", "Body art", "高雄刺青師"],
-    url: `${SITE_URL}/artists/${artist.slug}`,
+      : ["高雄專業刺青", "高雄刺青師", "professional tattoo Kaohsiung"],
+    url: `${SITE_URL}/zh-TW/artists/${artist.slug}`,
     ...(artist.instagramUrl ? { sameAs: [artist.instagramUrl] } : {}),
     ...(artist.avatarUrl ? { image: artist.avatarUrl } : {}),
   };
@@ -106,7 +96,7 @@ export default async function ArtistGalleryPage({
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(zhPersonSchema) }}
       />
       <ArtistDetailContent
         artist={{
@@ -116,7 +106,12 @@ export default async function ArtistGalleryPage({
           avatarUrl: artist.avatarUrl,
           instagramUrl: artist.instagramUrl,
         }}
-        artworks={artworks}
+        artworks={artist.portfolioImages.map((img) => ({
+          id: img.id,
+          title: img.title ?? img.altText,
+          image_url: img.url,
+          tags: img.tags,
+        }))}
       />
     </>
   );

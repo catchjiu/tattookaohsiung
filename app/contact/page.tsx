@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: "/contact",
-    languages: { en: "/contact", "zh-TW": "/contact", "x-default": "/contact" },
+    languages: { en: "/contact", "zh-TW": "/zh-TW/contact", "x-default": "/contact" },
   },
   openGraph: {
     title: "Book a Professional Tattoo Artist in Kaohsiung | Casper Tattoo",
