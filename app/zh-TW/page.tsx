@@ -89,7 +89,7 @@ const zhStructuredData = {
   ],
   sameAs: [
     "https://www.instagram.com/tattookaohsiung",
-    "https://www.google.com/maps/place/Casper+Tattoo+Kaohsiung+%E9%AB%98%E9%9B%84%E5%88%BA%E9%9D%92/@22.6896,120.2986,17z",
+    "https://maps.app.goo.gl/5qZqT6F3KtN2D8da8",
   ],
 };
 
