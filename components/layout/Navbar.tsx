@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Instagram, MapPin, Phone, MessageCircle } from "lucide-react";
@@ -44,9 +45,19 @@ export function Navbar() {
       <nav className="mx-auto flex h-20 max-w-6xl items-center justify-between px-8">
         <Link
           href={p || "/"}
-          className="font-display text-xl font-semibold tracking-wide text-foreground transition-colors hover:text-accent"
+          className="flex items-center gap-3 transition-opacity hover:opacity-80"
         >
-          Casper Tattoo Kaohsiung
+          <Image
+            src="/logo.png"
+            alt="Casper Tattoo Kaohsiung logo"
+            width={40}
+            height={40}
+            className="rounded-full object-cover"
+            priority
+          />
+          <span className="font-display text-xl font-semibold tracking-wide text-foreground">
+            Casper Tattoo Kaohsiung
+          </span>
         </Link>
 
         {/* Desktop nav */}
