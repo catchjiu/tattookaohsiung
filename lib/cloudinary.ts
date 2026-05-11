@@ -23,7 +23,8 @@ export type UploadFolder =
   | "artist-avatars"
   | "portfolio"
   | "blog-images"
-  | "booking-references";
+  | "booking-references"
+  | "shop-products";
 
 function getConfig() {
   if (!CLOUD_NAME || !API_KEY || !API_SECRET) return null;

@@ -1,0 +1,176 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
+import { useCart } from "@/components/providers/CartProvider";
+import { useLanguage } from "@/components/providers/LanguageProvider";
+import {
+  getShopCartPreview,
+  type CartProductRow,
+} from "@/app/shop/order-actions";
+
+export function CartContent() {
+  const { t, locale } = useLanguage();
+  const { lines, setQuantity, removeLine, ready } = useCart();
+  const router = useRouter();
+  const [rows, setRows] = useState<CartProductRow[]>([]);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+
+  const base = locale === "zh-TW" ? "/zh-TW" : "";
+
+  useEffect(() => {
+    if (!ready) return;
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const data = await getShopCartPreview(lines);
+      if (!cancelled) {
+        setRows(data.products);
+        setQuantities(data.quantities);
+        setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [lines, ready]);
+
+  const totalTwd =
+    rows.length > 0
+      ? rows.reduce((sum, p) => {
+          const q = quantities[p.id] ?? 0;
+          if (p.priceTwd == null) return null;
+          if (sum === null) return null;
+          return sum + p.priceTwd * q;
+        }, 0 as number | null)
+      : 0;
+
+  if (!ready || loading) {
+    return (
+      <div className="mx-auto max-w-2xl px-8 py-24 text-foreground-muted">
+        {t("shop.loadingCart")}
+      </div>
+    );
+  }
+
+  if (!lines.length || !rows.length) {
+    return (
+      <div className="mx-auto max-w-2xl px-8 py-24 md:py-32">
+        <h1 className="font-serif text-3xl font-medium text-foreground">
+          {t("shop.cartTitle")}
+        </h1>
+        <p className="mt-6 text-foreground-muted">{t("shop.cartEmpty")}</p>
+        <Link
+          href={`${base}/shop`}
+          className="mt-8 inline-block text-sm font-medium text-accent hover:underline"
+        >
+          {t("shop.continueShopping")} →
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl px-8 py-24 md:py-32">
+      <h1 className="font-serif text-3xl font-medium text-foreground">
+        {t("shop.cartTitle")}
+      </h1>
+
+      <ul className="mt-10 divide-y divide-border border-t border-border">
+        {rows.map((p) => {
+          const q = quantities[p.id] ?? 1;
+          const lineTotal =
+            p.priceTwd != null ? p.priceTwd * q : null;
+          const name = locale === "zh-TW" ? (p.nameZh ?? p.name) : p.name;
+          return (
+            <li
+              key={p.id}
+              className="flex gap-4 py-8 first:pt-6"
+            >
+              <div className="relative h-24 w-20 shrink-0 overflow-hidden bg-charcoal">
+                {p.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={p.imageUrl}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                ) : null}
+              </div>
+              <div className="min-w-0 flex-1">
+                <Link
+                  href={`${base}/shop/${p.slug}`}
+                  className="font-medium text-foreground hover:text-accent"
+                >
+                  {name}
+                </Link>
+                {p.priceLabel && (
+                  <p className="mt-1 text-sm text-foreground-muted">
+                    {p.priceLabel}
+                  </p>
+                )}
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <label className="flex items-center gap-2 text-sm text-foreground-muted">
+                    {t("shop.qty")}
+                    <input
+                      type="number"
+                      min={1}
+                      max={99}
+                      value={q}
+                      onChange={(e) =>
+                        setQuantity(p.id, Number(e.target.value) || 1)
+                      }
+                      className="w-16 rounded border border-border bg-background px-2 py-1 text-foreground"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => removeLine(p.id)}
+                    className="inline-flex items-center gap-1 text-sm text-red-400 hover:underline"
+                  >
+                    <Trash2 size={14} />
+                    {t("shop.remove")}
+                  </button>
+                </div>
+              </div>
+              <div className="shrink-0 text-right text-sm text-foreground">
+                {lineTotal != null ? (
+                  <>NT$ {lineTotal}</>
+                ) : (
+                  <span className="text-foreground-muted">—</span>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="mt-8 border-t border-border pt-8">
+        {totalTwd != null ? (
+          <p className="text-lg font-medium text-foreground">
+            {t("shop.subtotal")}{" "}
+            <span className="text-accent">NT$ {totalTwd}</span>
+          </p>
+        ) : (
+          <p className="text-foreground-muted">{t("shop.totalPending")}</p>
+        )}
+        <button
+          type="button"
+          onClick={() => router.push(`${base}/checkout`)}
+          className="mt-6 w-full rounded-md bg-accent py-4 text-sm font-semibold text-charcoal transition-opacity hover:opacity-90 sm:w-auto sm:px-10"
+        >
+          {t("shop.checkout")}
+        </button>
+        <Link
+          href={`${base}/shop`}
+          className="mt-4 block text-sm text-accent hover:underline"
+        >
+          ← {t("shop.continueShopping")}
+        </Link>
+      </div>
+    </div>
+  );
+}

@@ -77,6 +77,23 @@ In Coolify, go to your application → **Environment Variables** and add:
 
 ---
 
+## Database migrations (Supabase & production)
+
+Each deploy runs `npx prisma migrate deploy` in the container entrypoint, so **new migrations are applied automatically** when you push and redeploy.
+
+To apply manually (e.g. before first deploy or from your laptop):
+
+```bash
+# Same DATABASE_URL as production (direct or pooler + ?sslmode=require)
+npx prisma migrate deploy
+```
+
+Or run the SQL from `prisma/migrations/<timestamp>_*/migration.sql` in **Supabase → SQL Editor** if you cannot use the CLI.
+
+After adding the **shop** feature, ensure migration `20260511120000_add_shop_products` is deployed so the `shop_products` table exists.
+
+---
+
 ## Troubleshooting
 
 - **Build fails**: Check the build logs in Coolify. Ensure `package-lock.json` exists.

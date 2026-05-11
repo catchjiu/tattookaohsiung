@@ -7,13 +7,17 @@ const SITE_URL = getSiteUrl();
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [artists, posts] = await Promise.all([
+  const [artists, posts, shopProducts] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" } },
       select: { slug: true, updatedAt: true },
     }),
     prisma.blogPost.findMany({
       where: { isPublished: true, publishedAt: { not: null, lte: new Date() } },
+      select: { slug: true, updatedAt: true },
+    }),
+    prisma.shopProduct.findMany({
+      where: { isPublished: true },
       select: { slug: true, updatedAt: true },
     }),
   ]);
@@ -43,6 +47,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/shop`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.65,
+    },
+    {
+      url: `${SITE_URL}/cart`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.35,
+    },
+    {
+      url: `${SITE_URL}/checkout`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.35,
     },
     {
       url: `${SITE_URL}/contact`,
@@ -81,6 +103,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.7,
     },
+    {
+      url: `${SITE_URL}/zh-TW/shop`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.65,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/cart`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.35,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/checkout`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.35,
+    },
   ];
 
   const artistRoutes: MetadataRoute.Sitemap = artists.flatMap((artist) => [
@@ -113,5 +153,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]);
 
-  return [...staticRoutes, ...artistRoutes, ...blogRoutes];
+  const shopRoutes: MetadataRoute.Sitemap = shopProducts.flatMap((product) => [
+    {
+      url: `${SITE_URL}/shop/${product.slug}`,
+      lastModified: product.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.55,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/shop/${product.slug}`,
+      lastModified: product.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.55,
+    },
+  ]);
+
+  return [...staticRoutes, ...artistRoutes, ...blogRoutes, ...shopRoutes];
 }

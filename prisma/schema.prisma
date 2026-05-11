@@ -124,6 +124,77 @@ model BlogPost {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Shop (products, cart checkout, orders)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model ShopProduct {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  name            String
+  nameZh          String?  @map("name_zh")
+  description     String   @db.Text
+  descriptionZh   String?  @db.Text @map("description_zh")
+  priceLabel      String?  @map("price_label")
+  priceTwd        Int?     @map("price_twd")
+  imageUrl        String?  @map("image_url")
+  sortOrder       Int      @default(0) @map("sort_order")
+  isPublished     Boolean  @default(false) @map("is_published")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  orderItems ShopOrderItem[]
+
+  @@index([isPublished, sortOrder])
+  @@index([slug])
+  @@map("shop_products")
+}
+
+enum ShopOrderStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  SHIPPED
+  CANCELLED
+}
+
+model ShopOrder {
+  id               String          @id @default(cuid())
+  status           ShopOrderStatus @default(PENDING)
+  customerName     String          @map("customer_name")
+  customerEmail    String          @map("customer_email")
+  customerPhone    String?         @map("customer_phone")
+  shippingAddress  String?         @map("shipping_address") @db.Text
+  notes            String?         @db.Text
+  totalTwd         Int?            @map("total_twd")
+  currency         String          @default("TWD")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  items ShopOrderItem[]
+
+  @@index([status, createdAt])
+  @@map("shop_orders")
+}
+
+model ShopOrderItem {
+  id                 String @id @default(cuid())
+  orderId            String @map("order_id")
+  productId          String @map("product_id")
+  productSlug        String @map("product_slug")
+  nameSnapshot       String @map("name_snapshot")
+  priceLabelSnapshot String? @map("price_label_snapshot")
+  unitPriceTwd       Int?   @map("unit_price_twd")
+  quantity           Int
+  lineTotalTwd       Int?   @map("line_total_twd")
+
+  order   ShopOrder   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product ShopProduct @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@map("shop_order_items")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Booking Engine
 // ─────────────────────────────────────────────────────────────────────────────
 

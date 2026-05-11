@@ -21,6 +21,7 @@ const FOLDER_MAP: Record<CloudinaryFolder, GCPFolder> = {
   portfolio: "portfolio",
   "blog-images": "blog-images",
   "booking-references": "booking-references",
+  "shop-products": "shop-products",
 };
 
 export function isUploadConfigured(): boolean {

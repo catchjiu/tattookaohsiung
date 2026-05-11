@@ -12,8 +12,10 @@ import {
   MapPin,
   Phone,
   MessageCircle,
+  ShoppingCart,
 } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { useCart } from "@/components/providers/CartProvider";
 import { LanguageToggle } from "./LanguageToggle";
 
 const BASE_NAV = [
@@ -21,6 +23,7 @@ const BASE_NAV = [
   { path: "/artists", labelKey: "nav.artists", dropdown: false },
   { path: "/gallery", labelKey: "nav.gallery", dropdown: false },
   { path: "/blog", labelKey: "nav.blog", dropdown: false },
+  { path: "/shop", labelKey: "nav.shop", dropdown: false },
   { path: "/contact", labelKey: "nav.contact", dropdown: true },
 ] as const;
 
@@ -35,6 +38,7 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const { t, locale } = useLanguage();
+  const { itemCount, ready: cartReady } = useCart();
 
   const phone = locale === "zh-TW" ? t("footer.phoneZh") : t("footer.phoneEn");
   const phoneHref = `tel:+886${locale === "zh-TW" ? "980495145" : "967071750"}`;
@@ -183,7 +187,21 @@ export function Navbar() {
             )}
           </ul>
 
-          <LanguageToggle />
+          <div className="flex items-center gap-4">
+            <Link
+              href={`${p}/cart`}
+              className="relative flex p-2 text-foreground-muted transition-colors hover:text-foreground"
+              aria-label={t("nav.cart")}
+            >
+              <ShoppingCart size={22} strokeWidth={1.5} />
+              {cartReady && itemCount > 0 ? (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-charcoal">
+                  {itemCount > 99 ? "99+" : itemCount}
+                </span>
+              ) : null}
+            </Link>
+            <LanguageToggle />
+          </div>
         </div>
 
         {/* Mobile menu button */}
@@ -211,7 +229,20 @@ export function Navbar() {
             className="overflow-hidden border-t border-border bg-background md:hidden"
           >
             <div className="px-8 py-6">
-              <div className="mb-6 flex justify-end">
+              <div className="mb-6 flex items-center justify-end gap-4">
+                <Link
+                  href={`${p}/cart`}
+                  onClick={() => setMobileOpen(false)}
+                  className="relative flex p-2 text-foreground-muted transition-colors hover:text-foreground"
+                  aria-label={t("nav.cart")}
+                >
+                  <ShoppingCart size={22} strokeWidth={1.5} />
+                  {cartReady && itemCount > 0 ? (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-charcoal">
+                      {itemCount > 99 ? "99+" : itemCount}
+                    </span>
+                  ) : null}
+                </Link>
                 <LanguageToggle />
               </div>
 

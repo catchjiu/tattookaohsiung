@@ -4,6 +4,7 @@ import Script from "next/script";
 import { headers } from "next/headers";
 import "./globals.css";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
+import { CartProvider } from "@/components/providers/CartProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { getSiteUrl } from "@/lib/site-url";
@@ -244,10 +245,12 @@ export default async function RootLayout({
           }}
         />
         <LanguageProvider initialLocale={locale}>
-          <div className="grain-overlay" aria-hidden />
-          <Navbar />
-          <main className="pt-16">{children}</main>
-          <Footer />
+          <CartProvider>
+            <div className="grain-overlay" aria-hidden />
+            <Navbar />
+            <main className="pt-16">{children}</main>
+            <Footer />
+          </CartProvider>
         </LanguageProvider>
       </body>
     </html>

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Users, Image, FileText, CalendarCheck, ArrowRight } from "lucide-react";
+import { Users, Image, FileText, CalendarCheck, ShoppingBag, ArrowRight } from "lucide-react";
 
 export default async function AdminDashboardPage() {
   const user = await getSession();
@@ -28,6 +28,7 @@ export default async function AdminDashboardPage() {
     { href: "/admin/artists", label: "Artists", icon: Users },
     { href: "/admin/gallery", label: "Gallery", icon: Image },
     { href: "/admin/blog", label: "Blog", icon: FileText },
+    { href: "/admin/shop", label: "Shop", icon: ShoppingBag },
   ];
 
   return (
@@ -39,7 +40,7 @@ export default async function AdminDashboardPage() {
         Welcome back. Manage your studio content below.
       </p>
 
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map(({ href, label, icon: Icon, count = 0, highlight = false }) => (
           <Link
             key={href}

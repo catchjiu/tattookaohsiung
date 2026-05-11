@@ -54,7 +54,8 @@ export type GCPFolder =
   | "booking-references"
   | "portfolio"
   | "artist-avatars"
-  | "blog-images";
+  | "blog-images"
+  | "shop-products";
 
 export async function uploadToGCP(
   file: File,
