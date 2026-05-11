@@ -4,7 +4,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Instagram, MapPin, Phone, MessageCircle } from "lucide-react";
+import {
+  Menu,
+  X,
+  Instagram,
+  Facebook,
+  MapPin,
+  Phone,
+  MessageCircle,
+} from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { LanguageToggle } from "./LanguageToggle";
 
@@ -18,6 +26,10 @@ const BASE_NAV = [
 
 const LINE_URL =
   process.env.NEXT_PUBLIC_LINE_ADD_URL ?? "https://line.me/ti/p/1b_FFfIqvY";
+
+const FACEBOOK_URL =
+  process.env.NEXT_PUBLIC_FACEBOOK_URL ??
+  "https://www.facebook.com/kaohsiungtattoo";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -101,6 +113,17 @@ export function Navbar() {
                           >
                             <Instagram size={16} strokeWidth={1.5} />
                             @tattookaohsiung
+                          </a>
+
+                          <a
+                            href={FACEBOOK_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 transition-colors hover:text-foreground"
+                            aria-label="Casper Tattoo Kaohsiung on Facebook"
+                          >
+                            <Facebook size={16} strokeWidth={1.5} />
+                            Facebook
                           </a>
 
                           <a
@@ -222,6 +245,18 @@ export function Navbar() {
                   >
                     <Instagram size={16} strokeWidth={1.5} />
                     @tattookaohsiung
+                  </a>
+
+                  <a
+                    href={FACEBOOK_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 transition-colors hover:text-foreground"
+                    aria-label="Casper Tattoo Kaohsiung on Facebook"
+                  >
+                    <Facebook size={16} strokeWidth={1.5} />
+                    Facebook
                   </a>
 
                   <a
