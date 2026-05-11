@@ -55,9 +55,9 @@ export default async function ZhTWArtistsPage() {
       <ArtistsContent
         artists={artists.map((a) => ({
           id: a.id,
-          name: a.name,
+          name: a.nameZh ?? a.name,
           slug: a.slug,
-          specialty: a.specialty,
+          specialty: a.specialtyZh ?? a.specialty,
           avatarUrl: a.avatarUrl,
           instagramUrl: a.instagramUrl,
         }))}

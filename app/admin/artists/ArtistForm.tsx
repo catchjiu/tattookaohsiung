@@ -90,6 +90,18 @@ export function ArtistForm({ artist, onClose }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-foreground-muted">
+              Name (中文)
+            </label>
+            <input
+              name="name_zh"
+              defaultValue={artist?.name_zh ?? ""}
+              placeholder="例如：卡斯柏"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
               Slug *
             </label>
             <input
@@ -114,12 +126,36 @@ export function ArtistForm({ artist, onClose }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-foreground-muted">
+              Bio (中文)
+            </label>
+            <textarea
+              name="bio_zh"
+              rows={3}
+              defaultValue={artist?.bio_zh ?? ""}
+              className="mt-1.5 w-full min-h-[88px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle resize-y"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
               Specialty
             </label>
             <input
               name="specialty"
               defaultValue={artist?.specialty ?? ""}
               placeholder="e.g. Traditional, Fine-line, Realism"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
+              Specialty (中文)
+            </label>
+            <input
+              name="specialty_zh"
+              defaultValue={artist?.specialty_zh ?? ""}
+              placeholder="例如：寫實、細線、傳統"
               className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
             />
           </div>

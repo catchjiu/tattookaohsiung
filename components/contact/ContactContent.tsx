@@ -10,7 +10,7 @@ type Props = {
 };
 
 export function ContactContent({ artists }: Props) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
 
   return (
     <div className="mx-auto max-w-6xl px-8">
@@ -60,6 +60,33 @@ export function ContactContent({ artists }: Props) {
                   @tattookaohsiung
                 </a>
               </p>
+            </div>
+            <div className="border-t border-border pt-8">
+              <h3 className="text-[11px] font-medium tracking-[0.2em] uppercase text-foreground-muted">
+                {locale === "zh-TW" ? "地點" : "Location"}
+              </h3>
+              <div className="mt-6 overflow-hidden rounded-none border-2 border-border bg-card">
+                <div className="relative aspect-[4/3] w-full">
+                  <iframe
+                    title="Casper Tattoo Kaohsiung map"
+                    src="https://www.google.com/maps?q=18%20Shijian%20Rd,%20Zuoying%20District,%20Kaohsiung%20City,%20813,%20Taiwan&output=embed"
+                    className="absolute inset-0 h-full w-full"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-4 border-t border-border px-5 py-4 text-sm text-foreground-muted">
+                  <span>No. 18, Shijian Rd, Zuoying District</span>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=18+Shijian+Rd,+Zuoying+District,+Kaohsiung+City,+813+Taiwan"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent hover:underline"
+                  >
+                    Open in Maps
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

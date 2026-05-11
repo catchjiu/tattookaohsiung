@@ -53,9 +53,12 @@ model Artist {
   id            String        @id @default(cuid())
   userId        String?       @unique @map("user_id")
   name          String
+  nameZh        String?       @map("name_zh")
   slug          String        @unique
   bio           String?       @db.Text
+  bioZh         String?       @db.Text @map("bio_zh")
   specialty     String?       // e.g. "Traditional", "Fine-line", "Realism"
+  specialtyZh   String?       @map("specialty_zh")
   status        ArtistStatus  @default(AVAILABLE)
   avatarUrl     String?       @map("avatar_url")
   instagramUrl  String?       @map("instagram_url")
@@ -102,10 +105,14 @@ model BlogPost {
   id             String    @id @default(cuid())
   slug           String    @unique
   title          String
+  titleZh        String?   @map("title_zh")
   excerpt        String?   @db.Text
+  excerptZh      String?   @db.Text @map("excerpt_zh")
   content        String    @db.Text
+  contentZh      String?   @db.Text @map("content_zh")
   coverImageUrl  String?   @map("cover_image_url")
   category       String?
+  categoryZh     String?   @map("category_zh")
   isPublished    Boolean   @default(false) @map("is_published")
   publishedAt    DateTime? @map("published_at")
   createdAt      DateTime  @default(now()) @map("created_at")

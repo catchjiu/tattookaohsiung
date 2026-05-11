@@ -19,6 +19,7 @@ type Props = {
 
 export function BlogContent({ posts }: Props) {
   const { t, locale } = useLanguage();
+  const blogBase = locale === "zh-TW" ? "/zh-TW/blog" : "/blog";
 
   return (
     <div className="mx-auto max-w-2xl px-8 py-24 md:py-32">
@@ -43,7 +44,7 @@ export function BlogContent({ posts }: Props) {
               key={post.id}
               className="border-t border-border pt-12 first:mt-0"
             >
-              <Link href={`/blog/${post.slug}`} className="group block">
+              <Link href={`${blogBase}/${post.slug}`} className="group block">
                 {post.coverImageUrl && (
                   <div className="aspect-[3/2] overflow-hidden bg-card-hover">
                     <img

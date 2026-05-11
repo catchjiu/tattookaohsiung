@@ -26,12 +26,17 @@ export function BlogPostForm({ post, onClose }: Props) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [content, setContent] = useState(post?.content ?? "");
+  const [contentZh, setContentZh] = useState(post?.content_zh ?? "");
   const [coverImageUrl, setCoverImageUrl] = useState(post?.cover_image_url ?? "");
   const isEditing = !!post;
 
   useEffect(() => {
     if (post?.content) setContent(post.content);
   }, [post?.content]);
+
+  useEffect(() => {
+    if (post?.content_zh) setContentZh(post.content_zh);
+  }, [post?.content_zh]);
 
   useEffect(() => {
     if (post?.cover_image_url) setCoverImageUrl(post.cover_image_url);
@@ -99,6 +104,17 @@ export function BlogPostForm({ post, onClose }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-foreground-muted">
+              Title (中文)
+            </label>
+            <input
+              name="title_zh"
+              defaultValue={post?.title_zh ?? ""}
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
               Slug *
             </label>
             <input
@@ -123,6 +139,18 @@ export function BlogPostForm({ post, onClose }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-foreground-muted">
+              Excerpt (中文)
+            </label>
+            <textarea
+              name="excerpt_zh"
+              rows={2}
+              defaultValue={post?.excerpt_zh ?? ""}
+              className="mt-1.5 w-full min-h-[60px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle resize-y"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
               Content *
             </label>
             <p className="mt-1.5 mb-2 text-xs text-foreground-muted">
@@ -130,6 +158,17 @@ export function BlogPostForm({ post, onClose }: Props) {
             </p>
             <RichTextEditor content={content} onChange={setContent} />
             <input type="hidden" name="content" value={content} required />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
+              Content (中文)
+            </label>
+            <p className="mt-1.5 mb-2 text-xs text-foreground-muted">
+              中文內容（可留空，前台會以英文顯示作為備用）。
+            </p>
+            <RichTextEditor content={contentZh} onChange={setContentZh} />
+            <input type="hidden" name="content_zh" value={contentZh} />
           </div>
 
           <div>
@@ -143,6 +182,7 @@ export function BlogPostForm({ post, onClose }: Props) {
               value={coverImageUrl || null}
               onChange={(url) => setCoverImageUrl(url ?? "")}
             />
+            <input type="hidden" name="cover_image_url" value={coverImageUrl} />
           </div>
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:gap-6">
@@ -154,6 +194,17 @@ export function BlogPostForm({ post, onClose }: Props) {
                 name="category"
                 defaultValue={post?.category ?? ""}
                 placeholder="Studio News, Aftercare Tips"
+                className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-foreground-muted">
+                Category (中文)
+              </label>
+              <input
+                name="category_zh"
+                defaultValue={post?.category_zh ?? ""}
+                placeholder="工作室消息、保養指南"
                 className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
               />
             </div>

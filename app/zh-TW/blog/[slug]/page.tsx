@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import { getSiteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { headers } from "next/headers";
+
+const SITE_URL = getSiteUrl();
 
 export async function generateMetadata({
   params,
@@ -13,8 +15,6 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const h = await headers();
-  const locale = h.get("x-locale") === "zh-TW" ? "zh-TW" : "en";
   const post = await prisma.blogPost.findFirst({
     where: { slug, isPublished: true, publishedAt: { not: null, lte: new Date() } },
     select: {
@@ -27,15 +27,15 @@ export async function generateMetadata({
     },
   });
   if (!post) return {};
-  const displayTitle = locale === "zh-TW" ? (post.titleZh ?? post.title) : post.title;
-  const displayExcerpt = locale === "zh-TW" ? (post.excerptZh ?? post.excerpt) : post.excerpt;
+  const displayTitle = post.titleZh ?? post.title;
+  const displayExcerpt = post.excerptZh ?? post.excerpt;
   return {
     title: displayTitle,
     description:
       displayExcerpt ??
-      `Read about ${displayTitle} on the Casper Tattoo Kaohsiung blog — tips, aftercare, and studio news.`,
+      `閱讀 ${displayTitle} — Casper Tattoo 高雄刺青工作室部落格，術後照顧與工作室消息。`,
     alternates: {
-      canonical: `/blog/${slug}`,
+      canonical: `/zh-TW/blog/${slug}`,
       languages: {
         en: `/blog/${slug}`,
         "zh-TW": `/zh-TW/blog/${slug}`,
@@ -45,7 +45,8 @@ export async function generateMetadata({
     openGraph: {
       title: `${displayTitle} | Casper Tattoo Kaohsiung`,
       description: displayExcerpt ?? undefined,
-      url: `/blog/${slug}`,
+      url: `${SITE_URL}/zh-TW/blog/${slug}`,
+      locale: "zh_TW",
       type: "article",
       publishedTime: post.publishedAt?.toISOString(),
       images: post.coverImageUrl
@@ -55,7 +56,7 @@ export async function generateMetadata({
   };
 }
 
-function BlogPostBody({ content }: { content: string }) {
+function BlogArticleBody({ content }: { content: string }) {
   const isHtml = /<[a-z][\s\S]*>/i.test(content);
   const html = isHtml
     ? content
@@ -83,14 +84,12 @@ function BlogPostBody({ content }: { content: string }) {
   );
 }
 
-export default async function BlogPostPage({
+export default async function ZhTWBlogPostPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const h = await headers();
-  const locale = h.get("x-locale") === "zh-TW" ? "zh-TW" : "en";
 
   const post = await prisma.blogPost.findFirst({
     where: {
@@ -102,17 +101,17 @@ export default async function BlogPostPage({
 
   if (!post) notFound();
 
-  const title = locale === "zh-TW" ? (post.titleZh ?? post.title) : post.title;
-  const category = locale === "zh-TW" ? (post.categoryZh ?? post.category) : post.category;
-  const content = locale === "zh-TW" ? (post.contentZh ?? post.content) : post.content;
+  const title = post.titleZh ?? post.title;
+  const category = post.categoryZh ?? post.category;
+  const content = post.contentZh ?? post.content;
 
   return (
     <div className="mx-auto max-w-2xl px-8 py-24 md:py-32">
       <Link
-        href="/blog"
+        href="/zh-TW/blog"
         className="mb-12 inline-block text-[13px] font-medium tracking-[0.12em] uppercase text-foreground-muted transition-colors hover:text-foreground"
       >
-        ← Back to Blog
+        ← 返回部落格
       </Link>
 
       <article>
@@ -129,7 +128,7 @@ export default async function BlogPostPage({
             dateTime={post.publishedAt.toISOString()}
             className="mt-4 block text-[14px] text-foreground-muted"
           >
-            {post.publishedAt.toLocaleDateString(locale === "zh-TW" ? "zh-TW" : "en-US", {
+            {post.publishedAt.toLocaleDateString("zh-TW", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -150,7 +149,7 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        <BlogPostBody content={content} />
+        <BlogArticleBody content={content} />
       </article>
     </div>
   );

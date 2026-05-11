@@ -75,6 +75,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/zh-TW/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
   ];
 
   const artistRoutes: MetadataRoute.Sitemap = artists.flatMap((artist) => [
@@ -92,12 +98,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]);
 
-  const blogRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${SITE_URL}/blog/${post.slug}`,
-    lastModified: post.updatedAt,
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
+  const blogRoutes: MetadataRoute.Sitemap = posts.flatMap((post) => [
+    {
+      url: `${SITE_URL}/blog/${post.slug}`,
+      lastModified: post.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/blog/${post.slug}`,
+      lastModified: post.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+  ]);
 
   return [...staticRoutes, ...artistRoutes, ...blogRoutes];
 }

@@ -16,15 +16,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const artist = await prisma.artist.findFirst({
     where: { slug, status: { not: "INACTIVE" } },
-    select: { name: true, specialty: true, avatarUrl: true },
+    select: { name: true, nameZh: true, specialty: true, specialtyZh: true, avatarUrl: true },
   });
   if (!artist) return {};
-  const specialty = artist.specialty ?? "刺青師";
+  const displayName = artist.nameZh ?? artist.name;
+  const specialty = artist.specialtyZh ?? artist.specialty ?? "刺青師";
   return {
-    title: `${artist.name}｜高雄專業刺青師 — ${specialty}`,
-    description: `${artist.name} 是 Casper Tattoo 高雄專業刺青師，專精${specialty}。查看作品集並預約諮詢，工作室位於高雄市左營區。高雄專業刺青師｜${specialty}高雄。`,
+    title: `${displayName}｜高雄專業刺青師 — ${specialty}`,
+    description: `${displayName} 是 Casper Tattoo 高雄專業刺青師，專精${specialty}。查看作品集並預約諮詢，工作室位於高雄市左營區。高雄專業刺青師｜${specialty}高雄。`,
     keywords: [
-      `${artist.name} 高雄刺青`,
+      `${displayName} 高雄刺青`,
       "高雄專業刺青師",
       "高雄刺青師",
       `${specialty}高雄`,
@@ -40,8 +41,8 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${artist.name}｜高雄專業刺青師 | Casper Tattoo`,
-      description: `${artist.name} — 高雄專業刺青師，專精${specialty}。查看作品集。`,
+      title: `${displayName}｜高雄專業刺青師 | Casper Tattoo`,
+      description: `${displayName} — 高雄專業刺青師，專精${specialty}。查看作品集。`,
       url: `/zh-TW/artists/${slug}`,
       locale: "zh_TW",
       images: artist.avatarUrl ? [{ url: artist.avatarUrl }] : undefined,
@@ -67,24 +68,27 @@ export default async function ZhTWArtistPage({
 
   if (!artist) notFound();
 
+  const displayName = artist.nameZh ?? artist.name;
+  const displaySpecialty = artist.specialtyZh ?? artist.specialty;
+
   const zhPersonSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
-    name: artist.name,
-    jobTitle: `高雄專業刺青師｜${artist.specialty ?? "刺青"}`,
+    name: displayName,
+    jobTitle: `高雄專業刺青師｜${displaySpecialty ?? "刺青"}`,
     worksFor: {
       "@type": "LocalBusiness",
       name: "Casper Tattoo Kaohsiung 高雄刺青",
       alternateName: ["Casper Tattoo Kaohsiung", "高雄刺青"],
       url: SITE_URL,
     },
-    knowsAbout: artist.specialty
+    knowsAbout: displaySpecialty
       ? [
-          `${artist.specialty}高雄`,
+          `${displaySpecialty}高雄`,
           "高雄專業刺青",
           "高雄刺青師",
           "professional tattoo Kaohsiung",
-          artist.specialty,
+          displaySpecialty,
         ]
       : ["高雄專業刺青", "高雄刺青師", "professional tattoo Kaohsiung"],
     url: `${SITE_URL}/zh-TW/artists/${artist.slug}`,
@@ -100,9 +104,9 @@ export default async function ZhTWArtistPage({
       />
       <ArtistDetailContent
         artist={{
-          name: artist.name,
+          name: displayName,
           slug: artist.slug,
-          specialty: artist.specialty,
+          specialty: displaySpecialty,
           avatarUrl: artist.avatarUrl,
           instagramUrl: artist.instagramUrl,
         }}

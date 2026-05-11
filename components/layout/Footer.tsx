@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Instagram, MapPin, Phone, MessageCircle } from "lucide-react";
+import { Instagram, Facebook, MapPin, Phone, MessageCircle } from "lucide-react";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 
 const FOOTER_PATHS = [
@@ -73,6 +73,17 @@ export function Footer() {
               >
                 <Instagram size={18} strokeWidth={1.5} />
                 @tattookaohsiung
+              </a>
+              <span className="text-foreground-subtle">·</span>
+              <a
+                href="https://www.facebook.com/kaohsiungtattoo"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 transition-colors hover:text-foreground"
+                aria-label="Casper Tattoo Kaohsiung on Facebook"
+              >
+                <Facebook size={18} strokeWidth={1.5} />
+                Facebook
               </a>
               <span className="text-foreground-subtle">·</span>
               <a

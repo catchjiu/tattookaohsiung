@@ -15,8 +15,11 @@ function slugify(text: string) {
 export async function createArtist(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();
   const slug = ((formData.get("slug") as string) || slugify(name || "")).trim() || slugify(name || "");
+  const nameZh = (formData.get("name_zh") as string)?.trim() || null;
   const bio = (formData.get("bio") as string)?.trim() || null;
+  const bioZh = (formData.get("bio_zh") as string)?.trim() || null;
   const specialty = (formData.get("specialty") as string)?.trim() || null;
+  const specialtyZh = (formData.get("specialty_zh") as string)?.trim() || null;
   const igHandle = (formData.get("ig_handle") as string)?.trim()?.replace(/^@/, "") || null;
   const avatarUrl = (formData.get("avatar_url") as string)?.trim() || null;
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
@@ -31,9 +34,12 @@ export async function createArtist(formData: FormData) {
     await prisma.artist.create({
       data: {
         name,
+        nameZh,
         slug: slug || slugify(name),
         bio,
+        bioZh,
         specialty,
+        specialtyZh,
         instagramUrl,
         avatarUrl,
         sortOrder,
@@ -52,8 +58,11 @@ export async function createArtist(formData: FormData) {
 export async function updateArtist(id: string, formData: FormData) {
   const name = (formData.get("name") as string)?.trim();
   const slug = (formData.get("slug") as string)?.trim();
+  const nameZh = (formData.get("name_zh") as string)?.trim() || null;
   const bio = (formData.get("bio") as string)?.trim() || null;
+  const bioZh = (formData.get("bio_zh") as string)?.trim() || null;
   const specialty = (formData.get("specialty") as string)?.trim() || null;
+  const specialtyZh = (formData.get("specialty_zh") as string)?.trim() || null;
   const igHandle = (formData.get("ig_handle") as string)?.trim()?.replace(/^@/, "") || null;
   const avatarUrl = (formData.get("avatar_url") as string)?.trim() || null;
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
@@ -69,9 +78,12 @@ export async function updateArtist(id: string, formData: FormData) {
       where: { id },
       data: {
         name,
+        nameZh,
         slug,
         bio,
+        bioZh,
         specialty,
+        specialtyZh,
         instagramUrl,
         avatarUrl,
         sortOrder,
