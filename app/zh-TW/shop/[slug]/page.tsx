@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ShopProductDetail } from "@/components/shop/ShopProductDetail";
+import { coerceSizeOptions } from "@/lib/shop-size-options";
 
 export const dynamic = "force-dynamic";
 
@@ -47,7 +48,7 @@ export default async function ShopProductPageZhTW({ params }: Props) {
       priceLabel={product.priceLabel}
       priceTwd={product.priceTwd}
       imageUrl={product.imageUrl}
-      sizeOptions={product.sizeOptions}
+      sizeOptions={coerceSizeOptions(product.sizeOptions as unknown)}
     />
   );
 }

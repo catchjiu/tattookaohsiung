@@ -10,6 +10,7 @@ import {
   normalizeCartSize,
   parseCartJson,
 } from "@/lib/cart-storage";
+import { coerceSizeOptions } from "@/lib/shop-size-options";
 
 const CHECKOUT_LIMIT = 8; // per minute per IP
 
@@ -52,7 +53,7 @@ export async function getShopCartPreview(
   for (const line of lines) {
     const p = byId.get(line.productId);
     if (!p) continue;
-    const allowed = new Set(p.sizeOptions);
+    const allowed = new Set(coerceSizeOptions(p.sizeOptions as unknown));
     const sz = normalizeCartSize(line.size);
     if (allowed.size > 0) {
       if (!sz || !allowed.has(sz)) continue;
@@ -141,7 +142,7 @@ export async function submitShopOrder(formData: FormData) {
     if (!p) continue;
     const qty = Math.min(99, Math.max(1, Math.floor(line.quantity)));
     const sz = normalizeCartSize(line.size);
-    const allowed = new Set(p.sizeOptions);
+    const allowed = new Set(coerceSizeOptions(p.sizeOptions as unknown));
 
     if (allowed.size > 0) {
       if (!sz || !allowed.has(sz)) {

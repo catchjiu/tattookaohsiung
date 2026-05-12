@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ProductList } from "./ProductList";
+import { coerceSizeOptions } from "@/lib/shop-size-options";
 
 export default async function AdminShopPage() {
   const user = await getSession();
@@ -20,7 +21,7 @@ export default async function AdminShopPage() {
     description_zh: p.descriptionZh,
     price_label: p.priceLabel,
     price_twd: p.priceTwd,
-    size_options: p.sizeOptions,
+    size_options: coerceSizeOptions(p.sizeOptions as unknown),
     image_url: p.imageUrl,
     sort_order: p.sortOrder,
     is_published: p.isPublished,

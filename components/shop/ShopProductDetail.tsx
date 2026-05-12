@@ -13,7 +13,8 @@ type Props = {
   priceLabel: string | null;
   priceTwd: number | null;
   imageUrl: string | null;
-  sizeOptions: string[];
+  /** Normalized on the server; still defensively handled here */
+  sizeOptions?: string[] | null;
 };
 
 export function ShopProductDetail({
@@ -23,14 +24,15 @@ export function ShopProductDetail({
   priceLabel,
   priceTwd,
   imageUrl,
-  sizeOptions,
+  sizeOptions = [],
 }: Props) {
   const { t, locale } = useLanguage();
   const { addItem } = useCart();
   const base = locale === "zh-TW" ? "/zh-TW/shop" : "/shop";
 
   const sortedSizes = useMemo(
-    () => [...sizeOptions].map((s) => s.trim()).filter(Boolean),
+    () =>
+      [...(sizeOptions ?? [])].map((s) => s.trim()).filter(Boolean),
     [sizeOptions]
   );
   const needsSize = sortedSizes.length > 0;

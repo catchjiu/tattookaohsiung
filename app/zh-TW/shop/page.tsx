@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ShopContent } from "@/components/shop/ShopContent";
+import { coerceSizeOptions } from "@/lib/shop-size-options";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +44,7 @@ export default async function ShopPageZhTW() {
     priceLabel: p.priceLabel,
     priceTwd: p.priceTwd,
     imageUrl: p.imageUrl,
-    sizeOptions: p.sizeOptions,
+    sizeOptions: coerceSizeOptions(p.sizeOptions as unknown),
   }));
 
   return <ShopContent products={products} />;
