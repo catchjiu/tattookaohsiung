@@ -136,6 +136,7 @@ model ShopProduct {
   descriptionZh   String?  @db.Text @map("description_zh")
   priceLabel      String?  @map("price_label")
   priceTwd        Int?     @map("price_twd")
+  sizeOptions     String[] @default([]) @map("size_options")
   imageUrl        String?  @map("image_url")
   sortOrder       Int      @default(0) @map("sort_order")
   isPublished     Boolean  @default(false) @map("is_published")
@@ -182,6 +183,7 @@ model ShopOrderItem {
   productId          String @map("product_id")
   productSlug        String @map("product_slug")
   nameSnapshot       String @map("name_snapshot")
+  sizeSnapshot       String? @map("size_snapshot")
   priceLabelSnapshot String? @map("price_label_snapshot")
   unitPriceTwd       Int?   @map("unit_price_twd")
   quantity           Int

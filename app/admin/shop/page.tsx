@@ -20,6 +20,7 @@ export default async function AdminShopPage() {
     description_zh: p.descriptionZh,
     price_label: p.priceLabel,
     price_twd: p.priceTwd,
+    size_options: p.sizeOptions,
     image_url: p.imageUrl,
     sort_order: p.sortOrder,
     is_published: p.isPublished,

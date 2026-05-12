@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useMemo } from "react";
+import { Plus } from "lucide-react";
+import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { AddToCartButton } from "@/components/shop/AddToCartButton";
 
 type Props = {
   productId: string;
@@ -11,6 +13,7 @@ type Props = {
   priceLabel: string | null;
   priceTwd: number | null;
   imageUrl: string | null;
+  sizeOptions: string[];
 };
 
 export function ShopProductDetail({
@@ -20,9 +23,20 @@ export function ShopProductDetail({
   priceLabel,
   priceTwd,
   imageUrl,
+  sizeOptions,
 }: Props) {
   const { t, locale } = useLanguage();
+  const { addItem } = useCart();
   const base = locale === "zh-TW" ? "/zh-TW/shop" : "/shop";
+
+  const sortedSizes = useMemo(
+    () => [...sizeOptions].map((s) => s.trim()).filter(Boolean),
+    [sizeOptions]
+  );
+  const needsSize = sortedSizes.length > 0;
+  const [selectedSize, setSelectedSize] = useState("");
+
+  const addDisabled = needsSize && !selectedSize;
 
   return (
     <div className="mx-auto max-w-4xl px-8 py-24 md:py-32">
@@ -64,8 +78,47 @@ export function ShopProductDetail({
           <div className="prose-shop mt-8 whitespace-pre-wrap text-[17px] leading-relaxed text-foreground-muted">
             {description}
           </div>
+
+          {needsSize ? (
+            <div className="mt-10">
+              <label
+                htmlFor="shop-size"
+                className="text-[12px] font-medium tracking-[0.15em] uppercase text-foreground-muted"
+              >
+                {t("shop.selectSize")}
+              </label>
+              <select
+                id="shop-size"
+                value={selectedSize}
+                onChange={(e) => setSelectedSize(e.target.value)}
+                className="mt-2 w-full max-w-xs rounded-md border-2 border-border bg-background px-3 py-3 text-foreground"
+              >
+                <option value="">{t("shop.sizePlaceholder")}</option>
+                {sortedSizes.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : null}
+
           <div className="mt-10">
-            <AddToCartButton productId={productId} />
+            <button
+              type="button"
+              disabled={addDisabled}
+              onClick={() =>
+                addItem(
+                  productId,
+                  1,
+                  needsSize ? selectedSize : null
+                )
+              }
+              className="flex w-full items-center justify-center gap-2 rounded-md border-2 border-accent bg-accent-muted py-3.5 text-sm font-semibold text-accent transition-colors hover:bg-accent hover:text-charcoal disabled:cursor-not-allowed disabled:opacity-45 touch-manipulation"
+            >
+              <Plus size={18} strokeWidth={2} />
+              {t("shop.addToCart")}
+            </button>
           </div>
         </div>
       </div>

@@ -5,24 +5,31 @@ import { prisma } from "@/lib/prisma";
 import { rateLimit, getClientIdentifier } from "@/lib/rate-limit";
 import { revalidatePath } from "next/cache";
 import type { CartLine } from "@/lib/cart-storage";
-import { parseCartJson } from "@/lib/cart-storage";
+import {
+  cartLineKey,
+  normalizeCartSize,
+  parseCartJson,
+} from "@/lib/cart-storage";
 
 const CHECKOUT_LIMIT = 8; // per minute per IP
 
-export type CartProductRow = {
-  id: string;
+export type CartPreviewLine = {
+  lineKey: string;
+  productId: string;
   slug: string;
   name: string;
   nameZh: string | null;
   priceLabel: string | null;
   priceTwd: number | null;
   imageUrl: string | null;
+  size: string | null;
+  quantity: number;
 };
 
 export async function getShopCartPreview(
   lines: CartLine[]
-): Promise<{ products: CartProductRow[]; quantities: Record<string, number> }> {
-  if (!lines.length) return { products: [], quantities: {} };
+): Promise<CartPreviewLine[]> {
+  if (!lines.length) return [];
 
   const ids = [...new Set(lines.map((l) => l.productId))];
   const products = await prisma.shopProduct.findMany({
@@ -35,20 +42,39 @@ export async function getShopCartPreview(
       priceLabel: true,
       priceTwd: true,
       imageUrl: true,
+      sizeOptions: true,
     },
   });
 
-  const quantities: Record<string, number> = {};
-  for (const l of lines) {
-    quantities[l.productId] = l.quantity;
+  const byId = new Map(products.map((p) => [p.id, p]));
+  const out: CartPreviewLine[] = [];
+
+  for (const line of lines) {
+    const p = byId.get(line.productId);
+    if (!p) continue;
+    const allowed = new Set(p.sizeOptions);
+    const sz = normalizeCartSize(line.size);
+    if (allowed.size > 0) {
+      if (!sz || !allowed.has(sz)) continue;
+    } else if (sz) {
+      continue;
+    }
+
+    out.push({
+      lineKey: cartLineKey(line),
+      productId: p.id,
+      slug: p.slug,
+      name: p.name,
+      nameZh: p.nameZh,
+      priceLabel: p.priceLabel,
+      priceTwd: p.priceTwd,
+      imageUrl: p.imageUrl,
+      size: sz,
+      quantity: line.quantity,
+    });
   }
 
-  const pos = new Map(ids.map((id, i) => [id, i]));
-  const sorted = [...products].sort(
-    (a, b) => (pos.get(a.id) ?? 0) - (pos.get(b.id) ?? 0)
-  );
-
-  return { products: sorted, quantities };
+  return out;
 }
 
 export async function submitShopOrder(formData: FormData) {
@@ -63,7 +89,8 @@ export async function submitShopOrder(formData: FormData) {
 
   const customerName = (formData.get("customer_name") as string)?.trim();
   const customerEmail = (formData.get("customer_email") as string)?.trim();
-  const customerPhone = (formData.get("customer_phone") as string)?.trim() || null;
+  const customerPhone =
+    (formData.get("customer_phone") as string)?.trim() || null;
   const shippingAddress =
     (formData.get("shipping_address") as string)?.trim() || null;
   const notes = (formData.get("notes") as string)?.trim() || null;
@@ -90,7 +117,9 @@ export async function submitShopOrder(formData: FormData) {
   });
 
   if (dbProducts.length !== ids.length) {
-    return { error: "Some products are no longer available. Refresh your cart." };
+    return {
+      error: "Some products are no longer available. Refresh your cart.",
+    };
   }
 
   const byId = new Map(dbProducts.map((p) => [p.id, p]));
@@ -98,6 +127,7 @@ export async function submitShopOrder(formData: FormData) {
     productId: string;
     productSlug: string;
     nameSnapshot: string;
+    sizeSnapshot: string | null;
     priceLabelSnapshot: string | null;
     unitPriceTwd: number | null;
     quantity: number;
@@ -110,6 +140,21 @@ export async function submitShopOrder(formData: FormData) {
     const p = byId.get(line.productId);
     if (!p) continue;
     const qty = Math.min(99, Math.max(1, Math.floor(line.quantity)));
+    const sz = normalizeCartSize(line.size);
+    const allowed = new Set(p.sizeOptions);
+
+    if (allowed.size > 0) {
+      if (!sz || !allowed.has(sz)) {
+        return {
+          error: `Choose a valid size for "${p.name}" or remove it from your cart.`,
+        };
+      }
+    } else if (sz) {
+      return {
+        error: `Refresh your cart — "${p.name}" no longer uses size options.`,
+      };
+    }
+
     const unit = p.priceTwd;
     const lineTotal =
       unit != null && Number.isFinite(unit) ? unit * qty : null;
@@ -118,6 +163,7 @@ export async function submitShopOrder(formData: FormData) {
       productId: p.id,
       productSlug: p.slug,
       nameSnapshot: p.name,
+      sizeSnapshot: sz,
       priceLabelSnapshot: p.priceLabel,
       unitPriceTwd: unit,
       quantity: qty,
@@ -149,6 +195,7 @@ export async function submitShopOrder(formData: FormData) {
             productId: i.productId,
             productSlug: i.productSlug,
             nameSnapshot: i.nameSnapshot,
+            sizeSnapshot: i.sizeSnapshot,
             priceLabelSnapshot: i.priceLabelSnapshot,
             unitPriceTwd: i.unitPriceTwd,
             quantity: i.quantity,
@@ -158,7 +205,13 @@ export async function submitShopOrder(formData: FormData) {
       },
     });
 
-    await sendShopOrderEmails(order.id, customerEmail, customerName, items, totalTwd);
+    await sendShopOrderEmails(
+      order.id,
+      customerEmail,
+      customerName,
+      items,
+      totalTwd
+    );
 
     revalidatePath("/admin/shop/orders");
 
@@ -177,6 +230,7 @@ async function sendShopOrderEmails(
   customerName: string,
   items: {
     nameSnapshot: string;
+    sizeSnapshot: string | null;
     priceLabelSnapshot: string | null;
     quantity: number;
     lineTotalTwd: number | null;
@@ -190,7 +244,7 @@ async function sendShopOrderEmails(
   const linesHtml = items
     .map(
       (i) =>
-        `<tr><td>${escapeHtml(i.nameSnapshot)}</td><td>${i.quantity}</td><td>${i.priceLabelSnapshot ? escapeHtml(i.priceLabelSnapshot) : "—"}</td><td>${i.lineTotalTwd != null ? `NT$ ${i.lineTotalTwd}` : "—"}</td></tr>`
+        `<tr><td>${escapeHtml(i.nameSnapshot)}</td><td>${i.sizeSnapshot ? escapeHtml(i.sizeSnapshot) : "—"}</td><td>${i.quantity}</td><td>${i.priceLabelSnapshot ? escapeHtml(i.priceLabelSnapshot) : "—"}</td><td>${i.lineTotalTwd != null ? `NT$ ${i.lineTotalTwd}` : "—"}</td></tr>`
     )
     .join("");
   const totalLine =
@@ -204,7 +258,7 @@ async function sendShopOrderEmails(
       <p>Thank you for your order. We've received it and will contact you shortly to confirm payment and pickup or shipping.</p>
       <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
       <table style="border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;">
-        <thead><tr><th align="left">Item</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead>
+        <thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead>
         <tbody>${linesHtml}</tbody>
       </table>
       ${totalLine}
@@ -247,7 +301,7 @@ async function sendShopOrderEmails(
               <p>New shop order.</p>
               <p><strong>ID:</strong> ${escapeHtml(orderId)}</p>
               <p><strong>Email:</strong> ${escapeHtml(customerEmail)}</p>
-              <table style="border-collapse:collapse;width:100%;">${linesHtml}</table>
+              <table style="border-collapse:collapse;width:100%;"><thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead><tbody>${linesHtml}</tbody></table>
               ${totalLine}
             `,
           }),

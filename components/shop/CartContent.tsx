@@ -8,15 +8,14 @@ import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import {
   getShopCartPreview,
-  type CartProductRow,
+  type CartPreviewLine,
 } from "@/app/shop/order-actions";
 
 export function CartContent() {
   const { t, locale } = useLanguage();
   const { lines, setQuantity, removeLine, ready } = useCart();
   const router = useRouter();
-  const [rows, setRows] = useState<CartProductRow[]>([]);
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
+  const [rows, setRows] = useState<CartPreviewLine[]>([]);
   const [loading, setLoading] = useState(true);
 
   const base = locale === "zh-TW" ? "/zh-TW" : "";
@@ -28,8 +27,7 @@ export function CartContent() {
       setLoading(true);
       const data = await getShopCartPreview(lines);
       if (!cancelled) {
-        setRows(data.products);
-        setQuantities(data.quantities);
+        setRows(data);
         setLoading(false);
       }
     })();
@@ -40,11 +38,10 @@ export function CartContent() {
 
   const totalTwd =
     rows.length > 0
-      ? rows.reduce((sum, p) => {
-          const q = quantities[p.id] ?? 0;
-          if (p.priceTwd == null) return null;
+      ? rows.reduce((sum, line) => {
+          if (line.priceTwd == null) return null;
           if (sum === null) return null;
-          return sum + p.priceTwd * q;
+          return sum + line.priceTwd * line.quantity;
         }, 0 as number | null)
       : 0;
 
@@ -56,13 +53,30 @@ export function CartContent() {
     );
   }
 
-  if (!lines.length || !rows.length) {
+  if (!lines.length) {
     return (
       <div className="mx-auto max-w-2xl px-8 py-24 md:py-32">
         <h1 className="font-serif text-3xl font-medium text-foreground">
           {t("shop.cartTitle")}
         </h1>
         <p className="mt-6 text-foreground-muted">{t("shop.cartEmpty")}</p>
+        <Link
+          href={`${base}/shop`}
+          className="mt-8 inline-block text-sm font-medium text-accent hover:underline"
+        >
+          {t("shop.continueShopping")} →
+        </Link>
+      </div>
+    );
+  }
+
+  if (!rows.length) {
+    return (
+      <div className="mx-auto max-w-2xl px-8 py-24 md:py-32">
+        <h1 className="font-serif text-3xl font-medium text-foreground">
+          {t("shop.cartTitle")}
+        </h1>
+        <p className="mt-6 text-foreground-muted">{t("shop.cartStale")}</p>
         <Link
           href={`${base}/shop`}
           className="mt-8 inline-block text-sm font-medium text-accent hover:underline"
@@ -81,13 +95,13 @@ export function CartContent() {
 
       <ul className="mt-10 divide-y divide-border border-t border-border">
         {rows.map((p) => {
-          const q = quantities[p.id] ?? 1;
+          const q = p.quantity;
           const lineTotal =
             p.priceTwd != null ? p.priceTwd * q : null;
           const name = locale === "zh-TW" ? (p.nameZh ?? p.name) : p.name;
           return (
             <li
-              key={p.id}
+              key={p.lineKey}
               className="flex gap-4 py-8 first:pt-6"
             >
               <div className="relative h-24 w-20 shrink-0 overflow-hidden bg-charcoal">
@@ -107,6 +121,11 @@ export function CartContent() {
                 >
                   {name}
                 </Link>
+                {p.size ? (
+                  <p className="mt-1 text-sm text-foreground-muted">
+                    {t("shop.size")}: {p.size}
+                  </p>
+                ) : null}
                 {p.priceLabel && (
                   <p className="mt-1 text-sm text-foreground-muted">
                     {p.priceLabel}
@@ -121,14 +140,18 @@ export function CartContent() {
                       max={99}
                       value={q}
                       onChange={(e) =>
-                        setQuantity(p.id, Number(e.target.value) || 1)
+                        setQuantity(
+                          p.productId,
+                          Number(e.target.value) || 1,
+                          p.size
+                        )
                       }
                       className="w-16 rounded border border-border bg-background px-2 py-1 text-foreground"
                     />
                   </label>
                   <button
                     type="button"
-                    onClick={() => removeLine(p.id)}
+                    onClick={() => removeLine(p.productId, p.size)}
                     className="inline-flex items-center gap-1 text-sm text-red-400 hover:underline"
                   >
                     <Trash2 size={14} />

@@ -20,6 +20,22 @@ function parseOptionalPriceTwd(raw: string | null | undefined): number | null {
   return n;
 }
 
+function parseSizeOptions(formData: FormData): string[] {
+  const raw = (formData.get("size_options") as string)?.trim() ?? "";
+  if (!raw) return [];
+  const parts = raw.split(/[,，\n\r]+/);
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const part of parts) {
+    const s = part.trim().slice(0, 32);
+    if (!s || seen.has(s)) continue;
+    seen.add(s);
+    out.push(s);
+    if (out.length >= 32) break;
+  }
+  return out;
+}
+
 export async function createShopProduct(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();
   const slug =
@@ -37,6 +53,7 @@ export async function createShopProduct(formData: FormData) {
   const sortOrderRaw = (formData.get("sort_order") as string)?.trim() ?? "0";
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const isPublished = formData.get("is_published") === "on";
+  const sizeOptions = parseSizeOptions(formData);
 
   if (!name) return { error: "Name is required" };
   if (!description) return { error: "Description (English) is required" };
@@ -53,6 +70,7 @@ export async function createShopProduct(formData: FormData) {
         descriptionZh,
         priceLabel,
         priceTwd,
+        sizeOptions,
         imageUrl,
         sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
         isPublished,
@@ -88,6 +106,7 @@ export async function updateShopProduct(id: string, formData: FormData) {
   const sortOrderRaw = (formData.get("sort_order") as string)?.trim() ?? "0";
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const isPublished = formData.get("is_published") === "on";
+  const sizeOptions = parseSizeOptions(formData);
 
   if (!name || !slug) return { error: "Name and slug are required" };
   if (!description) return { error: "Description (English) is required" };
@@ -109,6 +128,7 @@ export async function updateShopProduct(id: string, formData: FormData) {
         descriptionZh,
         priceLabel,
         priceTwd,
+        sizeOptions,
         imageUrl,
         sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
         isPublished,

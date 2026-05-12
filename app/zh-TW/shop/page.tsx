@@ -31,6 +31,7 @@ export default async function ShopPageZhTW() {
       priceLabel: true,
       priceTwd: true,
       imageUrl: true,
+      sizeOptions: true,
     },
   });
 
@@ -42,6 +43,7 @@ export default async function ShopPageZhTW() {
     priceLabel: p.priceLabel,
     priceTwd: p.priceTwd,
     imageUrl: p.imageUrl,
+    sizeOptions: p.sizeOptions,
   }));
 
   return <ShopContent products={products} />;

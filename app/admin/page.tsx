@@ -8,27 +8,54 @@ export default async function AdminDashboardPage() {
   const user = await getSession();
   if (!user) redirect("/admin/login");
 
-  const [bookingCount, recentBookings] = await Promise.all([
-    prisma.bookingRequest.count({ where: { status: "PENDING" } }),
-    prisma.bookingRequest.findMany({
-      select: {
-        id: true,
-        clientName: true,
-        clientEmail: true,
-        conceptDescription: true,
-        createdAt: true,
-      },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-  ]);
+  const [bookingCount, recentBookings, shopPendingCount, recentShopOrders] =
+    await Promise.all([
+      prisma.bookingRequest.count({ where: { status: "PENDING" } }),
+      prisma.bookingRequest.findMany({
+        select: {
+          id: true,
+          clientName: true,
+          clientEmail: true,
+          conceptDescription: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      }),
+      prisma.shopOrder.count({ where: { status: "PENDING" } }),
+      prisma.shopOrder.findMany({
+        select: {
+          id: true,
+          customerName: true,
+          customerEmail: true,
+          totalTwd: true,
+          status: true,
+          createdAt: true,
+          _count: { select: { items: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      }),
+    ]);
 
   const cards = [
-    { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck, count: bookingCount, highlight: bookingCount > 0 },
+    {
+      href: "/admin/bookings",
+      label: "Bookings",
+      icon: CalendarCheck,
+      count: bookingCount,
+      highlight: bookingCount > 0,
+    },
     { href: "/admin/artists", label: "Artists", icon: Users },
     { href: "/admin/gallery", label: "Gallery", icon: Image },
     { href: "/admin/blog", label: "Blog", icon: FileText },
-    { href: "/admin/shop", label: "Shop", icon: ShoppingBag },
+    {
+      href: "/admin/shop",
+      label: "Shop",
+      icon: ShoppingBag,
+      count: shopPendingCount,
+      highlight: shopPendingCount > 0,
+    },
   ];
 
   return (
@@ -64,8 +91,18 @@ export default async function AdminDashboardPage() {
                   {label}
                 </span>
                 {count !== undefined && (
-                  <span className={`ml-2 text-sm ${count > 0 ? "text-[var(--accent-gold)] font-medium" : "text-[var(--muted)]"}`}>
-                    ({count} pending)
+                  <span
+                    className={`ml-2 text-sm ${
+                      count > 0
+                        ? "text-[var(--accent-gold)] font-medium"
+                        : "text-[var(--muted)]"
+                    }`}
+                  >
+                    (
+                    {label === "Shop"
+                      ? `${count} order${count !== 1 ? "s" : ""} pending`
+                      : `${count} pending`}
+                    )
                   </span>
                 )}
               </div>
@@ -120,6 +157,80 @@ export default async function AdminDashboardPage() {
         ) : (
           <p className="mt-4 text-sm text-[var(--muted)]">
             No bookings yet. New requests will appear here.
+          </p>
+        )}
+      </div>
+
+      {/* Recent shop orders */}
+      <div className="mt-8 rounded-md border border-[var(--border)] bg-[var(--card)] p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="font-serif text-lg font-medium text-[var(--foreground)]">
+            Recent shop orders
+          </h2>
+          <Link
+            href="/admin/shop/orders"
+            className="text-sm font-medium text-[var(--accent-gold)] hover:underline"
+          >
+            View all →
+          </Link>
+        </div>
+        {recentShopOrders.length > 0 ? (
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-[560px]">
+              <thead>
+                <tr className="border-b border-[var(--border)]">
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
+                    Name
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
+                    Email
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
+                    Items
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
+                    Total
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
+                    Date
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentShopOrders.map((o) => (
+                  <tr
+                    key={o.id}
+                    className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--card-hover)]"
+                  >
+                    <td className="px-4 py-3 font-medium">{o.customerName}</td>
+                    <td className="px-4 py-3 text-sm text-[var(--muted)]">
+                      {o.customerEmail}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[var(--muted)]">
+                      {o._count.items}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {o.totalTwd != null ? `NT$ ${o.totalTwd}` : "—"}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <span className="rounded-full bg-[var(--accent-gold-muted)] px-2 py-0.5 text-xs font-medium text-[var(--accent-gold)]">
+                        {o.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[var(--muted)]">
+                      {o.createdAt.toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="mt-4 text-sm text-[var(--muted)]">
+            No shop orders yet. New checkout submissions will appear here.
           </p>
         )}
       </div>

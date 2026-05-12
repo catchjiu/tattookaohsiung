@@ -58,6 +58,7 @@ export type ShopProduct = {
   description_zh?: string | null;
   price_label: string | null;
   price_twd?: number | null;
+  size_options?: string[];
   image_url: string | null;
   sort_order: number;
   is_published: boolean;

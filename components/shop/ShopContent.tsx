@@ -12,6 +12,7 @@ export type ShopProductCard = {
   priceLabel: string | null;
   priceTwd: number | null;
   imageUrl: string | null;
+  sizeOptions: string[];
 };
 
 type Props = {
@@ -86,7 +87,16 @@ export function ShopContent({ products }: Props) {
                 </div>
               </Link>
               <div className="border-t border-border p-4 pt-0">
-                <AddToCartButton productId={p.id} variant="compact" />
+                {p.sizeOptions.length > 0 ? (
+                  <Link
+                    href={`${base}/${p.slug}`}
+                    className="inline-flex w-full items-center justify-center rounded-md border border-accent bg-accent-muted py-2.5 text-xs font-semibold uppercase tracking-wide text-accent transition-colors hover:bg-accent hover:text-charcoal"
+                  >
+                    {t("shop.chooseSize")}
+                  </Link>
+                ) : (
+                  <AddToCartButton productId={p.id} variant="compact" />
+                )}
               </div>
             </article>
           ))

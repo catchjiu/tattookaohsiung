@@ -47,6 +47,7 @@ export default async function ShopProductPageZhTW({ params }: Props) {
       priceLabel={product.priceLabel}
       priceTwd={product.priceTwd}
       imageUrl={product.imageUrl}
+      sizeOptions={product.sizeOptions}
     />
   );
 }

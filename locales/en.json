@@ -72,7 +72,12 @@
     "orderSuccessTitle": "Thank you",
     "orderSuccessBody": "We received your order and will be in touch shortly.",
     "orderReference": "Order reference",
-    "backToShopFromSuccess": "Back to shop"
+    "backToShopFromSuccess": "Back to shop",
+    "selectSize": "Size",
+    "sizePlaceholder": "Select a size",
+    "size": "Size",
+    "chooseSize": "Choose size",
+    "cartStale": "Some cart lines are out of date (for example, a size changed). Clear the cart or remove old items and try again."
   },
   "contact": {
     "label": "Concierge",

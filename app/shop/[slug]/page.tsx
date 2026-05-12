@@ -52,6 +52,7 @@ export default async function ShopProductPage({ params }: Props) {
       priceLabel={product.priceLabel}
       priceTwd={product.priceTwd}
       imageUrl={product.imageUrl}
+      sizeOptions={product.sizeOptions}
     />
   );
 }

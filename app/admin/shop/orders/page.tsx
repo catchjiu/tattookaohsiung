@@ -22,6 +22,7 @@ export default async function AdminShopOrdersPage() {
       items: {
         select: {
           nameSnapshot: true,
+          sizeSnapshot: true,
           quantity: true,
           lineTotalTwd: true,
         },
@@ -112,7 +113,9 @@ export default async function AdminShopOrdersPage() {
                     <ul className="max-w-xs list-inside list-disc space-y-0.5 text-xs">
                       {o.items.map((i, idx) => (
                         <li key={idx}>
-                          {i.nameSnapshot} × {i.quantity}{" "}
+                          {i.nameSnapshot}
+                          {i.sizeSnapshot ? ` (${i.sizeSnapshot})` : ""} ×{" "}
+                          {i.quantity}{" "}
                           <span className="text-foreground-subtle">
                             ({formatTwd(i.lineTotalTwd)})
                           </span>

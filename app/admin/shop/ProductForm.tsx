@@ -179,6 +179,27 @@ export function ProductForm({ product, onClose }: Props) {
 
               <div>
                 <label className="block text-sm font-medium text-foreground-muted">
+                  Sizes (optional)
+                </label>
+                <textarea
+                  name="size_options"
+                  rows={2}
+                  placeholder="S, M, L, XL — comma or newline separated"
+                  defaultValue={
+                    product?.size_options?.length
+                      ? product.size_options.join(", ")
+                      : ""
+                  }
+                  className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
+                />
+                <p className="mt-1 text-xs text-foreground-muted">
+                  If set, customers must pick a size on the product page before
+                  adding to cart.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground-muted">
                   Sort order
                 </label>
                 <input
