@@ -67,6 +67,10 @@ export function ProductList({ products }: Props) {
                     NT$ {p.price_twd} (cart)
                   </div>
                 ) : null}
+                <div className="mt-1 text-xs text-foreground-muted">
+                  Stock:{" "}
+                  {p.stock_quantity != null ? p.stock_quantity : "∞ unlimited"}
+                </div>
               </div>
               <div className="flex items-center justify-between gap-2 border-t border-border pt-3">
                 <span
@@ -114,6 +118,9 @@ export function ProductList({ products }: Props) {
                 Price
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-foreground-muted">
+                Stock
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-foreground-muted">
                 Status
               </th>
               <th className="px-4 py-3 text-right text-sm font-medium text-foreground-muted">
@@ -125,7 +132,7 @@ export function ProductList({ products }: Props) {
             {products.length === 0 ? (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="px-4 py-12 text-center text-foreground-muted"
                 >
                   No products yet.
@@ -148,6 +155,9 @@ export function ProductList({ products }: Props) {
                     {p.price_twd != null ? (
                       <div className="mt-0.5 text-xs">NT$ {p.price_twd}</div>
                     ) : null}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-foreground-muted">
+                    {p.stock_quantity != null ? p.stock_quantity : "—"}
                   </td>
                   <td className="px-4 py-3">
                     <span

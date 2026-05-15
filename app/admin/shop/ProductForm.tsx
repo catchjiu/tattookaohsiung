@@ -179,6 +179,29 @@ export function ProductForm({ product, onClose }: Props) {
 
               <div>
                 <label className="block text-sm font-medium text-foreground-muted">
+                  Stock quantity (optional)
+                </label>
+                <input
+                  name="stock_quantity"
+                  type="number"
+                  min={0}
+                  step={1}
+                  placeholder="Leave blank for unlimited"
+                  defaultValue={
+                    product?.stock_quantity != null
+                      ? String(product.stock_quantity)
+                      : ""
+                  }
+                  className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
+                />
+                <p className="mt-1 text-xs text-foreground-muted">
+                  When set, checkout deducts stock; customers cannot exceed this
+                  total per product (all sizes share one pool).
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground-muted">
                   Sizes (optional)
                 </label>
                 <textarea

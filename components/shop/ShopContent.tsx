@@ -13,6 +13,8 @@ export type ShopProductCard = {
   priceTwd: number | null;
   imageUrl: string | null;
   sizeOptions: string[];
+  /** Null = unlimited */
+  stockQuantity: number | null;
 };
 
 type Props = {
@@ -95,7 +97,11 @@ export function ShopContent({ products }: Props) {
                     {t("shop.chooseSize")}
                   </Link>
                 ) : (
-                  <AddToCartButton productId={p.id} variant="compact" />
+                  <AddToCartButton
+                    productId={p.id}
+                    variant="compact"
+                    stockQuantity={p.stockQuantity}
+                  />
                 )}
               </div>
             </article>

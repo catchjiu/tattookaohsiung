@@ -20,6 +20,14 @@ function parseOptionalPriceTwd(raw: string | null | undefined): number | null {
   return n;
 }
 
+function parseOptionalStockQuantity(raw: string | null | undefined): number | null {
+  const s = raw?.trim();
+  if (!s) return null;
+  const n = Number.parseInt(s, 10);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return n;
+}
+
 function parseSizeOptions(formData: FormData): string[] {
   const raw = (formData.get("size_options") as string)?.trim() ?? "";
   if (!raw) return [];
@@ -54,6 +62,9 @@ export async function createShopProduct(formData: FormData) {
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const isPublished = formData.get("is_published") === "on";
   const sizeOptions = parseSizeOptions(formData);
+  const stockQuantity = parseOptionalStockQuantity(
+    formData.get("stock_quantity") as string | null
+  );
 
   if (!name) return { error: "Name is required" };
   if (!description) return { error: "Description (English) is required" };
@@ -71,6 +82,7 @@ export async function createShopProduct(formData: FormData) {
         priceLabel,
         priceTwd,
         sizeOptions,
+        stockQuantity,
         imageUrl,
         sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
         isPublished,
@@ -107,6 +119,9 @@ export async function updateShopProduct(id: string, formData: FormData) {
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const isPublished = formData.get("is_published") === "on";
   const sizeOptions = parseSizeOptions(formData);
+  const stockQuantity = parseOptionalStockQuantity(
+    formData.get("stock_quantity") as string | null
+  );
 
   if (!name || !slug) return { error: "Name and slug are required" };
   if (!description) return { error: "Description (English) is required" };
@@ -129,6 +144,7 @@ export async function updateShopProduct(id: string, formData: FormData) {
         priceLabel,
         priceTwd,
         sizeOptions,
+        stockQuantity,
         imageUrl,
         sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
         isPublished,

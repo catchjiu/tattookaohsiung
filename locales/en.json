@@ -82,7 +82,11 @@
     "sizePlaceholder": "Select a size",
     "size": "Size",
     "chooseSize": "Choose size",
-    "cartStale": "Some cart lines are out of date (for example, a size changed). Clear the cart or remove old items and try again."
+    "cartStale": "Some cart lines are out of date (for example, a size changed). Clear the cart or remove old items and try again.",
+    "outOfStock": "Out of stock",
+    "maxInCart": "Maximum in cart",
+    "stockRemaining": "{count} available (inventory shared across sizes)",
+    "cartExceedsStock": "Quantity exceeds stock — reduce quantities or remove items."
   },
   "contact": {
     "label": "Concierge",

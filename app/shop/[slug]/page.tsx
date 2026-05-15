@@ -54,6 +54,7 @@ export default async function ShopProductPage({ params }: Props) {
       priceTwd={product.priceTwd}
       imageUrl={product.imageUrl}
       sizeOptions={coerceSizeOptions(product.sizeOptions as unknown)}
+      stockQuantity={product.stockQuantity}
     />
   );
 }

@@ -82,7 +82,11 @@
     "sizePlaceholder": "請選擇尺寸",
     "size": "尺寸",
     "chooseSize": "選擇尺寸",
-    "cartStale": "購物車內部分項目已失效（例如尺寸選項已變更）。請清空購物車或移除舊項目後再試。"
+    "cartStale": "購物車內部分項目已失效（例如尺寸選項已變更）。請清空購物車或移除舊項目後再試。",
+    "outOfStock": "售罄",
+    "maxInCart": "已達購買上限",
+    "stockRemaining": "尚可購買 {count} 件（各尺寸共用庫存）",
+    "cartExceedsStock": "數量超過庫存，請調整數量或移除項目。"
   },
   "contact": {
     "label": "預約諮詢",

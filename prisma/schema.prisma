@@ -140,6 +140,8 @@ model ShopProduct {
   priceLabel      String?  @map("price_label")
   priceTwd        Int?     @map("price_twd")
   sizeOptions     String[] @default([]) @map("size_options")
+  /** Null = unlimited / not tracked */
+  stockQuantity   Int?     @map("stock_quantity")
   imageUrl        String?  @map("image_url")
   sortOrder       Int      @default(0) @map("sort_order")
   isPublished     Boolean  @default(false) @map("is_published")

@@ -15,6 +15,9 @@ import { SHOP_BANK_TRANSFER_DISPLAY } from "@/lib/shop-bank-transfer";
 
 const CHECKOUT_LIMIT = 8; // per minute per IP
 
+const STOCK_ERROR_MSG =
+  "Not enough stock for one or more items. Refresh your cart and try again. / 部分商品庫存不足，請重新整理購物車後再試。";
+
 export type CartPreviewLine = {
   lineKey: string;
   productId: string;
@@ -26,12 +29,22 @@ export type CartPreviewLine = {
   imageUrl: string | null;
   size: string | null;
   quantity: number;
+  /** Null = unlimited inventory */
+  stockQuantity: number | null;
+  qtyForProductInCart: number;
+  exceedsStock: boolean;
 };
 
 export async function getShopCartPreview(
   lines: CartLine[]
 ): Promise<CartPreviewLine[]> {
   if (!lines.length) return [];
+
+  const qtyByProduct = new Map<string, number>();
+  for (const cl of lines) {
+    const q = Math.min(99, Math.max(1, Math.floor(cl.quantity)));
+    qtyByProduct.set(cl.productId, (qtyByProduct.get(cl.productId) ?? 0) + q);
+  }
 
   const ids = [...new Set(lines.map((l) => l.productId))];
   const products = await prisma.shopProduct.findMany({
@@ -45,6 +58,7 @@ export async function getShopCartPreview(
       priceTwd: true,
       imageUrl: true,
       sizeOptions: true,
+      stockQuantity: true,
     },
   });
 
@@ -54,6 +68,7 @@ export async function getShopCartPreview(
   for (const line of lines) {
     const p = byId.get(line.productId);
     if (!p) continue;
+    if (p.stockQuantity != null && p.stockQuantity <= 0) continue;
     const allowed = new Set(coerceSizeOptions(p.sizeOptions as unknown));
     const sz = normalizeCartSize(line.size);
     if (allowed.size > 0) {
@@ -61,6 +76,10 @@ export async function getShopCartPreview(
     } else if (sz) {
       continue;
     }
+
+    const qtyTotalThisProduct = qtyByProduct.get(p.id) ?? 0;
+    const exceedsStock =
+      p.stockQuantity != null && qtyTotalThisProduct > p.stockQuantity;
 
     out.push({
       lineKey: cartLineKey(line),
@@ -72,7 +91,10 @@ export async function getShopCartPreview(
       priceTwd: p.priceTwd,
       imageUrl: p.imageUrl,
       size: sz,
-      quantity: line.quantity,
+      quantity: Math.min(99, Math.max(1, Math.floor(line.quantity))),
+      stockQuantity: p.stockQuantity,
+      qtyForProductInCart: qtyTotalThisProduct,
+      exceedsStock,
     });
   }
 
@@ -192,29 +214,60 @@ export async function submitShopOrder(formData: FormData) {
     return { error: "Could not build order." };
   }
 
+  const qtyNeed = new Map<string, number>();
+  for (const i of items) {
+    qtyNeed.set(i.productId, (qtyNeed.get(i.productId) ?? 0) + i.quantity);
+  }
+
+  for (const [pid, needed] of qtyNeed) {
+    const p = byId.get(pid);
+    if (p?.stockQuantity != null && p.stockQuantity < needed) {
+      return { error: STOCK_ERROR_MSG };
+    }
+  }
+
   try {
-    const order = await prisma.shopOrder.create({
-      data: {
-        customerName,
-        customerEmail,
-        customerPhone,
-        shippingAddress,
-        transferSenderLastFive,
-        notes,
-        totalTwd,
-        items: {
-          create: items.map((i) => ({
-            productId: i.productId,
-            productSlug: i.productSlug,
-            nameSnapshot: i.nameSnapshot,
-            sizeSnapshot: i.sizeSnapshot,
-            priceLabelSnapshot: i.priceLabelSnapshot,
-            unitPriceTwd: i.unitPriceTwd,
-            quantity: i.quantity,
-            lineTotalTwd: i.lineTotalTwd,
-          })),
+    const order = await prisma.$transaction(async (tx) => {
+      const created = await tx.shopOrder.create({
+        data: {
+          customerName,
+          customerEmail,
+          customerPhone,
+          shippingAddress,
+          transferSenderLastFive,
+          notes,
+          totalTwd,
+          items: {
+            create: items.map((i) => ({
+              productId: i.productId,
+              productSlug: i.productSlug,
+              nameSnapshot: i.nameSnapshot,
+              sizeSnapshot: i.sizeSnapshot,
+              priceLabelSnapshot: i.priceLabelSnapshot,
+              unitPriceTwd: i.unitPriceTwd,
+              quantity: i.quantity,
+              lineTotalTwd: i.lineTotalTwd,
+            })),
+          },
         },
-      },
+      });
+
+      for (const [productId, needed] of qtyNeed) {
+        const row = await tx.shopProduct.findUnique({
+          where: { id: productId },
+          select: { stockQuantity: true },
+        });
+        if (!row || row.stockQuantity == null) continue;
+        const updated = await tx.shopProduct.updateMany({
+          where: { id: productId, stockQuantity: { gte: needed } },
+          data: { stockQuantity: { decrement: needed } },
+        });
+        if (updated.count !== 1) {
+          throw new Error("INSUFFICIENT_STOCK");
+        }
+      }
+
+      return created;
     });
 
     await sendShopOrderEmails(
@@ -227,10 +280,16 @@ export async function submitShopOrder(formData: FormData) {
     );
 
     revalidatePath("/admin/shop/orders");
+    revalidatePath("/admin/shop");
+    revalidatePath("/shop");
+    revalidatePath("/zh-TW/shop");
 
     return { success: true, orderId: order.id };
   } catch (err) {
     console.error("[ShopOrder]", err);
+    if (err instanceof Error && err.message === "INSUFFICIENT_STOCK") {
+      return { error: STOCK_ERROR_MSG };
+    }
     return {
       error: err instanceof Error ? err.message : "Order could not be placed.",
     };
@@ -261,26 +320,51 @@ async function sendShopOrderEmails(
         `<tr><td>${escapeHtml(i.nameSnapshot)}</td><td>${i.sizeSnapshot ? escapeHtml(i.sizeSnapshot) : "—"}</td><td>${i.quantity}</td><td>${i.priceLabelSnapshot ? escapeHtml(i.priceLabelSnapshot) : "—"}</td><td>${i.lineTotalTwd != null ? `NT$ ${i.lineTotalTwd}` : "—"}</td></tr>`
     )
     .join("");
-  const totalLine =
+
+  const totalLineEn =
     totalTwd != null
       ? `<p><strong>Total:</strong> NT$ ${totalTwd}</p>`
-      : `<p><strong>Total:</strong> We will confirm the amount (some items need a custom quote).</p>`;
+      : `<p><strong>Total:</strong> We will confirm the amount (some items may need a custom quote).</p>`;
+
+  const totalLineZh =
+    totalTwd != null
+      ? `<p><strong>總計：</strong> NT$ ${totalTwd}</p>`
+      : `<p><strong>總計：</strong> 部分商品可能需要報價確認，金額將另為通知。</p>`;
 
   const customerHtml = `
-    <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto;">
-      <p>Hi ${escapeHtml(customerName)},</p>
-      <p>Thank you for your order. We've received it and will contact you shortly to confirm payment and pickup or shipping.</p>
-      <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
-      <p><strong>Bank transfer:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
-      <p><strong>Transfer reference (your account, last 5 digits):</strong> ${escapeHtml(transferSenderLastFive)}</p>
-      <table style="border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;">
-        <thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead>
-        <tbody>${linesHtml}</tbody>
-      </table>
-      ${totalLine}
-      <p>— Casper Tattoo Kaohsiung</p>
+    <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; color:#111;">
+      <div style="margin-bottom:28px;">
+        <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin:0 0 12px;">English</p>
+        <p>Hi ${escapeHtml(customerName)},</p>
+        <p>Thank you for your purchase — we've received your order and will contact you shortly to confirm payment and pickup or shipping.</p>
+        <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
+        <p><strong>Bank transfer:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
+        <p><strong>Transfer reference (last 5 digits of your sending account):</strong> ${escapeHtml(transferSenderLastFive)}</p>
+        <table style="border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;">
+          <thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead>
+          <tbody>${linesHtml}</tbody>
+        </table>
+        ${totalLineEn}
+      </div>
+      <hr style="border:none;border-top:1px solid #ddd;margin:28px 0;" />
+      <div>
+        <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin:0 0 12px;">中文</p>
+        <p>${escapeHtml(customerName)}，您好：</p>
+        <p>感謝您的購買。我們已收到您的訂單，將盡快與您聯繫，確認付款方式以及取貨或寄送細節。</p>
+        <p><strong>訂單編號：</strong> ${escapeHtml(orderId)}</p>
+        <p><strong>銀行轉帳資訊：</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
+        <p><strong>轉帳核對（您「轉出帳戶」末五碼）：</strong> ${escapeHtml(transferSenderLastFive)}</p>
+        <table style="border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;">
+          <thead><tr><th align="left">項目</th><th align="left">尺寸</th><th align="right">數量</th><th align="right">單價</th><th align="right">小計</th></tr></thead>
+          <tbody>${linesHtml}</tbody>
+        </table>
+        ${totalLineZh}
+      </div>
+      <p style="margin-top:28px;">— Casper Tattoo Kaohsiung 高雄刺青</p>
     </div>
   `;
+
+  const shortRef = orderId.slice(0, 8);
 
   if (apiKey) {
     try {
@@ -293,7 +377,7 @@ async function sendShopOrderEmails(
         body: JSON.stringify({
           from,
           to: customerEmail,
-          subject: `Order received — ${orderId.slice(0, 8)}`,
+          subject: `Order confirmed · 訂單確認 — ${shortRef}`,
           html: customerHtml,
         }),
       });
@@ -312,15 +396,31 @@ async function sendShopOrderEmails(
           body: JSON.stringify({
             from,
             to: studioTo,
-            subject: `[Shop] New order ${orderId.slice(0, 8)} — ${escapeHtml(customerName)}`,
+            subject: `[Shop] New order · 新訂單 ${shortRef} — ${customerName}`,
             html: `
-              <p>New shop order.</p>
-              <p><strong>ID:</strong> ${escapeHtml(orderId)}</p>
-              <p><strong>Email:</strong> ${escapeHtml(customerEmail)}</p>
-              <p><strong>Bank:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
-              <p><strong>Transfer ref (sender acct. last 5):</strong> ${escapeHtml(transferSenderLastFive)}</p>
-              <table style="border-collapse:collapse;width:100%;"><thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead><tbody>${linesHtml}</tbody></table>
-              ${totalLine}
+              <div style="font-family:sans-serif;max-width:560px;color:#111;">
+                <div style="margin-bottom:24px;">
+                  <p style="font-size:11px;text-transform:uppercase;color:#666;">English</p>
+                  <p>New shop order.</p>
+                  <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
+                  <p><strong>Customer:</strong> ${escapeHtml(customerName)} — ${escapeHtml(customerEmail)}</p>
+                  <p><strong>Bank:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
+                  <p><strong>Transfer ref (sender acct. last 5):</strong> ${escapeHtml(transferSenderLastFive)}</p>
+                  <table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:14px;"><thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead><tbody>${linesHtml}</tbody></table>
+                  ${totalLineEn}
+                </div>
+                <hr style="border:none;border-top:1px solid #ddd;margin:24px 0;" />
+                <div>
+                  <p style="font-size:11px;text-transform:uppercase;color:#666;">中文</p>
+                  <p>商店新訂單。</p>
+                  <p><strong>訂單編號：</strong> ${escapeHtml(orderId)}</p>
+                  <p><strong>顧客：</strong> ${escapeHtml(customerName)} — ${escapeHtml(customerEmail)}</p>
+                  <p><strong>銀行帳號：</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
+                  <p><strong>轉出帳戶末五碼：</strong> ${escapeHtml(transferSenderLastFive)}</p>
+                  <table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:14px;"><thead><tr><th align="left">項目</th><th align="left">尺寸</th><th align="right">數量</th><th align="right">單價</th><th align="right">小計</th></tr></thead><tbody>${linesHtml}</tbody></table>
+                  ${totalLineZh}
+                </div>
+              </div>
             `,
           }),
         });

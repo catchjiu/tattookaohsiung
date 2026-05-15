@@ -32,6 +32,7 @@ export default async function ShopPageZhTW() {
       priceLabel: true,
       priceTwd: true,
       imageUrl: true,
+      stockQuantity: true,
       sizeOptions: true,
     },
   });
@@ -44,6 +45,7 @@ export default async function ShopPageZhTW() {
     priceLabel: p.priceLabel,
     priceTwd: p.priceTwd,
     imageUrl: p.imageUrl,
+    stockQuantity: p.stockQuantity,
     sizeOptions: coerceSizeOptions(p.sizeOptions as unknown),
   }));
 

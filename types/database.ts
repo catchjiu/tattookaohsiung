@@ -62,6 +62,8 @@ export type ShopProduct = {
   price_label: string | null;
   price_twd?: number | null;
   size_options?: string[];
+  /** Null = unlimited */
+  stock_quantity?: number | null;
   image_url: string | null;
   sort_order: number;
   is_published: boolean;

@@ -45,6 +45,8 @@ export function CartContent() {
         }, 0 as number | null)
       : 0;
 
+  const checkoutBlocked = rows.some((r) => r.exceedsStock);
+
   if (!ready || loading) {
     return (
       <div className="mx-auto max-w-2xl px-8 py-24 text-foreground-muted">
@@ -99,6 +101,11 @@ export function CartContent() {
           const lineTotal =
             p.priceTwd != null ? p.priceTwd * q : null;
           const name = locale === "zh-TW" ? (p.nameZh ?? p.name) : p.name;
+          const othersQty = p.qtyForProductInCart - q;
+          const maxQ =
+            p.stockQuantity == null
+              ? 99
+              : Math.min(99, Math.max(1, p.stockQuantity - othersQty));
           return (
             <li
               key={p.lineKey}
@@ -131,21 +138,24 @@ export function CartContent() {
                     {p.priceLabel}
                   </p>
                 )}
+                {p.exceedsStock ? (
+                  <p className="mt-2 text-sm text-red-400">
+                    {t("shop.cartExceedsStock")}
+                  </p>
+                ) : null}
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <label className="flex items-center gap-2 text-sm text-foreground-muted">
                     {t("shop.qty")}
                     <input
                       type="number"
                       min={1}
-                      max={99}
+                      max={maxQ}
                       value={q}
-                      onChange={(e) =>
-                        setQuantity(
-                          p.productId,
-                          Number(e.target.value) || 1,
-                          p.size
-                        )
-                      }
+                      onChange={(e) => {
+                        const raw = Number(e.target.value) || 1;
+                        const next = Math.min(maxQ, Math.max(1, Math.floor(raw)));
+                        setQuantity(p.productId, next, p.size);
+                      }}
                       className="w-16 rounded border border-border bg-background px-2 py-1 text-foreground"
                     />
                   </label>
@@ -180,10 +190,14 @@ export function CartContent() {
         ) : (
           <p className="text-foreground-muted">{t("shop.totalPending")}</p>
         )}
+        {checkoutBlocked ? (
+          <p className="mt-4 text-sm text-red-400">{t("shop.cartExceedsStock")}</p>
+        ) : null}
         <button
           type="button"
+          disabled={checkoutBlocked}
           onClick={() => router.push(`${base}/checkout`)}
-          className="mt-6 w-full rounded-md bg-accent py-4 text-sm font-semibold text-charcoal transition-opacity hover:opacity-90 sm:w-auto sm:px-10"
+          className="mt-6 w-full rounded-md bg-accent py-4 text-sm font-semibold text-charcoal transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto sm:px-10"
         >
           {t("shop.checkout")}
         </button>
