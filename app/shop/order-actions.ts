@@ -11,6 +11,7 @@ import {
   parseCartJson,
 } from "@/lib/cart-storage";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
+import { SHOP_BANK_TRANSFER_DISPLAY } from "@/lib/shop-bank-transfer";
 
 const CHECKOUT_LIMIT = 8; // per minute per IP
 
@@ -95,6 +96,15 @@ export async function submitShopOrder(formData: FormData) {
   const shippingAddress =
     (formData.get("shipping_address") as string)?.trim() || null;
   const notes = (formData.get("notes") as string)?.trim() || null;
+  const transferRaw =
+    (formData.get("transfer_sender_last_five") as string)?.trim() ?? "";
+  const transferSenderLastFive = transferRaw.replace(/\D/g, "");
+  if (transferSenderLastFive.length !== 5) {
+    return {
+      error:
+        "Enter exactly 5 digits: the last 5 digits of the bank account you transferred from.",
+    };
+  }
   let cartLines: CartLine[] = [];
 
   try {
@@ -189,6 +199,7 @@ export async function submitShopOrder(formData: FormData) {
         customerEmail,
         customerPhone,
         shippingAddress,
+        transferSenderLastFive,
         notes,
         totalTwd,
         items: {
@@ -211,7 +222,8 @@ export async function submitShopOrder(formData: FormData) {
       customerEmail,
       customerName,
       items,
-      totalTwd
+      totalTwd,
+      transferSenderLastFive
     );
 
     revalidatePath("/admin/shop/orders");
@@ -236,7 +248,8 @@ async function sendShopOrderEmails(
     quantity: number;
     lineTotalTwd: number | null;
   }[],
-  totalTwd: number | null
+  totalTwd: number | null,
+  transferSenderLastFive: string
 ) {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM || "orders@yourdomain.com";
@@ -258,6 +271,8 @@ async function sendShopOrderEmails(
       <p>Hi ${escapeHtml(customerName)},</p>
       <p>Thank you for your order. We've received it and will contact you shortly to confirm payment and pickup or shipping.</p>
       <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
+      <p><strong>Bank transfer:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
+      <p><strong>Transfer reference (your account, last 5 digits):</strong> ${escapeHtml(transferSenderLastFive)}</p>
       <table style="border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;">
         <thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead>
         <tbody>${linesHtml}</tbody>
@@ -302,6 +317,8 @@ async function sendShopOrderEmails(
               <p>New shop order.</p>
               <p><strong>ID:</strong> ${escapeHtml(orderId)}</p>
               <p><strong>Email:</strong> ${escapeHtml(customerEmail)}</p>
+              <p><strong>Bank:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
+              <p><strong>Transfer ref (sender acct. last 5):</strong> ${escapeHtml(transferSenderLastFive)}</p>
               <table style="border-collapse:collapse;width:100%;"><thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead><tbody>${linesHtml}</tbody></table>
               ${totalLine}
             `,

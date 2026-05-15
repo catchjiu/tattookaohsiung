@@ -99,39 +99,84 @@ export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
             <GalleryImageUpload value={imageUrl || null} onChange={(url) => setImageUrl(url ?? "")} />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
-              Title
-            </label>
-            <input
-              name="title"
-              defaultValue={artUpload?.title ?? ""}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
-            />
+          <div className="space-y-4 border-t border-[var(--border)] pt-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--muted)]">
+              English
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-[var(--muted)]">
+                Title
+              </label>
+              <input
+                name="title"
+                defaultValue={artUpload?.title ?? ""}
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[var(--muted)]">
+                Description
+              </label>
+              <textarea
+                name="description"
+                rows={2}
+                defaultValue={artUpload?.description ?? ""}
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[var(--muted)]">
+                Tags (comma-separated)
+              </label>
+              <input
+                name="tags"
+                defaultValue={artUpload?.tags?.join(", ") ?? ""}
+                placeholder="Traditional, Fine-line, Realism"
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
-              Description
-            </label>
-            <textarea
-              name="description"
-              rows={2}
-              defaultValue={artUpload?.description ?? ""}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
-            />
-          </div>
+          <div className="space-y-4 border-t border-[var(--border)] pt-4">
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--muted)]">
+              中文
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-[var(--muted)]">
+                標題
+              </label>
+              <input
+                name="title_zh"
+                defaultValue={artUpload?.title_zh ?? ""}
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
-              Tags (comma-separated)
-            </label>
-            <input
-              name="tags"
-              defaultValue={artUpload?.tags?.join(", ") ?? ""}
-              placeholder="Traditional, Fine-line, Realism"
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
-            />
+            <div>
+              <label className="block text-sm font-medium text-[var(--muted)]">
+                描述
+              </label>
+              <textarea
+                name="description_zh"
+                rows={2}
+                defaultValue={artUpload?.description_zh ?? ""}
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[var(--muted)]">
+                標籤（逗號分隔）
+              </label>
+              <input
+                name="tags_zh"
+                defaultValue={artUpload?.tags_zh?.join(", ") ?? ""}
+                placeholder="傳統、細線、寫實"
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              />
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-6">

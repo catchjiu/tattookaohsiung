@@ -19,10 +19,13 @@ export type ArtUpload = {
   id: string;
   artist_id: string | null;
   title: string | null;
+  title_zh?: string | null;
   description: string | null;
+  description_zh?: string | null;
   image_url: string;
   thumbnail_url: string | null;
   tags: string[];
+  tags_zh?: string[];
   display_order: number;
   is_featured: boolean;
   show_in_hero_slider: boolean;

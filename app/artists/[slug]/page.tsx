@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
-
-export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { ArtistDetailContent } from "@/components/artists/ArtistDetailContent";
+import { galleryTagsForLocale, galleryTitleForLocale } from "@/lib/gallery-display";
+
+export const dynamic = "force-dynamic";
 
 const SITE_URL = getSiteUrl();
 
@@ -68,9 +69,9 @@ export default async function ArtistGalleryPage({
 
   const artworks = artist.portfolioImages.map((img) => ({
     id: img.id,
-    title: img.title ?? img.altText,
+    title: galleryTitleForLocale(img, "en"),
     image_url: img.url,
-    tags: img.tags,
+    tags: galleryTagsForLocale(img, "en"),
   }));
 
   const personSchema = {

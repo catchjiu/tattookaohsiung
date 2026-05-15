@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
 import { notFound } from "next/navigation";
 import { ArtistDetailContent } from "@/components/artists/ArtistDetailContent";
+import { galleryTagsForLocale, galleryTitleForLocale } from "@/lib/gallery-display";
 
 export const dynamic = "force-dynamic";
 
@@ -112,9 +113,9 @@ export default async function ZhTWArtistPage({
         }}
         artworks={artist.portfolioImages.map((img) => ({
           id: img.id,
-          title: img.title ?? img.altText,
+          title: galleryTitleForLocale(img, "zh-TW"),
           image_url: img.url,
-          tags: img.tags,
+          tags: galleryTagsForLocale(img, "zh-TW"),
         }))}
       />
     </>

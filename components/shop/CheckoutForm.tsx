@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { submitShopOrder } from "@/app/shop/order-actions";
+import { SHOP_BANK_TRANSFER_DISPLAY } from "@/lib/shop-bank-transfer";
 
 export function CheckoutForm() {
   const { t, locale } = useLanguage();
@@ -126,6 +127,41 @@ export function CheckoutForm() {
             rows={2}
             className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2.5 text-foreground"
           />
+        </div>
+
+        <div className="rounded-md border border-border bg-card/40 px-4 py-5">
+          <h2 className="text-sm font-semibold text-foreground">
+            {t("shop.checkoutPaymentTitle")}
+          </h2>
+          <p className="mt-2 text-sm text-foreground-muted">
+            {t("shop.checkoutBankTransferIntro")}
+          </p>
+          <div className="mt-4 rounded-md border border-border bg-background px-3 py-3 font-mono text-sm text-foreground">
+            <span className="text-foreground-muted">
+              {t("shop.checkoutBankAccountLabel")}:{" "}
+            </span>
+            {SHOP_BANK_TRANSFER_DISPLAY}
+          </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-foreground-muted">
+              {t("shop.checkoutTransferLastFive")} *
+            </label>
+            <input
+              name="transfer_sender_last_five"
+              required
+              inputMode="numeric"
+              autoComplete="off"
+              pattern="\d{5}"
+              maxLength={5}
+              minLength={5}
+              placeholder="12345"
+              title={t("shop.checkoutTransferLastFiveHint")}
+              className="mt-1 w-full max-w-[12rem] rounded-md border border-border bg-background px-3 py-2.5 font-mono text-foreground tracking-widest"
+            />
+            <p className="mt-1 text-xs text-foreground-subtle">
+              {t("shop.checkoutTransferLastFiveHint")}
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-col gap-3 pt-4 sm:flex-row sm:items-center">

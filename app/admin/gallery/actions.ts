@@ -3,16 +3,23 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function createArtUpload(formData: FormData) {
-  const artistId = (formData.get("artist_id") as string)?.trim() || null;
-  const title = (formData.get("title") as string)?.trim() || null;
-  const description = (formData.get("description") as string)?.trim() || "Artwork";
-  const imageUrl = (formData.get("image_url") as string)?.trim();
-  const tagsStr = (formData.get("tags") as string) || "";
-  const tags = tagsStr
+function parseTagList(formData: FormData, key: string): string[] {
+  const raw = (formData.get(key) as string) || "";
+  return raw
     .split(",")
     .map((t) => t.trim())
     .filter(Boolean);
+}
+
+export async function createArtUpload(formData: FormData) {
+  const artistId = (formData.get("artist_id") as string)?.trim() || null;
+  const title = (formData.get("title") as string)?.trim() || null;
+  const titleZh = (formData.get("title_zh") as string)?.trim() || null;
+  const description = (formData.get("description") as string)?.trim() || "Artwork";
+  const descriptionZh = (formData.get("description_zh") as string)?.trim() || null;
+  const imageUrl = (formData.get("image_url") as string)?.trim();
+  const tags = parseTagList(formData, "tags");
+  const tagsZh = parseTagList(formData, "tags_zh");
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
   const showInHeroSlider = formData.get("show_in_hero_slider") === "on";
 
@@ -26,7 +33,10 @@ export async function createArtUpload(formData: FormData) {
         url: imageUrl,
         altText: description,
         title,
+        titleZh,
+        altTextZh: descriptionZh,
         tags,
+        tagsZh,
         sortOrder,
         showInHeroSlider,
       },
@@ -36,20 +46,23 @@ export async function createArtUpload(formData: FormData) {
   }
   revalidatePath("/admin/gallery");
   revalidatePath("/gallery");
+  revalidatePath("/zh-TW/gallery");
   revalidatePath("/");
+  revalidatePath("/zh-TW");
+  revalidatePath("/artists", "layout");
+  revalidatePath("/zh-TW/artists", "layout");
   return { success: true };
 }
 
 export async function updateArtUpload(id: string, formData: FormData) {
   const artistId = (formData.get("artist_id") as string)?.trim() || null;
   const title = (formData.get("title") as string)?.trim() || null;
+  const titleZh = (formData.get("title_zh") as string)?.trim() || null;
   const description = (formData.get("description") as string)?.trim() || "Artwork";
+  const descriptionZh = (formData.get("description_zh") as string)?.trim() || null;
   const imageUrl = (formData.get("image_url") as string)?.trim();
-  const tagsStr = (formData.get("tags") as string) || "";
-  const tags = tagsStr
-    .split(",")
-    .map((t) => t.trim())
-    .filter(Boolean);
+  const tags = parseTagList(formData, "tags");
+  const tagsZh = parseTagList(formData, "tags_zh");
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
   const showInHeroSlider = formData.get("show_in_hero_slider") === "on";
 
@@ -64,7 +77,10 @@ export async function updateArtUpload(id: string, formData: FormData) {
         url: imageUrl,
         altText: description,
         title,
+        titleZh,
+        altTextZh: descriptionZh,
         tags,
+        tagsZh,
         sortOrder,
         showInHeroSlider,
       },
@@ -74,7 +90,11 @@ export async function updateArtUpload(id: string, formData: FormData) {
   }
   revalidatePath("/admin/gallery");
   revalidatePath("/gallery");
+  revalidatePath("/zh-TW/gallery");
   revalidatePath("/");
+  revalidatePath("/zh-TW");
+  revalidatePath("/artists", "layout");
+  revalidatePath("/zh-TW/artists", "layout");
   return { success: true };
 }
 
@@ -86,6 +106,10 @@ export async function deleteArtUpload(id: string) {
   }
   revalidatePath("/admin/gallery");
   revalidatePath("/gallery");
+  revalidatePath("/zh-TW/gallery");
   revalidatePath("/");
+  revalidatePath("/zh-TW");
+  revalidatePath("/artists", "layout");
+  revalidatePath("/zh-TW/artists", "layout");
   return { success: true };
 }

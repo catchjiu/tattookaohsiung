@@ -87,9 +87,12 @@ model PortfolioImage {
   artistId         String   @map("artist_id")
   url              String
   altText          String   @map("alt_text")
-  title            String?  // Display title for gallery
+  title            String?  // Display title for gallery (English)
+  titleZh          String?  @map("title_zh") // 標題（中文）
+  altTextZh        String?  @map("alt_text_zh") @db.Text // 描述（中文）
   category         String?  // e.g. "traditional", "blackwork", "color"
   tags             String[] @default([]) // e.g. ["Traditional", "Fine-line"]
+  tagsZh           String[] @default([]) @map("tags_zh") // 標籤（中文）
   sortOrder        Int      @default(0) @map("sort_order")
   showInHeroSlider Boolean  @default(false) @map("show_in_hero_slider")
   createdAt        DateTime @default(now()) @map("created_at")
@@ -159,17 +162,18 @@ enum ShopOrderStatus {
 }
 
 model ShopOrder {
-  id               String          @id @default(cuid())
-  status           ShopOrderStatus @default(PENDING)
-  customerName     String          @map("customer_name")
-  customerEmail    String          @map("customer_email")
-  customerPhone    String?         @map("customer_phone")
-  shippingAddress  String?         @map("shipping_address") @db.Text
-  notes            String?         @db.Text
-  totalTwd         Int?            @map("total_twd")
-  currency         String          @default("TWD")
-  createdAt        DateTime        @default(now()) @map("created_at")
-  updatedAt        DateTime        @updatedAt @map("updated_at")
+  id                       String          @id @default(cuid())
+  status                   ShopOrderStatus @default(PENDING)
+  customerName             String          @map("customer_name")
+  customerEmail            String          @map("customer_email")
+  customerPhone            String?         @map("customer_phone")
+  shippingAddress          String?         @map("shipping_address") @db.Text
+  transferSenderLastFive   String?         @map("transfer_sender_last_five")
+  notes                    String?         @db.Text
+  totalTwd                 Int?            @map("total_twd")
+  currency                 String          @default("TWD")
+  createdAt                DateTime        @default(now()) @map("created_at")
+  updatedAt                DateTime        @updatedAt @map("updated_at")
 
   items ShopOrderItem[]
 

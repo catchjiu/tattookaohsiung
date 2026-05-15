@@ -105,6 +105,11 @@ export default async function AdminShopOrdersPage() {
                         {o.customerPhone}
                       </div>
                     ) : null}
+                    {o.transferSenderLastFive ? (
+                      <div className="mt-1 font-mono text-xs text-foreground">
+                        Transfer (last 5): {o.transferSenderLastFive}
+                      </div>
+                    ) : null}
                     <div className="mt-1 break-all font-mono text-[11px] text-foreground-subtle">
                       {o.id}
                     </div>

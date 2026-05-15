@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
-
-export const dynamic = "force-dynamic";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { PageHero } from "@/components/ui/PageHero";
+import { galleryTagsForLocale, galleryTitleForLocale } from "@/lib/gallery-display";
+
+export const dynamic = "force-dynamic";
 
 const SITE_URL = getSiteUrl();
 
@@ -67,9 +68,9 @@ export default async function GalleryPage() {
 
   const artworks = images.map((img) => ({
     id: img.id,
-    title: img.title ?? img.altText,
+    title: galleryTitleForLocale(img, "en"),
     image_url: img.url,
-    tags: img.tags,
+    tags: galleryTagsForLocale(img, "en"),
     artists: { name: img.artist.name, specialty: img.artist.specialty },
   }));
 
