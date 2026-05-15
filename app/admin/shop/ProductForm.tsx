@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import type { ShopProduct } from "@/types/database";
 import { createShopProduct, updateShopProduct } from "./actions";
 import { ShopProductImageUpload } from "@/components/admin/ShopProductImageUpload";
+import { parseSizeOptionsText } from "@/lib/shop-size-options";
 
 type Props = {
   product?: ShopProduct | null;
@@ -27,9 +28,52 @@ export function ProductForm({ product, onClose }: Props) {
   const [imageUrl, setImageUrl] = useState(product?.image_url ?? "");
   const isEditing = !!product;
 
+  const [sizeOptionsText, setSizeOptionsText] = useState(
+    () => product?.size_options?.join(", ") ?? ""
+  );
+
+  const sizes = useMemo(
+    () => parseSizeOptionsText(sizeOptionsText),
+    [sizeOptionsText]
+  );
+
+  const [stockBySizeInput, setStockBySizeInput] = useState<
+    Record<string, string>
+  >(() => {
+    const init: Record<string, string> = {};
+    if (product?.size_stocks?.length) {
+      for (const r of product.size_stocks) {
+        init[r.size] = String(r.quantity);
+      }
+    }
+    return init;
+  });
+
+  useEffect(() => {
+    setStockBySizeInput((prev) => {
+      const next: Record<string, string> = {};
+      for (const sz of sizes) {
+        next[sz] = prev[sz] ?? "";
+      }
+      return next;
+    });
+  }, [sizes.join("|")]);
+
   useEffect(() => {
     setImageUrl(product?.image_url ?? "");
   }, [product?.image_url]);
+
+  const sizeStocksJson = useMemo(() => {
+    const o: Record<string, number> = {};
+    for (const sz of sizes) {
+      const raw = (stockBySizeInput[sz] ?? "").trim();
+      if (!raw) continue;
+      const n = Number.parseInt(raw, 10);
+      if (!Number.isFinite(n) || n < 0) continue;
+      o[sz] = n;
+    }
+    return JSON.stringify(o);
+  }, [sizes, stockBySizeInput]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -48,6 +92,8 @@ export function ProductForm({ product, onClose }: Props) {
     router.refresh();
     onClose();
   }
+
+  const hasSizes = sizes.length > 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-4 backdrop-blur-sm">
@@ -70,6 +116,8 @@ export function ProductForm({ product, onClose }: Props) {
           onSubmit={handleSubmit}
           className="flex min-h-0 flex-1 flex-col overflow-hidden"
         >
+          <input type="hidden" name="size_stocks_json" value={sizeStocksJson} />
+
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-4">
             <div className="space-y-4">
               {error && (
@@ -179,47 +227,79 @@ export function ProductForm({ product, onClose }: Props) {
 
               <div>
                 <label className="block text-sm font-medium text-foreground-muted">
-                  Stock quantity (optional)
-                </label>
-                <input
-                  name="stock_quantity"
-                  type="number"
-                  min={0}
-                  step={1}
-                  placeholder="Leave blank for unlimited"
-                  defaultValue={
-                    product?.stock_quantity != null
-                      ? String(product.stock_quantity)
-                      : ""
-                  }
-                  className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
-                />
-                <p className="mt-1 text-xs text-foreground-muted">
-                  When set, checkout deducts stock; customers cannot exceed this
-                  total per product (all sizes share one pool).
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground-muted">
                   Sizes (optional)
                 </label>
                 <textarea
                   name="size_options"
                   rows={2}
-                  placeholder="S, M, L, XL — comma or newline separated"
-                  defaultValue={
-                    product?.size_options?.length
-                      ? product.size_options.join(", ")
-                      : ""
-                  }
+                  placeholder="XS, S, M, L, XL — comma or newline separated"
+                  value={sizeOptionsText}
+                  onChange={(e) => setSizeOptionsText(e.target.value)}
                   className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
                 />
                 <p className="mt-1 text-xs text-foreground-muted">
-                  If set, customers must pick a size on the product page before
-                  adding to cart.
+                  When sizes are set, stock is tracked per size below. Sizes not
+                  listed here cannot be sold.
                 </p>
               </div>
+
+              {hasSizes ? (
+                <div className="rounded-md border border-border bg-background/40 px-3 py-3">
+                  <p className="text-sm font-medium text-foreground">
+                    Stock per size
+                  </p>
+                  <p className="mt-1 text-xs text-foreground-muted">
+                    Leave blank for unlimited stock on that size. Zero (0) means
+                    sold out.
+                  </p>
+                  <div className="mt-3 space-y-3">
+                    {sizes.map((sz) => (
+                      <div key={sz}>
+                        <label className="block text-xs font-medium uppercase tracking-wide text-foreground-muted">
+                          {sz}
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          step={1}
+                          placeholder="Unlimited"
+                          value={stockBySizeInput[sz] ?? ""}
+                          onChange={(e) =>
+                            setStockBySizeInput((prev) => ({
+                              ...prev,
+                              [sz]: e.target.value,
+                            }))
+                          }
+                          className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-foreground-muted">
+                    Stock quantity (optional)
+                  </label>
+                  <input
+                    name="stock_quantity"
+                    type="number"
+                    min={0}
+                    step={1}
+                    placeholder="Leave blank for unlimited"
+                    defaultValue={
+                      product?.stock_quantity != null
+                        ? String(product.stock_quantity)
+                        : ""
+                    }
+                    className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
+                  />
+                  <p className="mt-1 text-xs text-foreground-muted">
+                    Used only when this product has no sizes. Checkout deducts
+                    stock automatically.
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-foreground-muted">

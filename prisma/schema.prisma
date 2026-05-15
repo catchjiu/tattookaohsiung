@@ -148,11 +148,26 @@ model ShopProduct {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  orderItems ShopOrderItem[]
+  orderItems      ShopOrderItem[]
+  /** Rows only exist for sizes with tracked finite stock; sizes omitted = unlimited */
+  sizeStockRows   ShopProductSizeStock[]
 
   @@index([isPublished, sortOrder])
   @@index([slug])
   @@map("shop_products")
+}
+
+model ShopProductSizeStock {
+  id        String @id @default(cuid())
+  productId String @map("product_id")
+  size      String
+  quantity  Int
+
+  product ShopProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, size])
+  @@index([productId])
+  @@map("shop_product_size_stocks")
 }
 
 enum ShopOrderStatus {

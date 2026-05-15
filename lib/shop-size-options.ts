@@ -1,3 +1,20 @@
+/** Parse comma/newline-separated sizes from admin form or live textarea (same rules as server actions). */
+export function parseSizeOptionsText(raw: string): string[] {
+  const s = raw.trim();
+  if (!s) return [];
+  const parts = s.split(/[,，\n\r]+/);
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const part of parts) {
+    const x = part.trim().slice(0, 32);
+    if (!x || seen.has(x)) continue;
+    seen.add(x);
+    out.push(x);
+    if (out.length >= 32) break;
+  }
+  return out;
+}
+
 /**
  * Normalize `size_options` from DB / Prisma for shop UI & checkout.
  * Prisma 7 + @prisma/adapter-pg can surface PostgreSQL text[] as a string

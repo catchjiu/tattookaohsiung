@@ -101,7 +101,7 @@ export function CartContent() {
           const lineTotal =
             p.priceTwd != null ? p.priceTwd * q : null;
           const name = locale === "zh-TW" ? (p.nameZh ?? p.name) : p.name;
-          const othersQty = p.qtyForProductInCart - q;
+          const othersQty = p.qtyForVariantInCart - q;
           const maxQ =
             p.stockQuantity == null
               ? 99

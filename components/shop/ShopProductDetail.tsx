@@ -5,6 +5,11 @@ import { useState, useMemo } from "react";
 import { Plus } from "lucide-react";
 import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { normalizeCartSize } from "@/lib/cart-storage";
+import {
+  stockCeilingForLine,
+  type SizeStockRow,
+} from "@/lib/shop-stock";
 
 type Props = {
   productId: string;
@@ -15,8 +20,10 @@ type Props = {
   imageUrl: string | null;
   /** Normalized on the server; still defensively handled here */
   sizeOptions?: string[] | null;
-  /** Null = unlimited */
+  /** Single-SKU stock (ignored when product has sizes) */
   stockQuantity?: number | null;
+  /** Rows only for sizes with tracked inventory */
+  sizeStocks?: SizeStockRow[];
 };
 
 export function ShopProductDetail({
@@ -28,41 +35,70 @@ export function ShopProductDetail({
   imageUrl,
   sizeOptions = [],
   stockQuantity = null,
+  sizeStocks = [],
 }: Props) {
   const { t, locale } = useLanguage();
   const { addItem, lines } = useCart();
   const base = locale === "zh-TW" ? "/zh-TW/shop" : "/shop";
 
   const sortedSizes = useMemo(
-    () =>
-      [...(sizeOptions ?? [])].map((s) => s.trim()).filter(Boolean),
+    () => [...(sizeOptions ?? [])].map((s) => s.trim()).filter(Boolean),
     [sizeOptions]
   );
   const needsSize = sortedSizes.length > 0;
   const [selectedSize, setSelectedSize] = useState("");
 
-  const qtyTotalProduct = useMemo(
-    () =>
-      lines
-        .filter((l) => l.productId === productId)
-        .reduce((s, l) => s + l.quantity, 0),
-    [lines, productId]
+  const cartSizeNorm = useMemo(
+    () => (needsSize ? normalizeCartSize(selectedSize) : null),
+    [needsSize, selectedSize]
   );
 
-  const tracked = stockQuantity != null;
-  const soldOut = tracked && stockQuantity <= 0;
-  const slack =
-    tracked && stockQuantity != null
-      ? Math.max(0, stockQuantity - qtyTotalProduct)
-      : Infinity;
+  const ceiling = useMemo(() => {
+    return stockCeilingForLine({
+      sizeOptions,
+      stockQuantity,
+      sizeStocks,
+      cartSize: cartSizeNorm,
+    });
+  }, [sizeOptions, stockQuantity, sizeStocks, cartSizeNorm]);
 
-  const addDisabled = needsSize && !selectedSize;
-  const atCap = tracked && slack <= 0 && !soldOut;
+  const qtyThisVariant = useMemo(() => {
+    if (!needsSize) {
+      return lines
+        .filter((l) => l.productId === productId)
+        .reduce((s, l) => s + l.quantity, 0);
+    }
+    if (!cartSizeNorm) return 0;
+    return lines
+      .filter(
+        (l) =>
+          l.productId === productId &&
+          normalizeCartSize(l.size) === cartSizeNorm
+      )
+      .reduce((s, l) => s + l.quantity, 0);
+  }, [lines, productId, needsSize, cartSizeNorm]);
+
+  const finiteStock = ceiling !== null;
+  const soldOut = finiteStock && ceiling <= 0;
+  const slack = finiteStock ? Math.max(0, ceiling - qtyThisVariant) : Infinity;
+
+  const addDisabled = needsSize && !cartSizeNorm;
+  const atCap = finiteStock && slack <= 0 && !soldOut;
   const btnDisabled = addDisabled || soldOut || atCap;
 
   let buttonLabel = t("shop.addToCart");
   if (soldOut) buttonLabel = t("shop.outOfStock");
   else if (atCap) buttonLabel = t("shop.maxInCart");
+
+  function optionSoldOut(sizeLabel: string): boolean {
+    const cap = stockCeilingForLine({
+      sizeOptions,
+      stockQuantity,
+      sizeStocks,
+      cartSize: sizeLabel,
+    });
+    return cap !== null && cap <= 0;
+  }
 
   return (
     <div className="mx-auto max-w-4xl px-8 py-24 md:py-32">
@@ -120,16 +156,19 @@ export function ShopProductDetail({
                 className="mt-2 w-full max-w-xs rounded-md border-2 border-border bg-background px-3 py-3 text-foreground"
               >
                 <option value="">{t("shop.sizePlaceholder")}</option>
-                {sortedSizes.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
+                {sortedSizes.map((s) => {
+                  const oos = optionSoldOut(s);
+                  return (
+                    <option key={s} value={s} disabled={oos}>
+                      {oos ? `${s} (${t("shop.outOfStock")})` : s}
+                    </option>
+                  );
+                })}
               </select>
             </div>
           ) : null}
 
-          {tracked && !soldOut && slack > 0 && slack !== Infinity ? (
+          {finiteStock && !soldOut && slack > 0 && slack !== Infinity ? (
             <p className="mt-6 text-sm text-foreground-muted">
               {t("shop.stockRemaining").replace("{count}", String(slack))}
             </p>

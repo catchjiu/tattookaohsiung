@@ -12,11 +12,16 @@ import {
 } from "@/lib/cart-storage";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
 import { SHOP_BANK_TRANSFER_DISPLAY } from "@/lib/shop-bank-transfer";
+import { stockCeilingForLine, type SizeStockRow } from "@/lib/shop-stock";
 
 const CHECKOUT_LIMIT = 8; // per minute per IP
 
 const STOCK_ERROR_MSG =
   "Not enough stock for one or more items. Refresh your cart and try again. / 部分商品庫存不足，請重新整理購物車後再試。";
+
+function variantCartKey(productId: string, size: string | null): string {
+  return `${productId}\x1f${size ?? ""}`;
+}
 
 export type CartPreviewLine = {
   lineKey: string;
@@ -29,9 +34,9 @@ export type CartPreviewLine = {
   imageUrl: string | null;
   size: string | null;
   quantity: number;
-  /** Null = unlimited inventory */
+  /** Max purchasable for this line (null = unlimited) */
   stockQuantity: number | null;
-  qtyForProductInCart: number;
+  qtyForVariantInCart: number;
   exceedsStock: boolean;
 };
 
@@ -39,12 +44,6 @@ export async function getShopCartPreview(
   lines: CartLine[]
 ): Promise<CartPreviewLine[]> {
   if (!lines.length) return [];
-
-  const qtyByProduct = new Map<string, number>();
-  for (const cl of lines) {
-    const q = Math.min(99, Math.max(1, Math.floor(cl.quantity)));
-    qtyByProduct.set(cl.productId, (qtyByProduct.get(cl.productId) ?? 0) + q);
-  }
 
   const ids = [...new Set(lines.map((l) => l.productId))];
   const products = await prisma.shopProduct.findMany({
@@ -59,16 +58,33 @@ export async function getShopCartPreview(
       imageUrl: true,
       sizeOptions: true,
       stockQuantity: true,
+      sizeStockRows: { select: { size: true, quantity: true } },
     },
   });
 
   const byId = new Map(products.map((p) => [p.id, p]));
+
+  const qtyByVariant = new Map<string, number>();
+  for (const cl of lines) {
+    const p = byId.get(cl.productId);
+    if (!p) continue;
+    const allowed = new Set(coerceSizeOptions(p.sizeOptions as unknown));
+    const sz = normalizeCartSize(cl.size);
+    if (allowed.size > 0) {
+      if (!sz || !allowed.has(sz)) continue;
+    } else if (sz) {
+      continue;
+    }
+    const q = Math.min(99, Math.max(1, Math.floor(cl.quantity)));
+    const key = variantCartKey(cl.productId, sz);
+    qtyByVariant.set(key, (qtyByVariant.get(key) ?? 0) + q);
+  }
+
   const out: CartPreviewLine[] = [];
 
   for (const line of lines) {
     const p = byId.get(line.productId);
     if (!p) continue;
-    if (p.stockQuantity != null && p.stockQuantity <= 0) continue;
     const allowed = new Set(coerceSizeOptions(p.sizeOptions as unknown));
     const sz = normalizeCartSize(line.size);
     if (allowed.size > 0) {
@@ -77,9 +93,24 @@ export async function getShopCartPreview(
       continue;
     }
 
-    const qtyTotalThisProduct = qtyByProduct.get(p.id) ?? 0;
+    const sizeStocks: SizeStockRow[] = p.sizeStockRows.map((r) => ({
+      size: r.size,
+      quantity: r.quantity,
+    }));
+
+    const ceiling = stockCeilingForLine({
+      sizeOptions: p.sizeOptions,
+      stockQuantity: p.stockQuantity,
+      sizeStocks,
+      cartSize: sz,
+    });
+
+    if (ceiling != null && ceiling <= 0) continue;
+
+    const vKey = variantCartKey(p.id, sz);
+    const qtyThisVariant = qtyByVariant.get(vKey) ?? 0;
     const exceedsStock =
-      p.stockQuantity != null && qtyTotalThisProduct > p.stockQuantity;
+      ceiling != null && qtyThisVariant > ceiling;
 
     out.push({
       lineKey: cartLineKey(line),
@@ -92,8 +123,8 @@ export async function getShopCartPreview(
       imageUrl: p.imageUrl,
       size: sz,
       quantity: Math.min(99, Math.max(1, Math.floor(line.quantity))),
-      stockQuantity: p.stockQuantity,
-      qtyForProductInCart: qtyTotalThisProduct,
+      stockQuantity: ceiling,
+      qtyForVariantInCart: qtyThisVariant,
       exceedsStock,
     });
   }
@@ -147,6 +178,9 @@ export async function submitShopOrder(formData: FormData) {
   const ids = [...new Set(cartLines.map((l) => l.productId))];
   const dbProducts = await prisma.shopProduct.findMany({
     where: { id: { in: ids }, isPublished: true },
+    include: {
+      sizeStockRows: { select: { size: true, quantity: true } },
+    },
   });
 
   if (dbProducts.length !== ids.length) {
@@ -214,14 +248,35 @@ export async function submitShopOrder(formData: FormData) {
     return { error: "Could not build order." };
   }
 
-  const qtyNeed = new Map<string, number>();
+  const variantNeed = new Map<string, number>();
   for (const i of items) {
-    qtyNeed.set(i.productId, (qtyNeed.get(i.productId) ?? 0) + i.quantity);
+    const key = variantCartKey(i.productId, i.sizeSnapshot);
+    variantNeed.set(key, (variantNeed.get(key) ?? 0) + i.quantity);
   }
 
-  for (const [pid, needed] of qtyNeed) {
+  for (const [key, needed] of variantNeed) {
+    const tab = "\x1f";
+    const tabIdx = key.indexOf(tab);
+    const pid = tabIdx === -1 ? key : key.slice(0, tabIdx);
+    const sizePart = tabIdx === -1 ? "" : key.slice(tabIdx + tab.length);
+    const sizeNorm = sizePart || null;
+
     const p = byId.get(pid);
-    if (p?.stockQuantity != null && p.stockQuantity < needed) {
+    if (!p) continue;
+
+    const sizeStocks: SizeStockRow[] = p.sizeStockRows.map((r) => ({
+      size: r.size,
+      quantity: r.quantity,
+    }));
+
+    const ceiling = stockCeilingForLine({
+      sizeOptions: p.sizeOptions,
+      stockQuantity: p.stockQuantity,
+      sizeStocks,
+      cartSize: sizeNorm,
+    });
+
+    if (ceiling != null && ceiling < needed) {
       return { error: STOCK_ERROR_MSG };
     }
   }
@@ -252,18 +307,53 @@ export async function submitShopOrder(formData: FormData) {
         },
       });
 
-      for (const [productId, needed] of qtyNeed) {
-        const row = await tx.shopProduct.findUnique({
-          where: { id: productId },
-          select: { stockQuantity: true },
-        });
-        if (!row || row.stockQuantity == null) continue;
-        const updated = await tx.shopProduct.updateMany({
-          where: { id: productId, stockQuantity: { gte: needed } },
-          data: { stockQuantity: { decrement: needed } },
-        });
-        if (updated.count !== 1) {
-          throw new Error("INSUFFICIENT_STOCK");
+      for (const [key, needed] of variantNeed) {
+        const tab = "\x1f";
+        const tabIdx = key.indexOf(tab);
+        const productId = tabIdx === -1 ? key : key.slice(0, tabIdx);
+        const sizePart = tabIdx === -1 ? "" : key.slice(tabIdx + tab.length);
+        const sizeNorm = sizePart || null;
+
+        const p = byId.get(productId);
+        if (!p) continue;
+
+        const hasSizes =
+          coerceSizeOptions(p.sizeOptions as unknown).length > 0;
+
+        if (hasSizes) {
+          if (!sizeNorm) continue;
+          const tracked = await tx.shopProductSizeStock.findUnique({
+            where: {
+              productId_size: { productId, size: sizeNorm },
+            },
+            select: { id: true },
+          });
+          if (!tracked) continue;
+
+          const updated = await tx.shopProductSizeStock.updateMany({
+            where: {
+              productId,
+              size: sizeNorm,
+              quantity: { gte: needed },
+            },
+            data: { quantity: { decrement: needed } },
+          });
+          if (updated.count !== 1) {
+            throw new Error("INSUFFICIENT_STOCK");
+          }
+        } else {
+          const row = await tx.shopProduct.findUnique({
+            where: { id: productId },
+            select: { stockQuantity: true },
+          });
+          if (!row || row.stockQuantity == null) continue;
+          const updated = await tx.shopProduct.updateMany({
+            where: { id: productId, stockQuantity: { gte: needed } },
+            data: { stockQuantity: { decrement: needed } },
+          });
+          if (updated.count !== 1) {
+            throw new Error("INSUFFICIENT_STOCK");
+          }
         }
       }
 

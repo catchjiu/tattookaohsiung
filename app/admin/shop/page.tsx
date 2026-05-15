@@ -10,6 +10,9 @@ export default async function AdminShopPage() {
 
   const rows = await prisma.shopProduct.findMany({
     orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+    include: {
+      sizeStockRows: { select: { size: true, quantity: true } },
+    },
   });
 
   const products = rows.map((p) => ({
@@ -22,6 +25,10 @@ export default async function AdminShopPage() {
     price_label: p.priceLabel,
     price_twd: p.priceTwd,
     size_options: coerceSizeOptions(p.sizeOptions as unknown),
+    size_stocks: p.sizeStockRows.map((r) => ({
+      size: r.size,
+      quantity: r.quantity,
+    })),
     stock_quantity: p.stockQuantity,
     image_url: p.imageUrl,
     sort_order: p.sortOrder,

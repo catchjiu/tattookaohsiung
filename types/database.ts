@@ -52,6 +52,11 @@ export type BlogPost = {
   updated_at: string;
 };
 
+export type ShopProductSizeStock = {
+  size: string;
+  quantity: number;
+};
+
 export type ShopProduct = {
   id: string;
   slug: string;
@@ -62,7 +67,9 @@ export type ShopProduct = {
   price_label: string | null;
   price_twd?: number | null;
   size_options?: string[];
-  /** Null = unlimited */
+  /** Per-size inventory when product has sizes (missing size = unlimited). */
+  size_stocks?: ShopProductSizeStock[];
+  /** Single-SKU stock when product has no sizes; null = unlimited */
   stock_quantity?: number | null;
   image_url: string | null;
   sort_order: number;

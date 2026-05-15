@@ -2,6 +2,50 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import type { Prisma } from "@prisma/client";
+import { parseSizeOptionsText } from "@/lib/shop-size-options";
+
+function parseSizeStocksPayload(
+  raw: string | null | undefined,
+  allowed: Set<string>
+): Record<string, number> {
+  if (!raw?.trim()) return {};
+  let obj: unknown;
+  try {
+    obj = JSON.parse(raw);
+  } catch {
+    return {};
+  }
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return {};
+  const out: Record<string, number> = {};
+  for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+    if (!allowed.has(k)) continue;
+    const n =
+      typeof v === "number" && Number.isFinite(v)
+        ? Math.floor(v)
+        : Number.parseInt(String(v), 10);
+    if (!Number.isFinite(n) || n < 0) continue;
+    out[k] = n;
+  }
+  return out;
+}
+
+async function replaceSizeStocks(
+  tx: Prisma.TransactionClient,
+  productId: string,
+  stocks: Record<string, number>
+) {
+  await tx.shopProductSizeStock.deleteMany({ where: { productId } });
+  const entries = Object.entries(stocks);
+  if (!entries.length) return;
+  await tx.shopProductSizeStock.createMany({
+    data: entries.map(([size, quantity]) => ({
+      productId,
+      size,
+      quantity,
+    })),
+  });
+}
 
 function slugify(text: string) {
   return text
@@ -28,22 +72,6 @@ function parseOptionalStockQuantity(raw: string | null | undefined): number | nu
   return n;
 }
 
-function parseSizeOptions(formData: FormData): string[] {
-  const raw = (formData.get("size_options") as string)?.trim() ?? "";
-  if (!raw) return [];
-  const parts = raw.split(/[,，\n\r]+/);
-  const out: string[] = [];
-  const seen = new Set<string>();
-  for (const part of parts) {
-    const s = part.trim().slice(0, 32);
-    if (!s || seen.has(s)) continue;
-    seen.add(s);
-    out.push(s);
-    if (out.length >= 32) break;
-  }
-  return out;
-}
-
 export async function createShopProduct(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();
   const slug =
@@ -61,10 +89,19 @@ export async function createShopProduct(formData: FormData) {
   const sortOrderRaw = (formData.get("sort_order") as string)?.trim() ?? "0";
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const isPublished = formData.get("is_published") === "on";
-  const sizeOptions = parseSizeOptions(formData);
-  const stockQuantity = parseOptionalStockQuantity(
+  const sizeOptions = parseSizeOptionsText(
+    (formData.get("size_options") as string)?.trim() ?? ""
+  );
+  const stockQuantitySingle = parseOptionalStockQuantity(
     formData.get("stock_quantity") as string | null
   );
+  const allowedSizes = new Set(sizeOptions);
+  const sizeStockPayload = parseSizeStocksPayload(
+    formData.get("size_stocks_json") as string | null,
+    allowedSizes
+  );
+  const stockQuantityResolved =
+    sizeOptions.length > 0 ? null : stockQuantitySingle;
 
   if (!name) return { error: "Name is required" };
   if (!description) return { error: "Description (English) is required" };
@@ -72,21 +109,24 @@ export async function createShopProduct(formData: FormData) {
   const resolvedSlug = slug || slugify(name);
 
   try {
-    await prisma.shopProduct.create({
-      data: {
-        name,
-        nameZh,
-        slug: resolvedSlug,
-        description,
-        descriptionZh,
-        priceLabel,
-        priceTwd,
-        sizeOptions,
-        stockQuantity,
-        imageUrl,
-        sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
-        isPublished,
-      },
+    await prisma.$transaction(async (tx) => {
+      const p = await tx.shopProduct.create({
+        data: {
+          name,
+          nameZh,
+          slug: resolvedSlug,
+          description,
+          descriptionZh,
+          priceLabel,
+          priceTwd,
+          sizeOptions,
+          stockQuantity: stockQuantityResolved,
+          imageUrl,
+          sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
+          isPublished,
+        },
+      });
+      await replaceSizeStocks(tx, p.id, sizeStockPayload);
     });
   } catch (err) {
     return {
@@ -118,10 +158,19 @@ export async function updateShopProduct(id: string, formData: FormData) {
   const sortOrderRaw = (formData.get("sort_order") as string)?.trim() ?? "0";
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const isPublished = formData.get("is_published") === "on";
-  const sizeOptions = parseSizeOptions(formData);
-  const stockQuantity = parseOptionalStockQuantity(
+  const sizeOptions = parseSizeOptionsText(
+    (formData.get("size_options") as string)?.trim() ?? ""
+  );
+  const stockQuantitySingle = parseOptionalStockQuantity(
     formData.get("stock_quantity") as string | null
   );
+  const allowedSizes = new Set(sizeOptions);
+  const sizeStockPayload = parseSizeStocksPayload(
+    formData.get("size_stocks_json") as string | null,
+    allowedSizes
+  );
+  const stockQuantityResolved =
+    sizeOptions.length > 0 ? null : stockQuantitySingle;
 
   if (!name || !slug) return { error: "Name and slug are required" };
   if (!description) return { error: "Description (English) is required" };
@@ -133,22 +182,29 @@ export async function updateShopProduct(id: string, formData: FormData) {
   const oldSlug = existing?.slug;
 
   try {
-    await prisma.shopProduct.update({
-      where: { id },
-      data: {
-        name,
-        nameZh,
-        slug,
-        description,
-        descriptionZh,
-        priceLabel,
-        priceTwd,
-        sizeOptions,
-        stockQuantity,
-        imageUrl,
-        sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
-        isPublished,
-      },
+    await prisma.$transaction(async (tx) => {
+      await tx.shopProduct.update({
+        where: { id },
+        data: {
+          name,
+          nameZh,
+          slug,
+          description,
+          descriptionZh,
+          priceLabel,
+          priceTwd,
+          sizeOptions,
+          stockQuantity: stockQuantityResolved,
+          imageUrl,
+          sortOrder: Number.isFinite(sortOrder) ? sortOrder : 0,
+          isPublished,
+        },
+      });
+      if (sizeOptions.length > 0) {
+        await replaceSizeStocks(tx, id, sizeStockPayload);
+      } else {
+        await tx.shopProductSizeStock.deleteMany({ where: { productId: id } });
+      }
     });
   } catch (err) {
     return {

@@ -36,6 +36,9 @@ export default async function ShopProductPage({ params }: Props) {
 
   const product = await prisma.shopProduct.findFirst({
     where: { slug, isPublished: true },
+    include: {
+      sizeStockRows: { select: { size: true, quantity: true } },
+    },
   });
   if (!product) notFound();
 
@@ -55,6 +58,10 @@ export default async function ShopProductPage({ params }: Props) {
       imageUrl={product.imageUrl}
       sizeOptions={coerceSizeOptions(product.sizeOptions as unknown)}
       stockQuantity={product.stockQuantity}
+      sizeStocks={product.sizeStockRows.map((r) => ({
+        size: r.size,
+        quantity: r.quantity,
+      }))}
     />
   );
 }

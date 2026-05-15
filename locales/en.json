@@ -85,7 +85,7 @@
     "cartStale": "Some cart lines are out of date (for example, a size changed). Clear the cart or remove old items and try again.",
     "outOfStock": "Out of stock",
     "maxInCart": "Maximum in cart",
-    "stockRemaining": "{count} available (inventory shared across sizes)",
+    "stockRemaining": "{count} available for this size",
     "cartExceedsStock": "Quantity exceeds stock — reduce quantities or remove items."
   },
   "contact": {

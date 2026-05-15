@@ -11,6 +11,17 @@ type Props = {
   products: ShopProduct[];
 };
 
+function formatStockSummary(p: ShopProduct): string {
+  const hasSizes = (p.size_options?.length ?? 0) > 0;
+  if (hasSizes) {
+    if (p.size_stocks?.length) {
+      return p.size_stocks.map((s) => `${s.size}: ${s.quantity}`).join(", ");
+    }
+    return "Per size (not set)";
+  }
+  return p.stock_quantity != null ? String(p.stock_quantity) : "∞";
+}
+
 export function ProductList({ products }: Props) {
   const router = useRouter();
   const [editing, setEditing] = useState<ShopProduct | null>(null);
@@ -68,8 +79,7 @@ export function ProductList({ products }: Props) {
                   </div>
                 ) : null}
                 <div className="mt-1 text-xs text-foreground-muted">
-                  Stock:{" "}
-                  {p.stock_quantity != null ? p.stock_quantity : "∞ unlimited"}
+                  Stock: {formatStockSummary(p)}
                 </div>
               </div>
               <div className="flex items-center justify-between gap-2 border-t border-border pt-3">
@@ -157,7 +167,7 @@ export function ProductList({ products }: Props) {
                     ) : null}
                   </td>
                   <td className="px-4 py-3 text-sm text-foreground-muted">
-                    {p.stock_quantity != null ? p.stock_quantity : "—"}
+                    {formatStockSummary(p)}
                   </td>
                   <td className="px-4 py-3">
                     <span
