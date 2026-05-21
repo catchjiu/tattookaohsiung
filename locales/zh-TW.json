@@ -33,6 +33,12 @@
     "viewAll": "查看所有藝術家",
     "tattooArtist": "高雄專業刺青師"
   },
+  "homeShop": {
+    "label": "精選商品",
+    "title": "商店",
+    "description": "Casper Tattoo 高雄刺青工作室精選商品與周邊。",
+    "showMore": "查看更多商品"
+  },
   "bookingCTA": {
     "label": "預約諮詢",
     "title": "預約您的",

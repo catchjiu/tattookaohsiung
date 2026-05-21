@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
 import { ComingSoon } from "@/components/home/ComingSoon";
+import { coerceSizeOptions } from "@/lib/shop-size-options";
 
 export const dynamic = "force-dynamic";
 
@@ -94,7 +95,7 @@ const zhStructuredData = {
 };
 
 export default async function ZhTWHomePage() {
-  const [artists, portfolioImages] = await Promise.all([
+  const [artists, portfolioImages, shopRows] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" } },
       select: { id: true, name: true, specialty: true, avatarUrl: true, slug: true },
@@ -105,6 +106,24 @@ export default async function ZhTWHomePage() {
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,
+    }),
+    prisma.shopProduct.findMany({
+      where: { isPublished: true },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      take: 4,
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        nameZh: true,
+        description: true,
+        descriptionZh: true,
+        priceLabel: true,
+        priceTwd: true,
+        imageUrl: true,
+        stockQuantity: true,
+        sizeOptions: true,
+      },
     }),
   ]);
 
@@ -121,6 +140,17 @@ export default async function ZhTWHomePage() {
           specialty: a.specialty,
           avatar_url: a.avatarUrl,
           slug: a.slug,
+        }))}
+        products={shopRows.map((p) => ({
+          id: p.id,
+          slug: p.slug,
+          name: p.nameZh ?? p.name,
+          description: p.descriptionZh ?? p.description,
+          priceLabel: p.priceLabel,
+          priceTwd: p.priceTwd,
+          imageUrl: p.imageUrl,
+          stockQuantity: p.stockQuantity,
+          sizeOptions: coerceSizeOptions(p.sizeOptions as unknown),
         }))}
         imageUrls={portfolioImages.map((img) => img.url)}
       />

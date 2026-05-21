@@ -33,6 +33,12 @@
     "viewAll": "View All Artists",
     "tattooArtist": "Professional Tattoo Artist"
   },
+  "homeShop": {
+    "label": "Boutique",
+    "title": "Shop",
+    "description": "Studio products and curated pieces from Casper Tattoo Kaohsiung.",
+    "showMore": "View all shop items"
+  },
   "bookingCTA": {
     "label": "Concierge",
     "title": "Book Your",

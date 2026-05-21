@@ -4,6 +4,7 @@ import { getSiteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 import { ComingSoon } from "@/components/home/ComingSoon";
+import { coerceSizeOptions } from "@/lib/shop-size-options";
 
 export const metadata: Metadata = {
   title: "Casper Tattoo Kaohsiung | Professional Tattoo Studio — Realism & Fine-Line",
@@ -108,7 +109,7 @@ const structuredData = {
 };
 
 export default async function HomePage() {
-  const [artists, portfolioImages] = await Promise.all([
+  const [artists, portfolioImages, shopRows] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" } },
       select: {
@@ -125,6 +126,22 @@ export default async function HomePage() {
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,
+    }),
+    prisma.shopProduct.findMany({
+      where: { isPublished: true },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      take: 4,
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        description: true,
+        priceLabel: true,
+        priceTwd: true,
+        imageUrl: true,
+        stockQuantity: true,
+        sizeOptions: true,
+      },
     }),
   ]);
 
@@ -143,6 +160,17 @@ export default async function HomePage() {
           specialty: a.specialty,
           avatar_url: a.avatarUrl,
           slug: a.slug,
+        }))}
+        products={shopRows.map((p) => ({
+          id: p.id,
+          slug: p.slug,
+          name: p.name,
+          description: p.description,
+          priceLabel: p.priceLabel,
+          priceTwd: p.priceTwd,
+          imageUrl: p.imageUrl,
+          stockQuantity: p.stockQuantity,
+          sizeOptions: coerceSizeOptions(p.sizeOptions as unknown),
         }))}
         imageUrls={imageUrls}
       />
