@@ -5,6 +5,7 @@ import { useState, useMemo } from "react";
 import { Plus } from "lucide-react";
 import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { formatProductPrice } from "@/lib/format-price";
 import { SwipeGallery } from "@/components/ui/SwipeGallery";
 import { normalizeCartSize } from "@/lib/cart-storage";
 import {
@@ -131,11 +132,10 @@ export function ShopProductDetail({
           <h1 className="mt-3 font-serif text-3xl font-medium tracking-tight text-foreground md:text-4xl">
             {name}
           </h1>
-          {priceLabel && (
-            <p className="mt-4 text-lg font-medium text-accent">{priceLabel}</p>
-          )}
-          {priceTwd != null && !priceLabel ? (
-            <p className="mt-2 text-lg font-medium text-accent">NT$ {priceTwd}</p>
+          {formatProductPrice(priceTwd, priceLabel) ? (
+            <p className="mt-4 text-lg font-medium text-accent">
+              {formatProductPrice(priceTwd, priceLabel)}
+            </p>
           ) : null}
           <div className="prose-shop mt-8 whitespace-pre-wrap text-[17px] leading-relaxed text-foreground-muted">
             {description}

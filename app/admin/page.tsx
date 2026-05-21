@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Users, Image, FileText, CalendarCheck, ShoppingBag, ArrowRight } from "lucide-react";
+import { formatTwdOrDash } from "@/lib/format-price";
 
 export default async function AdminDashboardPage() {
   await requireAdmin();
@@ -211,7 +212,7 @@ export default async function AdminDashboardPage() {
                       {o._count.items}
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      {o.totalTwd != null ? `NT$ ${o.totalTwd}` : "—"}
+                      {formatTwdOrDash(o.totalTwd)}
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <span className="rounded-full bg-[var(--accent-gold-muted)] px-2 py-0.5 text-xs font-medium text-[var(--accent-gold)]">

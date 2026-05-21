@@ -2,13 +2,9 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { OrderStatusForm } from "./OrderStatusForm";
+import { formatTwdOrDash } from "@/lib/format-price";
 
 export const dynamic = "force-dynamic";
-
-function formatTwd(n: number | null | undefined) {
-  if (n == null) return "—";
-  return `NT$ ${n}`;
-}
 
 export default async function AdminShopOrdersPage() {
   await requireAdmin();
@@ -120,14 +116,14 @@ export default async function AdminShopOrdersPage() {
                           {i.sizeSnapshot ? ` (${i.sizeSnapshot})` : ""} ×{" "}
                           {i.quantity}{" "}
                           <span className="text-foreground-subtle">
-                            ({formatTwd(i.lineTotalTwd)})
+                            ({formatTwdOrDash(i.lineTotalTwd)})
                           </span>
                         </li>
                       ))}
                     </ul>
                   </td>
                   <td className="align-top px-3 py-3 text-foreground">
-                    {formatTwd(o.totalTwd)}
+                    {formatTwdOrDash(o.totalTwd)}
                   </td>
                   <td className="align-top px-3 py-3">
                     <OrderStatusForm

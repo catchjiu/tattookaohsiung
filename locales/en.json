@@ -56,7 +56,7 @@
     "qty": "Qty",
     "remove": "Remove",
     "subtotal": "Subtotal",
-    "totalPending": "Subtotal will be confirmed — some items may need a custom quote.",
+    "totalPending": "Subtotal (TWD) will be confirmed — some items may need a custom quote.",
     "checkout": "Checkout",
     "checkoutTitle": "Checkout",
     "checkoutBlurb": "Enter your details to place the order. No online payment yet — you'll receive a confirmation email and we'll follow up to arrange payment.",

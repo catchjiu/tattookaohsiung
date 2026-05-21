@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
+import { formatProductPrice } from "@/lib/format-price";
 
 export type ShopProductCard = {
   id: string;
@@ -43,7 +44,9 @@ export function ShopContent({ products }: Props) {
             {t("shop.noProducts")}
           </p>
         ) : (
-          products.map((p) => (
+          products.map((p) => {
+            const priceDisplay = formatProductPrice(p.priceTwd, p.priceLabel);
+            return (
             <article
               key={p.id}
               className="flex flex-col border border-border bg-card transition-colors hover:border-accent hover:bg-card-hover"
@@ -70,14 +73,9 @@ export function ShopContent({ products }: Props) {
                   <h2 className="font-serif text-xl font-medium text-foreground transition-colors group-hover:text-accent">
                     {p.name}
                   </h2>
-                  {p.priceLabel && (
+                  {priceDisplay ? (
                     <p className="mt-2 text-sm font-medium tracking-wide text-accent">
-                      {p.priceLabel}
-                    </p>
-                  )}
-                  {p.priceTwd != null && !p.priceLabel ? (
-                    <p className="mt-1 text-sm font-medium tracking-wide text-accent">
-                      NT$ {p.priceTwd}
+                      {priceDisplay}
                     </p>
                   ) : null}
                   <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-foreground-muted">
@@ -105,7 +103,8 @@ export function ShopContent({ products }: Props) {
                 )}
               </div>
             </article>
-          ))
+          );
+          })
         )}
       </div>
     </div>

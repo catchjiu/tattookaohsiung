@@ -15,6 +15,7 @@ import { SHOP_BANK_TRANSFER_DISPLAY } from "@/lib/shop-bank-transfer";
 import { stockCeilingForLine, type SizeStockRow } from "@/lib/shop-stock";
 import { escapeHtml, isEmailConfigured, sendEmail } from "@/lib/email";
 import { getSiteUrl } from "@/lib/site-url";
+import { formatTwd, formatTwdOrDash, formatOrderUnitPrice } from "@/lib/format-price";
 
 const CHECKOUT_LIMIT = 8; // per minute per IP
 
@@ -233,7 +234,8 @@ export async function submitShopOrder(formData: FormData) {
       productSlug: p.slug,
       nameSnapshot: p.name,
       sizeSnapshot: sz,
-      priceLabelSnapshot: p.priceLabel,
+      priceLabelSnapshot:
+        p.priceTwd != null ? formatTwd(p.priceTwd) : p.priceLabel,
       unitPriceTwd: unit,
       quantity: qty,
       lineTotalTwd: lineTotal,
@@ -399,6 +401,7 @@ type ShopOrderEmailItem = {
   nameSnapshot: string;
   sizeSnapshot: string | null;
   priceLabelSnapshot: string | null;
+  unitPriceTwd: number | null;
   quantity: number;
   lineTotalTwd: number | null;
 };
@@ -417,21 +420,26 @@ type ShopOrderEmailPayload = {
 
 function shopOrderLinesHtml(items: ShopOrderEmailItem[]): string {
   return items
-    .map(
-      (i) =>
-        `<tr><td>${escapeHtml(i.nameSnapshot)}</td><td>${i.sizeSnapshot ? escapeHtml(i.sizeSnapshot) : "—"}</td><td>${i.quantity}</td><td>${i.priceLabelSnapshot ? escapeHtml(i.priceLabelSnapshot) : "—"}</td><td>${i.lineTotalTwd != null ? `NT$ ${i.lineTotalTwd}` : "—"}</td></tr>`
-    )
+    .map((i) => {
+      const unit = formatOrderUnitPrice(
+        i.unitPriceTwd,
+        i.priceLabelSnapshot,
+        i.quantity
+      );
+      const line = formatTwdOrDash(i.lineTotalTwd);
+      return `<tr><td>${escapeHtml(i.nameSnapshot)}</td><td>${i.sizeSnapshot ? escapeHtml(i.sizeSnapshot) : "—"}</td><td>${i.quantity}</td><td>${escapeHtml(unit)}</td><td>${escapeHtml(line)}</td></tr>`;
+    })
     .join("");
 }
 
 function shopOrderTotalLines(totalTwd: number | null): { en: string; zh: string } {
   const en =
     totalTwd != null
-      ? `<p><strong>Total:</strong> NT$ ${totalTwd}</p>`
+      ? `<p><strong>Total:</strong> ${formatTwd(totalTwd)}</p>`
       : `<p><strong>Total:</strong> We will confirm the amount (some items may need a custom quote).</p>`;
   const zh =
     totalTwd != null
-      ? `<p><strong>總計：</strong> NT$ ${totalTwd}</p>`
+      ? `<p><strong>總計：</strong> ${formatTwd(totalTwd)}</p>`
       : `<p><strong>總計：</strong> 部分商品可能需要報價確認，金額將另為通知。</p>`;
   return { en, zh };
 }

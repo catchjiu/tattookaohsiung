@@ -10,6 +10,7 @@ import {
   getShopCartPreview,
   type CartPreviewLine,
 } from "@/app/shop/order-actions";
+import { formatProductPrice, formatTwd } from "@/lib/format-price";
 
 export function CartContent() {
   const { t, locale } = useLanguage();
@@ -133,11 +134,12 @@ export function CartContent() {
                     {t("shop.size")}: {p.size}
                   </p>
                 ) : null}
-                {p.priceLabel && (
+                {formatProductPrice(p.priceTwd, p.priceLabel) ? (
                   <p className="mt-1 text-sm text-foreground-muted">
-                    {p.priceLabel}
+                    {formatProductPrice(p.priceTwd, p.priceLabel)}
+                    {p.quantity > 1 ? ` × ${p.quantity}` : ""}
                   </p>
-                )}
+                ) : null}
                 {p.exceedsStock ? (
                   <p className="mt-2 text-sm text-red-400">
                     {t("shop.cartExceedsStock")}
@@ -171,7 +173,7 @@ export function CartContent() {
               </div>
               <div className="shrink-0 text-right text-sm text-foreground">
                 {lineTotal != null ? (
-                  <>NT$ {lineTotal}</>
+                  <>{formatTwd(lineTotal)}</>
                 ) : (
                   <span className="text-foreground-muted">—</span>
                 )}
@@ -185,7 +187,7 @@ export function CartContent() {
         {totalTwd != null ? (
           <p className="text-lg font-medium text-foreground">
             {t("shop.subtotal")}{" "}
-            <span className="text-accent">NT$ {totalTwd}</span>
+            <span className="text-accent">{formatTwd(totalTwd)}</span>
           </p>
         ) : (
           <p className="text-foreground-muted">{t("shop.totalPending")}</p>

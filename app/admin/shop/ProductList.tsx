@@ -6,6 +6,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import type { ShopProduct } from "@/types/database";
 import { deleteShopProduct } from "./actions";
 import { ProductForm } from "./ProductForm";
+import { formatProductPrice } from "@/lib/format-price";
 
 type Props = {
   products: ShopProduct[];
@@ -68,16 +69,13 @@ export function ProductList({ products }: Props) {
                   {p.name}
                 </div>
                 <div className="text-sm text-foreground-muted">/{p.slug}</div>
-                {p.price_label && (
+                {formatProductPrice(p.price_twd, p.price_label) ? (
                   <div className="mt-1 text-sm text-foreground-muted">
-                    {p.price_label}
+                    {formatProductPrice(p.price_twd, p.price_label)}
                   </div>
+                ) : (
+                  <div className="mt-1 text-sm text-foreground-muted">—</div>
                 )}
-                {p.price_twd != null ? (
-                  <div className="mt-0.5 text-xs text-foreground-muted">
-                    NT$ {p.price_twd} (cart)
-                  </div>
-                ) : null}
                 <div className="mt-1 text-xs text-foreground-muted">
                   Stock: {formatStockSummary(p)}
                 </div>
@@ -161,10 +159,7 @@ export function ProductList({ products }: Props) {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-sm text-foreground-muted">
-                    <div>{p.price_label || "—"}</div>
-                    {p.price_twd != null ? (
-                      <div className="mt-0.5 text-xs">NT$ {p.price_twd}</div>
-                    ) : null}
+                    {formatProductPrice(p.price_twd, p.price_label) || "—"}
                   </td>
                   <td className="px-4 py-3 text-sm text-foreground-muted">
                     {formatStockSummary(p)}

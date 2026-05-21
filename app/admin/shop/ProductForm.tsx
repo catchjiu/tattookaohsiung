@@ -218,21 +218,9 @@ export function ProductForm({ product, onClose }: Props) {
                   className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
                 />
                 <p className="mt-1 text-xs text-foreground-muted">
-                  Whole TWD amount for cart totals. Leave empty for &quot;quote
-                  on request&quot; items.
+                  Shown on the site as NT$ (e.g. NT$ 1,200). Leave empty for
+                  quote-on-request items.
                 </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-foreground-muted">
-                  Price label (display only)
-                </label>
-                <input
-                  name="price_label"
-                  placeholder="e.g. NT$ 1,200"
-                  defaultValue={product?.price_label ?? ""}
-                  className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
-                />
               </div>
 
               <div>

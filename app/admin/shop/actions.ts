@@ -5,6 +5,12 @@ import { revalidatePath } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { parseSizeOptionsText } from "@/lib/shop-size-options";
 import { parseImagesJson, primaryImageUrl } from "@/lib/parse-images-json";
+import { formatTwd } from "@/lib/format-price";
+
+function resolvePriceLabel(priceTwd: number | null): string | null {
+  if (priceTwd != null) return formatTwd(priceTwd);
+  return null;
+}
 
 function parseSizeStocksPayload(
   raw: string | null | undefined,
@@ -98,10 +104,10 @@ export async function createShopProduct(formData: FormData) {
   const description = (formData.get("description") as string)?.trim() || "";
   const descriptionZh =
     (formData.get("description_zh") as string)?.trim() || null;
-  const priceLabel = (formData.get("price_label") as string)?.trim() || null;
   const priceTwd = parseOptionalPriceTwd(
     formData.get("price_twd") as string | null
   );
+  const priceLabel = resolvePriceLabel(priceTwd);
   const imageUrlRaw = (formData.get("image_url") as string)?.trim() || null;
   const imageUrls = parseImagesJson(formData.get("images_json") as string);
   const imageUrl = primaryImageUrl(imageUrls, imageUrlRaw);
@@ -170,10 +176,10 @@ export async function updateShopProduct(id: string, formData: FormData) {
   const description = (formData.get("description") as string)?.trim() || "";
   const descriptionZh =
     (formData.get("description_zh") as string)?.trim() || null;
-  const priceLabel = (formData.get("price_label") as string)?.trim() || null;
   const priceTwd = parseOptionalPriceTwd(
     formData.get("price_twd") as string | null
   );
+  const priceLabel = resolvePriceLabel(priceTwd);
   const imageUrlRaw = (formData.get("image_url") as string)?.trim() || null;
   const imageUrls = parseImagesJson(formData.get("images_json") as string);
   const imageUrl = primaryImageUrl(imageUrls, imageUrlRaw);
