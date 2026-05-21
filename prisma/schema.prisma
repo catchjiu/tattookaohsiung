@@ -98,10 +98,23 @@ model PortfolioImage {
   createdAt        DateTime @default(now()) @map("created_at")
 
   artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  assets PortfolioImageAsset[]
 
   @@index([artistId])
   @@index([artistId, category])
   @@map("portfolio_images")
+}
+
+model PortfolioImageAsset {
+  id               String @id @default(cuid())
+  portfolioImageId String @map("portfolio_image_id")
+  url              String
+  sortOrder        Int    @default(0) @map("sort_order")
+
+  portfolioImage PortfolioImage @relation(fields: [portfolioImageId], references: [id], onDelete: Cascade)
+
+  @@index([portfolioImageId])
+  @@map("portfolio_image_assets")
 }
 
 model BlogPost {
@@ -151,10 +164,23 @@ model ShopProduct {
   orderItems      ShopOrderItem[]
   /** Rows only exist for sizes with tracked finite stock; sizes omitted = unlimited */
   sizeStockRows   ShopProductSizeStock[]
+  images          ShopProductImage[]
 
   @@index([isPublished, sortOrder])
   @@index([slug])
   @@map("shop_products")
+}
+
+model ShopProductImage {
+  id        String @id @default(cuid())
+  productId String @map("product_id")
+  url       String
+  sortOrder Int    @default(0) @map("sort_order")
+
+  product ShopProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@map("shop_product_images")
 }
 
 model ShopProductSizeStock {

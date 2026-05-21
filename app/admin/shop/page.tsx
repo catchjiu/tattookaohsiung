@@ -12,6 +12,7 @@ export default async function AdminShopPage() {
     orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     include: {
       sizeStockRows: { select: { size: true, quantity: true } },
+      images: { orderBy: { sortOrder: "asc" }, select: { url: true } },
     },
   });
 
@@ -31,6 +32,7 @@ export default async function AdminShopPage() {
     })),
     stock_quantity: p.stockQuantity,
     image_url: p.imageUrl,
+    image_urls: p.images.map((img) => img.url),
     sort_order: p.sortOrder,
     is_published: p.isPublished,
     created_at: p.createdAt.toISOString(),

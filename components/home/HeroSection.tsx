@@ -13,7 +13,9 @@ type Props = {
 };
 
 export function HeroSection({ imageUrls = [] }: Props) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+
+  const shopHref = locale === "zh-TW" ? "/zh-TW/shop" : "/shop";
 
   return (
     <section className="relative min-h-[100dvh] overflow-hidden bg-charcoal">
@@ -59,10 +61,10 @@ export function HeroSection({ imageUrls = [] }: Props) {
               {t("hero.bookSession").toUpperCase()}
             </Link>
             <Link
-              href="/gallery"
+              href={shopHref}
               className="inline-flex items-center justify-center rounded-none border-2 border-ivory/40 px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase text-ivory/90 transition-colors hover:border-ivory/60 hover:bg-ivory/5 hover:text-ivory"
             >
-              {t("hero.viewGallery").toUpperCase()}
+              {t("nav.shop").toUpperCase()}
             </Link>
           </motion.div>
         </div>

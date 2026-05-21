@@ -23,6 +23,7 @@ export type ArtUpload = {
   description: string | null;
   description_zh?: string | null;
   image_url: string;
+  image_urls?: string[];
   thumbnail_url: string | null;
   tags: string[];
   tags_zh?: string[];
@@ -72,6 +73,7 @@ export type ShopProduct = {
   /** Single-SKU stock when product has no sizes; null = unlimited */
   stock_quantity?: number | null;
   image_url: string | null;
+  image_urls?: string[];
   sort_order: number;
   is_published: boolean;
   created_at: string;

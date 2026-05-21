@@ -55,7 +55,10 @@ export const metadata: Metadata = {
 export default async function GalleryPage() {
   const [images, heroImages] = await Promise.all([
     prisma.portfolioImage.findMany({
-      include: { artist: { select: { name: true, specialty: true } } },
+      include: {
+        artist: { select: { name: true, specialty: true } },
+        assets: { orderBy: { sortOrder: "asc" }, select: { url: true } },
+      },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     }),
     prisma.portfolioImage.findMany({
@@ -70,6 +73,7 @@ export default async function GalleryPage() {
     id: img.id,
     title: galleryTitleForLocale(img, "en"),
     image_url: img.url,
+    image_urls: img.assets.map((a) => a.url),
     tags: galleryTagsForLocale(img, "en"),
     artists: { name: img.artist.name, specialty: img.artist.specialty },
   }));

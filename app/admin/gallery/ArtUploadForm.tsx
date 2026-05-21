@@ -17,12 +17,22 @@ type Props = {
 export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState(artUpload?.image_url ?? "");
+  const [imageUrls, setImageUrls] = useState<string[]>(() => {
+    if (artUpload?.image_urls?.length) return artUpload.image_urls;
+    if (artUpload?.image_url) return [artUpload.image_url];
+    return [];
+  });
   const isEditing = !!artUpload;
 
   useEffect(() => {
-    setImageUrl(artUpload?.image_url ?? "");
-  }, [artUpload?.image_url]);
+    if (artUpload?.image_urls?.length) {
+      setImageUrls(artUpload.image_urls);
+    } else if (artUpload?.image_url) {
+      setImageUrls([artUpload.image_url]);
+    } else {
+      setImageUrls([]);
+    }
+  }, [artUpload?.id, artUpload?.image_url, artUpload?.image_urls?.join("|")]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -32,7 +42,7 @@ export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
 
     const url = (formData.get("image_url") as string)?.trim();
     if (!url) {
-      setError("Please upload an image.");
+      setError("Please upload at least one image.");
       return;
     }
 
@@ -96,7 +106,7 @@ export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
             <p className="mt-1 mb-2 text-xs text-[var(--muted)]">
               Upload a photo or use an existing artwork image.
             </p>
-            <GalleryImageUpload value={imageUrl || null} onChange={(url) => setImageUrl(url ?? "")} />
+            <GalleryImageUpload value={imageUrls} onChange={setImageUrls} />
           </div>
 
           <div className="space-y-4 border-t border-[var(--border)] pt-4">

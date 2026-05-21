@@ -15,7 +15,10 @@ export default async function AdminGalleryPage() {
 
   const [images, artists] = await Promise.all([
     prisma.portfolioImage.findMany({
-      include: { artist: { select: { name: true } } },
+      include: {
+        artist: { select: { name: true } },
+        assets: { orderBy: { sortOrder: "asc" }, select: { url: true } },
+      },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     }),
     prisma.artist.findMany({
@@ -31,6 +34,7 @@ export default async function AdminGalleryPage() {
     description: img.altText,
     description_zh: img.altTextZh,
     image_url: img.url,
+    image_urls: img.assets.map((a) => a.url),
     thumbnail_url: null,
     tags: img.tags,
     tags_zh: img.tagsZh,

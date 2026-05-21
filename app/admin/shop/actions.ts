@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { parseSizeOptionsText } from "@/lib/shop-size-options";
+import { parseImagesJson, primaryImageUrl } from "@/lib/parse-images-json";
 
 function parseSizeStocksPayload(
   raw: string | null | undefined,
@@ -47,6 +48,22 @@ async function replaceSizeStocks(
   });
 }
 
+async function replaceProductImages(
+  tx: Prisma.TransactionClient,
+  productId: string,
+  urls: string[]
+) {
+  await tx.shopProductImage.deleteMany({ where: { productId } });
+  if (!urls.length) return;
+  await tx.shopProductImage.createMany({
+    data: urls.map((url, sortOrder) => ({
+      productId,
+      url,
+      sortOrder,
+    })),
+  });
+}
+
 function slugify(text: string) {
   return text
     .toLowerCase()
@@ -85,7 +102,9 @@ export async function createShopProduct(formData: FormData) {
   const priceTwd = parseOptionalPriceTwd(
     formData.get("price_twd") as string | null
   );
-  const imageUrl = (formData.get("image_url") as string)?.trim() || null;
+  const imageUrlRaw = (formData.get("image_url") as string)?.trim() || null;
+  const imageUrls = parseImagesJson(formData.get("images_json") as string);
+  const imageUrl = primaryImageUrl(imageUrls, imageUrlRaw);
   const sortOrderRaw = (formData.get("sort_order") as string)?.trim() ?? "0";
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const isPublished = formData.get("is_published") === "on";
@@ -127,6 +146,7 @@ export async function createShopProduct(formData: FormData) {
         },
       });
       await replaceSizeStocks(tx, p.id, sizeStockPayload);
+      await replaceProductImages(tx, p.id, imageUrls);
     });
   } catch (err) {
     return {
@@ -154,7 +174,9 @@ export async function updateShopProduct(id: string, formData: FormData) {
   const priceTwd = parseOptionalPriceTwd(
     formData.get("price_twd") as string | null
   );
-  const imageUrl = (formData.get("image_url") as string)?.trim() || null;
+  const imageUrlRaw = (formData.get("image_url") as string)?.trim() || null;
+  const imageUrls = parseImagesJson(formData.get("images_json") as string);
+  const imageUrl = primaryImageUrl(imageUrls, imageUrlRaw);
   const sortOrderRaw = (formData.get("sort_order") as string)?.trim() ?? "0";
   const sortOrder = Number.parseInt(sortOrderRaw, 10);
   const isPublished = formData.get("is_published") === "on";
@@ -205,6 +227,7 @@ export async function updateShopProduct(id: string, formData: FormData) {
       } else {
         await tx.shopProductSizeStock.deleteMany({ where: { productId: id } });
       }
+      await replaceProductImages(tx, id, imageUrls);
     });
   } catch (err) {
     return {

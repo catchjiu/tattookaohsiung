@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { ShopProductDetail } from "@/components/shop/ShopProductDetail";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
+import { primaryImageUrl } from "@/lib/parse-images-json";
 
 export const dynamic = "force-dynamic";
 
@@ -38,9 +39,13 @@ export default async function ShopProductPage({ params }: Props) {
     where: { slug, isPublished: true },
     include: {
       sizeStockRows: { select: { size: true, quantity: true } },
+      images: { orderBy: { sortOrder: "asc" }, select: { url: true } },
     },
   });
   if (!product) notFound();
+
+  const imageUrls = product.images.map((img) => img.url);
+  const coverUrl = primaryImageUrl(imageUrls, product.imageUrl);
 
   const name = locale === "zh-TW" ? (product.nameZh ?? product.name) : product.name;
   const description =
@@ -55,7 +60,8 @@ export default async function ShopProductPage({ params }: Props) {
       description={description}
       priceLabel={product.priceLabel}
       priceTwd={product.priceTwd}
-      imageUrl={product.imageUrl}
+      imageUrl={coverUrl}
+      imageUrls={imageUrls.length ? imageUrls : coverUrl ? [coverUrl] : []}
       sizeOptions={coerceSizeOptions(product.sizeOptions as unknown)}
       stockQuantity={product.stockQuantity}
       sizeStocks={product.sizeStockRows.map((r) => ({

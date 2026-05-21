@@ -2,6 +2,24 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { parseImagesJson, primaryImageUrl } from "@/lib/parse-images-json";
+
+async function replacePortfolioAssets(
+  portfolioImageId: string,
+  urls: string[]
+) {
+  await prisma.portfolioImageAsset.deleteMany({
+    where: { portfolioImageId },
+  });
+  if (!urls.length) return;
+  await prisma.portfolioImageAsset.createMany({
+    data: urls.map((url, sortOrder) => ({
+      portfolioImageId,
+      url,
+      sortOrder,
+    })),
+  });
+}
 
 function parseTagList(formData: FormData, key: string): string[] {
   const raw = (formData.get(key) as string) || "";
@@ -17,7 +35,9 @@ export async function createArtUpload(formData: FormData) {
   const titleZh = (formData.get("title_zh") as string)?.trim() || null;
   const description = (formData.get("description") as string)?.trim() || "Artwork";
   const descriptionZh = (formData.get("description_zh") as string)?.trim() || null;
-  const imageUrl = (formData.get("image_url") as string)?.trim();
+  const imageUrlRaw = (formData.get("image_url") as string)?.trim();
+  const imageUrls = parseImagesJson(formData.get("images_json") as string);
+  const imageUrl = primaryImageUrl(imageUrls, imageUrlRaw);
   const tags = parseTagList(formData, "tags");
   const tagsZh = parseTagList(formData, "tags_zh");
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
@@ -27,7 +47,7 @@ export async function createArtUpload(formData: FormData) {
   if (!artistId) return { error: "Artist is required" };
 
   try {
-    await prisma.portfolioImage.create({
+    const created = await prisma.portfolioImage.create({
       data: {
         artistId,
         url: imageUrl,
@@ -41,6 +61,7 @@ export async function createArtUpload(formData: FormData) {
         showInHeroSlider,
       },
     });
+    await replacePortfolioAssets(created.id, imageUrls.length ? imageUrls : [imageUrl]);
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Failed to create artwork" };
   }
@@ -60,7 +81,9 @@ export async function updateArtUpload(id: string, formData: FormData) {
   const titleZh = (formData.get("title_zh") as string)?.trim() || null;
   const description = (formData.get("description") as string)?.trim() || "Artwork";
   const descriptionZh = (formData.get("description_zh") as string)?.trim() || null;
-  const imageUrl = (formData.get("image_url") as string)?.trim();
+  const imageUrlRaw = (formData.get("image_url") as string)?.trim();
+  const imageUrls = parseImagesJson(formData.get("images_json") as string);
+  const imageUrl = primaryImageUrl(imageUrls, imageUrlRaw);
   const tags = parseTagList(formData, "tags");
   const tagsZh = parseTagList(formData, "tags_zh");
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
@@ -85,6 +108,7 @@ export async function updateArtUpload(id: string, formData: FormData) {
         showInHeroSlider,
       },
     });
+    await replacePortfolioAssets(id, imageUrls.length ? imageUrls : [imageUrl]);
   } catch (err) {
     return { error: err instanceof Error ? err.message : "Failed to update artwork" };
   }

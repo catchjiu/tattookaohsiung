@@ -15,6 +15,7 @@ type Artwork = {
   id: string;
   title: string | null;
   image_url: string;
+  image_urls?: string[];
   tags: string[] | null;
 };
 

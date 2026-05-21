@@ -43,6 +43,7 @@ type Artwork = {
   id: string;
   title: string | null;
   image_url: string;
+  image_urls?: string[];
   tags: string[] | null;
   artists?: ArtistMeta | ArtistMeta[] | null;
 };
@@ -55,6 +56,17 @@ type Props = {
 export function GalleryGrid({ artworks, showArtistName = true }: Props) {
   const { t } = useLanguage();
   const [lightboxItem, setLightboxItem] = useState<Artwork | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  function openLightbox(item: Artwork) {
+    setLightboxItem(item);
+    setLightboxIndex(0);
+  }
+
+  function imagesForItem(item: Artwork): string[] {
+    if (item.image_urls?.length) return item.image_urls;
+    return item.image_url ? [item.image_url] : [];
+  }
 
   return (
     <>
@@ -74,7 +86,7 @@ export function GalleryGrid({ artworks, showArtistName = true }: Props) {
               <div>
                 <button
                   type="button"
-                  onClick={() => setLightboxItem(item)}
+                  onClick={() => openLightbox(item)}
                   className="group relative block w-full cursor-pointer text-left touch-manipulation"
                 >
                   <div className="relative aspect-[3/4] overflow-hidden bg-card-hover">
@@ -88,6 +100,11 @@ export function GalleryGrid({ artworks, showArtistName = true }: Props) {
                       blurDataURL={BLUR_PLACEHOLDER}
                       loading="lazy"
                     />
+                    {imagesForItem(item).length > 1 ? (
+                      <span className="absolute bottom-2 right-2 rounded bg-charcoal/75 px-2 py-0.5 text-[10px] font-medium tracking-wide text-white/90">
+                        +{imagesForItem(item).length - 1}
+                      </span>
+                    ) : null}
                   </div>
                   <div className="mt-4">
                     <div className="font-serif text-[15px] font-medium text-foreground">
@@ -117,6 +134,8 @@ export function GalleryGrid({ artworks, showArtistName = true }: Props) {
         <Lightbox
           src={lightboxItem.image_url}
           alt={buildAlt(lightboxItem)}
+          images={imagesForItem(lightboxItem)}
+          initialIndex={lightboxIndex}
           isOpen={!!lightboxItem}
           onClose={() => setLightboxItem(null)}
         />

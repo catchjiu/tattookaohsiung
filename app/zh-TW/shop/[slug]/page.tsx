@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ShopProductDetail } from "@/components/shop/ShopProductDetail";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
+import { primaryImageUrl } from "@/lib/parse-images-json";
 
 export const dynamic = "force-dynamic";
 
@@ -36,12 +37,15 @@ export default async function ShopProductPageZhTW({ params }: Props) {
     where: { slug, isPublished: true },
     include: {
       sizeStockRows: { select: { size: true, quantity: true } },
+      images: { orderBy: { sortOrder: "asc" }, select: { url: true } },
     },
   });
   if (!product) notFound();
 
   const name = product.nameZh ?? product.name;
   const description = product.descriptionZh ?? product.description;
+  const imageUrls = product.images.map((img) => img.url);
+  const coverUrl = primaryImageUrl(imageUrls, product.imageUrl);
 
   return (
     <ShopProductDetail
@@ -50,7 +54,8 @@ export default async function ShopProductPageZhTW({ params }: Props) {
       description={description}
       priceLabel={product.priceLabel}
       priceTwd={product.priceTwd}
-      imageUrl={product.imageUrl}
+      imageUrl={coverUrl}
+      imageUrls={imageUrls.length ? imageUrls : coverUrl ? [coverUrl] : []}
       sizeOptions={coerceSizeOptions(product.sizeOptions as unknown)}
       stockQuantity={product.stockQuantity}
       sizeStocks={product.sizeStockRows.map((r) => ({

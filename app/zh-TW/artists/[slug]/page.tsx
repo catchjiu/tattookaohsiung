@@ -62,6 +62,9 @@ export default async function ZhTWArtistPage({
     where: { slug, status: { not: "INACTIVE" } },
     include: {
       portfolioImages: {
+        include: {
+          assets: { orderBy: { sortOrder: "asc" }, select: { url: true } },
+        },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       },
     },
@@ -115,6 +118,7 @@ export default async function ZhTWArtistPage({
           id: img.id,
           title: galleryTitleForLocale(img, "zh-TW"),
           image_url: img.url,
+          image_urls: img.assets.map((a) => a.url),
           tags: galleryTagsForLocale(img, "zh-TW"),
         }))}
       />

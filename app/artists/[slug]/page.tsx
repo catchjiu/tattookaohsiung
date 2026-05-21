@@ -60,6 +60,9 @@ export default async function ArtistGalleryPage({
     where: { slug, status: { not: "INACTIVE" } },
     include: {
       portfolioImages: {
+        include: {
+          assets: { orderBy: { sortOrder: "asc" }, select: { url: true } },
+        },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       },
     },
@@ -71,6 +74,7 @@ export default async function ArtistGalleryPage({
     id: img.id,
     title: galleryTitleForLocale(img, "en"),
     image_url: img.url,
+    image_urls: img.assets.map((a) => a.url),
     tags: galleryTagsForLocale(img, "en"),
   }));
 

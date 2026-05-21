@@ -7,4 +7,5 @@ export { Textarea } from "./Textarea";
 export { Select } from "./Select";
 export { Card } from "./Card";
 export { Lightbox } from "./Lightbox";
+export { SwipeGallery } from "./SwipeGallery";
 export { FormField } from "./FormField";

@@ -5,9 +5,9 @@ import Cropper, { type Area } from "react-easy-crop";
 import { Upload, X } from "lucide-react";
 import { uploadPortfolioImage } from "@/app/admin/gallery/upload-actions";
 
-const ASPECT = 2 / 3; // 2:3 portrait for gallery
+const ASPECT = 2 / 3;
 const OUTPUT_WIDTH = 600;
-const OUTPUT_HEIGHT = 900; // 600x900 for 2:3
+const OUTPUT_HEIGHT = 900;
 
 function createImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -53,11 +53,12 @@ async function getCroppedImg(
 }
 
 type Props = {
-  value: string | null;
-  onChange: (url: string | null) => void;
+  value: string[];
+  onChange: (urls: string[]) => void;
 };
 
 export function GalleryImageUpload({ value, onChange }: Props) {
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [file, setFile] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -71,11 +72,23 @@ export function GalleryImageUpload({ value, onChange }: Props) {
   }, []);
 
   function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    if (!f || !f.type.startsWith("image/")) return;
+    const selected = Array.from(e.target.files ?? []).filter((f) =>
+      f.type.startsWith("image/")
+    );
     e.target.value = "";
+    if (selected.length === 0) return;
     setError(null);
+    setPendingFiles((prev) => [...prev, ...selected]);
+    if (!file) {
+      startCropForFile(selected[0]);
+    }
+  }
+
+  function startCropForFile(f: File) {
     setFile(URL.createObjectURL(f));
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCroppedArea(null);
   }
 
   function handleCancelCrop() {
@@ -84,6 +97,17 @@ export function GalleryImageUpload({ value, onChange }: Props) {
     setCrop({ x: 0, y: 0 });
     setZoom(1);
     setCroppedArea(null);
+    setPendingFiles([]);
+  }
+
+  function skipCurrentFile() {
+    if (file) URL.revokeObjectURL(file);
+    setFile(null);
+    setPendingFiles((prev) => {
+      const next = prev.slice(1);
+      if (next.length > 0) startCropForFile(next[0]);
+      return next;
+    });
   }
 
   async function handleConfirmCrop() {
@@ -98,9 +122,16 @@ export function GalleryImageUpload({ value, onChange }: Props) {
       const result = await uploadPortfolioImage(formData);
       if (result.error) throw new Error(result.error);
       if (result.url) {
-        onChange(result.url);
-        handleCancelCrop();
+        onChange([...value, result.url]);
       }
+
+      if (file) URL.revokeObjectURL(file);
+      setFile(null);
+      setPendingFiles((prev) => {
+        const next = prev.slice(1);
+        if (next.length > 0) startCropForFile(next[0]);
+        return next;
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
@@ -108,7 +139,16 @@ export function GalleryImageUpload({ value, onChange }: Props) {
     }
   }
 
+  function removeAt(index: number) {
+    onChange(value.filter((_, i) => i !== index));
+  }
+
   if (file) {
+    const queueLabel =
+      pendingFiles.length > 1
+        ? ` (${pendingFiles.length} in queue)`
+        : "";
+
     return (
       <div className="space-y-4">
         <div className="relative h-64 w-full overflow-hidden rounded-md border border-[var(--border)] bg-[#0d0d0d]">
@@ -125,7 +165,7 @@ export function GalleryImageUpload({ value, onChange }: Props) {
           />
         </div>
         <p className="text-xs text-[var(--muted)]">
-          Crop to 2:3 portrait — matches gallery display
+          Crop to 2:3 portrait — matches gallery display{queueLabel}
         </p>
         <div className="flex items-center gap-2">
           <input
@@ -142,14 +182,23 @@ export function GalleryImageUpload({ value, onChange }: Props) {
         {error && (
           <p className="text-sm text-[var(--accent-crimson)]">{error}</p>
         )}
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={handleCancelCrop}
             className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--border)]"
           >
-            Cancel
+            Cancel all
           </button>
+          {pendingFiles.length > 1 ? (
+            <button
+              type="button"
+              onClick={skipCurrentFile}
+              className="rounded-md border border-[var(--border)] px-3 py-1.5 text-sm hover:bg-[var(--border)]"
+            >
+              Skip this photo
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={handleConfirmCrop}
@@ -159,17 +208,19 @@ export function GalleryImageUpload({ value, onChange }: Props) {
             {uploading ? "Uploading…" : "Apply crop & upload"}
           </button>
         </div>
-        <input type="hidden" name="image_url" value={value ?? ""} />
+        <input type="hidden" name="image_url" value={value[0] ?? ""} />
+        <input type="hidden" name="images_json" value={JSON.stringify(value)} />
       </div>
     );
   }
 
   return (
     <div>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-start gap-4">
         <input
           ref={inputRef}
           type="file"
+          multiple
           accept="image/jpeg,image/png,image/webp,image/gif"
           className="hidden"
           onChange={handleFileSelect}
@@ -180,33 +231,41 @@ export function GalleryImageUpload({ value, onChange }: Props) {
           className="flex min-h-[120px] min-w-[120px] flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-[var(--border)] bg-[#0d0d0d] px-4 py-3 text-sm text-[var(--muted)] transition hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)]"
         >
           <Upload size={24} strokeWidth={1.5} />
-          Upload photo
+          Add photos
         </button>
-        {value && (
-          <div className="relative">
+
+        {value.map((url, i) => (
+          <div key={`${url}-${i}`} className="relative">
             <img
-              src={value}
-              alt="Preview"
+              src={url}
+              alt={`Preview ${i + 1}`}
               className="h-24 w-16 rounded-md object-cover"
             />
+            {i === 0 ? (
+              <span className="absolute -bottom-1 left-1 rounded bg-[var(--accent-gold)] px-1 text-[9px] font-medium text-[#121212]">
+                Cover
+              </span>
+            ) : null}
             <button
               type="button"
-              onClick={() => onChange(null)}
+              onClick={() => removeAt(i)}
               className="absolute -right-2 -top-2 rounded-full bg-[var(--accent-crimson)] p-1 text-white hover:bg-red-700"
-              aria-label="Remove"
+              aria-label={`Remove image ${i + 1}`}
             >
               <X size={12} />
             </button>
           </div>
-        )}
+        ))}
       </div>
       <p className="mt-2 text-xs text-[var(--muted)]">
-        2:3 portrait crop — matches gallery display
+        2:3 portrait crop — select multiple files. First image is the cover;
+        swipe gallery in lightbox.
       </p>
       {error && (
         <p className="mt-2 text-sm text-[var(--accent-crimson)]">{error}</p>
       )}
-      <input type="hidden" name="image_url" value={value ?? ""} />
+      <input type="hidden" name="image_url" value={value[0] ?? ""} />
+      <input type="hidden" name="images_json" value={JSON.stringify(value)} />
     </div>
   );
 }

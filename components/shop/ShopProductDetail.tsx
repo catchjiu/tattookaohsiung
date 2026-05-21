@@ -5,6 +5,7 @@ import { useState, useMemo } from "react";
 import { Plus } from "lucide-react";
 import { useCart } from "@/components/providers/CartProvider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { SwipeGallery } from "@/components/ui/SwipeGallery";
 import { normalizeCartSize } from "@/lib/cart-storage";
 import {
   stockCeilingForLine,
@@ -18,6 +19,7 @@ type Props = {
   priceLabel: string | null;
   priceTwd: number | null;
   imageUrl: string | null;
+  imageUrls?: string[];
   /** Normalized on the server; still defensively handled here */
   sizeOptions?: string[] | null;
   /** Single-SKU stock (ignored when product has sizes) */
@@ -33,6 +35,7 @@ export function ShopProductDetail({
   priceLabel,
   priceTwd,
   imageUrl,
+  imageUrls = [],
   sizeOptions = [],
   stockQuantity = null,
   sizeStocks = [],
@@ -100,6 +103,12 @@ export function ShopProductDetail({
     return cap !== null && cap <= 0;
   }
 
+  const galleryImages = useMemo(() => {
+    if (imageUrls.length > 0) return imageUrls;
+    if (imageUrl) return [imageUrl];
+    return [];
+  }, [imageUrls, imageUrl]);
+
   return (
     <div className="mx-auto max-w-4xl px-8 py-24 md:py-32">
       <Link
@@ -110,20 +119,11 @@ export function ShopProductDetail({
       </Link>
 
       <div className="mt-10 grid gap-12 md:grid-cols-2 md:gap-16">
-        <div className="relative aspect-[4/5] overflow-hidden border border-border bg-charcoal">
-          {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={imageUrl}
-              alt=""
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-foreground-subtle">
-              {t("shop.noImage")}
-            </div>
-          )}
-        </div>
+        <SwipeGallery
+          images={galleryImages}
+          alt={name}
+          emptyLabel={t("shop.noImage")}
+        />
         <div>
           <p className="text-[11px] font-medium tracking-[0.2em] uppercase text-foreground-muted">
             {t("shop.label")}

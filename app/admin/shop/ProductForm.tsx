@@ -25,7 +25,11 @@ function slugify(text: string) {
 export function ProductForm({ product, onClose }: Props) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState(product?.image_url ?? "");
+  const [imageUrls, setImageUrls] = useState<string[]>(() => {
+    if (product?.image_urls?.length) return product.image_urls;
+    if (product?.image_url) return [product.image_url];
+    return [];
+  });
   const isEditing = !!product;
 
   const [sizeOptionsText, setSizeOptionsText] = useState(
@@ -60,8 +64,14 @@ export function ProductForm({ product, onClose }: Props) {
   }, [sizes.join("|")]);
 
   useEffect(() => {
-    setImageUrl(product?.image_url ?? "");
-  }, [product?.image_url]);
+    if (product?.image_urls?.length) {
+      setImageUrls(product.image_urls);
+    } else if (product?.image_url) {
+      setImageUrls([product.image_url]);
+    } else {
+      setImageUrls([]);
+    }
+  }, [product?.id, product?.image_url, product?.image_urls?.join("|")]);
 
   const sizeStocksJson = useMemo(() => {
     const o: Record<string, number> = {};
@@ -315,12 +325,12 @@ export function ProductForm({ product, onClose }: Props) {
 
               <div>
                 <label className="text-sm font-medium text-foreground-muted">
-                  Product image
+                  Product photos
                 </label>
                 <div className="mt-2">
                   <ShopProductImageUpload
-                    value={imageUrl || null}
-                    onChange={(u) => setImageUrl(u ?? "")}
+                    value={imageUrls}
+                    onChange={setImageUrls}
                   />
                 </div>
               </div>
