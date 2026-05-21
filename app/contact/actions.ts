@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { uploadFile, isUploadConfigured } from "@/lib/upload";
 import { rateLimit, getClientIdentifier } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
-import { escapeHtml, sendEmail } from "@/lib/email";
+import { escapeHtml, isEmailConfigured, sendEmail } from "@/lib/email";
 import { getSiteUrl } from "@/lib/site-url";
 
 const UPLOAD_LIMIT = 10; // per minute per IP
@@ -101,10 +101,10 @@ export async function submitBooking(formData: FormData) {
         },
       });
 
-      // Do not block the user on email delivery — booking is already saved.
-      void Promise.all([
-        sendBookingConfirmationEmail(email, name),
-        sendArtistBookingNotificationEmail({
+      // Await emails so the server finishes sending before the action returns
+      // (fire-and-forget is dropped on serverless). Booking still succeeds if email fails.
+      try {
+        await sendBookingNotificationEmails({
           bookingId: booking.id,
           artist,
           clientName: name,
@@ -116,10 +116,10 @@ export async function submitBooking(formData: FormData) {
           placement,
           preferredDate: preferred_date,
           referenceUrl: reference_url,
-        }),
-      ]).catch((emailErr) => {
+        });
+      } catch (emailErr) {
         console.error("[Booking] Notification email failed:", emailErr);
-      });
+      }
 
       return { success: true };
   } catch (err) {
@@ -130,22 +130,7 @@ export async function submitBooking(formData: FormData) {
   }
 }
 
-async function sendBookingConfirmationEmail(email: string, name: string) {
-  await sendEmail({
-    to: email,
-    subject: "Your booking request — We've received it",
-    html: `
-      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto;">
-        <p>Dear ${escapeHtml(name)},</p>
-        <p>Thank you for your booking request. We've received your message and will be in touch within 24–48 hours to discuss your vision and confirm availability.</p>
-        <p>In the meantime, feel free to share any additional reference images or ideas via email or Instagram.</p>
-        <p>Warm regards,<br/>The Studio Team</p>
-      </div>
-    `,
-  });
-}
-
-type ArtistBookingNotification = {
+type BookingNotificationPayload = {
   bookingId: string;
   artist: { id: string; name: string; email: string | null };
   clientName: string;
@@ -159,13 +144,44 @@ type ArtistBookingNotification = {
   referenceUrl: string | null;
 };
 
-async function sendArtistBookingNotificationEmail(details: ArtistBookingNotification) {
-  const notifyTo =
-    details.artist.email ||
-    process.env.BOOKING_EMAIL ||
-    process.env.ADMIN_EMAIL;
+async function sendBookingNotificationEmails(
+  details: BookingNotificationPayload
+) {
+  if (!isEmailConfigured()) {
+    console.warn("[Booking] RESEND_API_KEY not set — booking emails skipped");
+    return;
+  }
 
-  if (!notifyTo) return;
+  const clientOk = await sendEmail({
+    to: details.clientEmail,
+    subject: "Your booking request — We've received it",
+    html: `
+      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto;">
+        <p>Dear ${escapeHtml(details.clientName)},</p>
+        <p>Thank you for your booking request. We've received your message and will be in touch within 24–48 hours to discuss your vision and confirm availability.</p>
+        <p>In the meantime, feel free to share any additional reference images or ideas via email or Instagram.</p>
+        <p>Warm regards,<br/>The Studio Team</p>
+      </div>
+    `,
+  });
+
+  if (!clientOk) {
+    console.error(
+      `[Booking] Client confirmation email failed for ${details.clientEmail}`
+    );
+  }
+
+  const notifyTo =
+    details.artist.email?.trim() ||
+    process.env.BOOKING_EMAIL?.trim() ||
+    process.env.ADMIN_EMAIL?.trim();
+
+  if (!notifyTo) {
+    console.warn(
+      "[Booking] No artist email, BOOKING_EMAIL, or ADMIN_EMAIL — studio notification skipped"
+    );
+    return;
+  }
 
   const siteUrl = getSiteUrl();
   const adminUrl = `${siteUrl}/admin/bookings`;
@@ -176,7 +192,7 @@ async function sendArtistBookingNotificationEmail(details: ArtistBookingNotifica
     ? `<p><strong>Reference image:</strong> <a href="${escapeHtml(details.referenceUrl)}">${escapeHtml(details.referenceUrl)}</a></p>`
     : "";
 
-  await sendEmail({
+  const studioOk = await sendEmail({
     to: notifyTo,
     subject: `New booking request — ${details.clientName}`,
     html: `
@@ -197,4 +213,8 @@ async function sendArtistBookingNotificationEmail(details: ArtistBookingNotifica
       </div>
     `,
   });
+
+  if (!studioOk) {
+    console.error(`[Booking] Studio notification email failed for ${notifyTo}`);
+  }
 }

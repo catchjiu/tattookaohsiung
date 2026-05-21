@@ -13,7 +13,7 @@ import {
 import { coerceSizeOptions } from "@/lib/shop-size-options";
 import { SHOP_BANK_TRANSFER_DISPLAY } from "@/lib/shop-bank-transfer";
 import { stockCeilingForLine, type SizeStockRow } from "@/lib/shop-stock";
-import { escapeHtml, sendEmail } from "@/lib/email";
+import { escapeHtml, isEmailConfigured, sendEmail } from "@/lib/email";
 import { getSiteUrl } from "@/lib/site-url";
 
 const CHECKOUT_LIMIT = 8; // per minute per IP
@@ -362,19 +362,21 @@ export async function submitShopOrder(formData: FormData) {
       return created;
     });
 
-    void sendShopOrderEmails({
-      orderId: order.id,
-      customerEmail,
-      customerName,
-      customerPhone,
-      shippingAddress,
-      notes,
-      items,
-      totalTwd,
-      transferSenderLastFive,
-    }).catch((emailErr) => {
+    try {
+      await sendShopOrderEmails({
+        orderId: order.id,
+        customerEmail,
+        customerName,
+        customerPhone,
+        shippingAddress,
+        notes,
+        items,
+        totalTwd,
+        transferSenderLastFive,
+      });
+    } catch (emailErr) {
       console.error("[ShopOrder] Notification email failed:", emailErr);
-    });
+    }
 
     revalidatePath("/admin/shop/orders");
     revalidatePath("/admin/shop");
@@ -439,7 +441,7 @@ function optionalField(label: string, value: string | null): string {
 }
 
 async function sendShopOrderEmails(payload: ShopOrderEmailPayload) {
-  if (!process.env.RESEND_API_KEY) {
+  if (!isEmailConfigured()) {
     console.warn("[ShopOrder] RESEND_API_KEY not set — order emails skipped");
     return;
   }
@@ -494,11 +496,14 @@ async function sendShopOrderEmails(payload: ShopOrderEmailPayload) {
     </div>
   `;
 
-  await sendEmail({
+  const clientOk = await sendEmail({
     to: customerEmail,
     subject: `Order confirmed · 訂單確認 — ${shortRef}`,
     html: customerHtml,
   });
+  if (!clientOk) {
+    console.error(`[ShopOrder] Customer confirmation email failed for ${customerEmail}`);
+  }
 
   const studioTo =
     process.env.SHOP_ORDER_EMAIL ||
@@ -548,9 +553,12 @@ async function sendShopOrderEmails(payload: ShopOrderEmailPayload) {
     </div>
   `;
 
-  await sendEmail({
+  const studioOk = await sendEmail({
     to: studioTo,
     subject: `[Shop] New order · 新訂單 ${shortRef} — ${customerName}`,
     html: adminHtml,
   });
+  if (!studioOk) {
+    console.error(`[ShopOrder] Studio notification email failed for ${studioTo}`);
+  }
 }

@@ -61,7 +61,14 @@ In Coolify, go to your application → **Environment Variables** and add:
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key |
 
-**Important:** Enable **"Available at Runtime"** for `ADMIN_EMAIL` and `ADMIN_PASSWORD` so the admin user is synced when the container starts. Copy other values from your `.env.local` or Supabase Dashboard → Settings → API.
+**Important:** Enable **"Available at Runtime"** for these variables (not just at build time):
+
+- `ADMIN_EMAIL` and `ADMIN_PASSWORD` — admin login is synced on container start
+- `RESEND_API_KEY` and `EMAIL_FROM` — required for booking & shop confirmation emails
+
+`EMAIL_FROM` must be a **verified domain/sender** in your [Resend](https://resend.com) dashboard (e.g. `bookings@tattookaohsiung.com`). Without it, orders and bookings save but no email is sent.
+
+Copy other values from your `.env.local` or Supabase Dashboard → Settings → API.
 
 ---
 
