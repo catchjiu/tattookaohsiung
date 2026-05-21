@@ -154,13 +154,24 @@ async function sendBookingNotificationEmails(
 
   const clientOk = await sendEmail({
     to: details.clientEmail,
-    subject: "Your booking request — We've received it",
+    subject: "Booking received · 預約申請已收到 — Casper Tattoo Kaohsiung",
     html: `
-      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto;">
-        <p>Dear ${escapeHtml(details.clientName)},</p>
-        <p>Thank you for your booking request. We've received your message and will be in touch within 24–48 hours to discuss your vision and confirm availability.</p>
-        <p>In the meantime, feel free to share any additional reference images or ideas via email or Instagram.</p>
-        <p>Warm regards,<br/>The Studio Team</p>
+      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; color:#111;">
+        <div style="margin-bottom:28px;">
+          <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin:0 0 12px;">English</p>
+          <p>Dear ${escapeHtml(details.clientName)},</p>
+          <p>Thank you for your booking request. We've received your message and will be in touch within 24–48 hours to discuss your vision and confirm availability.</p>
+          <p>In the meantime, feel free to share any additional reference images or ideas via <a href="https://instagram.com/tattookaohsiung">Instagram</a> or LINE.</p>
+          <p>Warm regards,<br/>Casper Tattoo Kaohsiung</p>
+        </div>
+        <hr style="border:none;border-top:1px solid #ddd;margin:28px 0;" />
+        <div>
+          <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin:0 0 12px;">中文</p>
+          <p>${escapeHtml(details.clientName)}，您好：</p>
+          <p>感謝您的預約申請。我們已收到您的訊息，將在 24–48 小時內與您聯繫，討論您的構想並確認可預約時段。</p>
+          <p>在此之前，歡迎透過 <a href="https://instagram.com/tattookaohsiung">Instagram</a> 或 LINE 分享更多參考圖片或想法。</p>
+          <p>誠摯問候，<br/>Casper Tattoo Kaohsiung 高雄刺青</p>
+        </div>
       </div>
     `,
   });
