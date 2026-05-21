@@ -34,27 +34,73 @@ export function BookingForm({ artists }: Props) {
 
   const formId = "booking-form";
 
+  function validateStep(targetStep: number): boolean {
+    const form = document.getElementById(formId) as HTMLFormElement | null;
+    if (!form) return false;
+
+    if (targetStep >= 1) {
+      const name = form.elements.namedItem("name") as HTMLInputElement | null;
+      const email = form.elements.namedItem("email") as HTMLInputElement | null;
+      if (!name?.value.trim()) {
+        setError(t("booking.errors.nameRequired"));
+        setStep(1);
+        name?.focus();
+        return false;
+      }
+      if (!email?.value.trim()) {
+        setError(t("booking.errors.emailRequired"));
+        setStep(1);
+        email?.focus();
+        return false;
+      }
+      if (email && !email.checkValidity()) {
+        setError(t("booking.errors.emailInvalid"));
+        setStep(1);
+        email.focus();
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function goToNextStep() {
+    setError(null);
+    if (!validateStep(step)) return;
+    setStep((s) => Math.min(4, s + 1));
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    if (!validateStep(4)) return;
+
     setLoading(true);
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    if (referenceUrl) formData.set("reference_url", referenceUrl);
-    if (placementRegions.length > 0) {
-      const placement = formData.get("placement");
-      const combined = placement
-        ? `${placement} — ${placementRegions.join(", ")}`
-        : placementRegions.join(", ");
-      formData.set("placement", combined);
+    try {
+      const form = e.currentTarget;
+      const formData = new FormData(form);
+      if (referenceUrl) formData.set("reference_url", referenceUrl);
+      if (placementRegions.length > 0) {
+        const placement = formData.get("placement");
+        const combined = placement
+          ? `${placement} — ${placementRegions.join(", ")}`
+          : placementRegions.join(", ");
+        formData.set("placement", combined);
+      }
+      const result = await submitBooking(formData);
+      if (!result || result.error) {
+        setError(result?.error ?? t("booking.errors.submitFailed"));
+        return;
+      }
+      setSubmitted(true);
+    } catch (err) {
+      console.error("[BookingForm] Submit failed:", err);
+      setError(
+        err instanceof Error ? err.message : t("booking.errors.submitFailed")
+      );
+    } finally {
+      setLoading(false);
     }
-    const result = await submitBooking(formData);
-    setLoading(false);
-    if (result?.error) {
-      setError(result.error);
-      return;
-    }
-    setSubmitted(true);
   }
 
   if (submitted) {
@@ -107,7 +153,7 @@ export function BookingForm({ artists }: Props) {
         ))}
       </div>
 
-      <form id={formId} onSubmit={handleSubmit} className="space-y-6">
+      <form id={formId} onSubmit={handleSubmit} noValidate className="space-y-6">
         {error && (
           <div className="rounded-sm border border-[var(--accent-crimson)] bg-[var(--accent-crimson-muted)] px-4 py-2 text-sm text-[var(--accent-crimson)]">
             {error}
@@ -128,10 +174,10 @@ export function BookingForm({ artists }: Props) {
             </h3>
             <div className="grid gap-4 sm:grid-cols-2">
               <FormField label={t("booking.name")} required>
-                <Input name="name" required />
+                <Input name="name" autoComplete="name" />
               </FormField>
               <FormField label={t("booking.email")} required>
-                <Input name="email" type="email" required />
+                <Input name="email" type="email" autoComplete="email" />
               </FormField>
             </div>
             <FormField label={t("booking.phone")}>
@@ -262,7 +308,7 @@ export function BookingForm({ artists }: Props) {
               type="button"
               variant="primary"
               size="sm"
-              onClick={() => setStep((s) => Math.min(4, s + 1))}
+              onClick={goToNextStep}
               rightIcon={<ChevronRight size={18} strokeWidth={1.5} />}
             >
               {t("booking.next")}

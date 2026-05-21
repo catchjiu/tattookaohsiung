@@ -13,6 +13,8 @@ import {
 import { coerceSizeOptions } from "@/lib/shop-size-options";
 import { SHOP_BANK_TRANSFER_DISPLAY } from "@/lib/shop-bank-transfer";
 import { stockCeilingForLine, type SizeStockRow } from "@/lib/shop-stock";
+import { escapeHtml, sendEmail } from "@/lib/email";
+import { getSiteUrl } from "@/lib/site-url";
 
 const CHECKOUT_LIMIT = 8; // per minute per IP
 
@@ -360,14 +362,19 @@ export async function submitShopOrder(formData: FormData) {
       return created;
     });
 
-    await sendShopOrderEmails(
-      order.id,
+    void sendShopOrderEmails({
+      orderId: order.id,
       customerEmail,
       customerName,
+      customerPhone,
+      shippingAddress,
+      notes,
       items,
       totalTwd,
-      transferSenderLastFive
-    );
+      transferSenderLastFive,
+    }).catch((emailErr) => {
+      console.error("[ShopOrder] Notification email failed:", emailErr);
+    });
 
     revalidatePath("/admin/shop/orders");
     revalidatePath("/admin/shop");
@@ -386,47 +393,80 @@ export async function submitShopOrder(formData: FormData) {
   }
 }
 
-async function sendShopOrderEmails(
-  orderId: string,
-  customerEmail: string,
-  customerName: string,
-  items: {
-    nameSnapshot: string;
-    sizeSnapshot: string | null;
-    priceLabelSnapshot: string | null;
-    quantity: number;
-    lineTotalTwd: number | null;
-  }[],
-  totalTwd: number | null,
-  transferSenderLastFive: string
-) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM || "orders@yourdomain.com";
-  const studioTo = process.env.SHOP_ORDER_EMAIL || process.env.ADMIN_EMAIL;
+type ShopOrderEmailItem = {
+  nameSnapshot: string;
+  sizeSnapshot: string | null;
+  priceLabelSnapshot: string | null;
+  quantity: number;
+  lineTotalTwd: number | null;
+};
 
-  const linesHtml = items
+type ShopOrderEmailPayload = {
+  orderId: string;
+  customerEmail: string;
+  customerName: string;
+  customerPhone: string | null;
+  shippingAddress: string | null;
+  notes: string | null;
+  items: ShopOrderEmailItem[];
+  totalTwd: number | null;
+  transferSenderLastFive: string;
+};
+
+function shopOrderLinesHtml(items: ShopOrderEmailItem[]): string {
+  return items
     .map(
       (i) =>
         `<tr><td>${escapeHtml(i.nameSnapshot)}</td><td>${i.sizeSnapshot ? escapeHtml(i.sizeSnapshot) : "—"}</td><td>${i.quantity}</td><td>${i.priceLabelSnapshot ? escapeHtml(i.priceLabelSnapshot) : "—"}</td><td>${i.lineTotalTwd != null ? `NT$ ${i.lineTotalTwd}` : "—"}</td></tr>`
     )
     .join("");
+}
 
-  const totalLineEn =
+function shopOrderTotalLines(totalTwd: number | null): { en: string; zh: string } {
+  const en =
     totalTwd != null
       ? `<p><strong>Total:</strong> NT$ ${totalTwd}</p>`
       : `<p><strong>Total:</strong> We will confirm the amount (some items may need a custom quote).</p>`;
-
-  const totalLineZh =
+  const zh =
     totalTwd != null
       ? `<p><strong>總計：</strong> NT$ ${totalTwd}</p>`
       : `<p><strong>總計：</strong> 部分商品可能需要報價確認，金額將另為通知。</p>`;
+  return { en, zh };
+}
+
+function optionalField(label: string, value: string | null): string {
+  return `<p><strong>${escapeHtml(label)}:</strong> ${value ? escapeHtml(value) : "—"}</p>`;
+}
+
+async function sendShopOrderEmails(payload: ShopOrderEmailPayload) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("[ShopOrder] RESEND_API_KEY not set — order emails skipped");
+    return;
+  }
+
+  const {
+    orderId,
+    customerEmail,
+    customerName,
+    customerPhone,
+    shippingAddress,
+    notes,
+    items,
+    totalTwd,
+    transferSenderLastFive,
+  } = payload;
+
+  const linesHtml = shopOrderLinesHtml(items);
+  const { en: totalLineEn, zh: totalLineZh } = shopOrderTotalLines(totalTwd);
+  const shortRef = orderId.slice(0, 8);
+  const adminOrdersUrl = `${getSiteUrl()}/admin/shop/orders`;
 
   const customerHtml = `
     <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; color:#111;">
       <div style="margin-bottom:28px;">
         <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin:0 0 12px;">English</p>
         <p>Hi ${escapeHtml(customerName)},</p>
-        <p>Thank you for your purchase — we've received your order and will contact you shortly to confirm payment and pickup or shipping.</p>
+        <p>Your order was placed successfully. We've received it and will contact you shortly to confirm payment and pickup or shipping.</p>
         <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
         <p><strong>Bank transfer:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
         <p><strong>Transfer reference (last 5 digits of your sending account):</strong> ${escapeHtml(transferSenderLastFive)}</p>
@@ -440,7 +480,7 @@ async function sendShopOrderEmails(
       <div>
         <p style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin:0 0 12px;">中文</p>
         <p>${escapeHtml(customerName)}，您好：</p>
-        <p>感謝您的購買。我們已收到您的訂單，將盡快與您聯繫，確認付款方式以及取貨或寄送細節。</p>
+        <p>您的訂單已成功送出，我們已收到。將盡快與您聯繫，確認付款方式以及取貨或寄送細節。</p>
         <p><strong>訂單編號：</strong> ${escapeHtml(orderId)}</p>
         <p><strong>銀行轉帳資訊：</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
         <p><strong>轉帳核對（您「轉出帳戶」末五碼）：</strong> ${escapeHtml(transferSenderLastFive)}</p>
@@ -454,77 +494,63 @@ async function sendShopOrderEmails(
     </div>
   `;
 
-  const shortRef = orderId.slice(0, 8);
+  await sendEmail({
+    to: customerEmail,
+    subject: `Order confirmed · 訂單確認 — ${shortRef}`,
+    html: customerHtml,
+  });
 
-  if (apiKey) {
-    try {
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          from,
-          to: customerEmail,
-          subject: `Order confirmed · 訂單確認 — ${shortRef}`,
-          html: customerHtml,
-        }),
-      });
-    } catch (e) {
-      console.error("[ShopOrder] customer email failed", e);
-    }
+  const studioTo =
+    process.env.SHOP_ORDER_EMAIL ||
+    process.env.ADMIN_EMAIL ||
+    process.env.BOOKING_EMAIL;
 
-    if (studioTo) {
-      try {
-        await fetch("https://api.resend.com/emails", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify({
-            from,
-            to: studioTo,
-            subject: `[Shop] New order · 新訂單 ${shortRef} — ${customerName}`,
-            html: `
-              <div style="font-family:sans-serif;max-width:560px;color:#111;">
-                <div style="margin-bottom:24px;">
-                  <p style="font-size:11px;text-transform:uppercase;color:#666;">English</p>
-                  <p>New shop order.</p>
-                  <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
-                  <p><strong>Customer:</strong> ${escapeHtml(customerName)} — ${escapeHtml(customerEmail)}</p>
-                  <p><strong>Bank:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
-                  <p><strong>Transfer ref (sender acct. last 5):</strong> ${escapeHtml(transferSenderLastFive)}</p>
-                  <table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:14px;"><thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead><tbody>${linesHtml}</tbody></table>
-                  ${totalLineEn}
-                </div>
-                <hr style="border:none;border-top:1px solid #ddd;margin:24px 0;" />
-                <div>
-                  <p style="font-size:11px;text-transform:uppercase;color:#666;">中文</p>
-                  <p>商店新訂單。</p>
-                  <p><strong>訂單編號：</strong> ${escapeHtml(orderId)}</p>
-                  <p><strong>顧客：</strong> ${escapeHtml(customerName)} — ${escapeHtml(customerEmail)}</p>
-                  <p><strong>銀行帳號：</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
-                  <p><strong>轉出帳戶末五碼：</strong> ${escapeHtml(transferSenderLastFive)}</p>
-                  <table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:14px;"><thead><tr><th align="left">項目</th><th align="left">尺寸</th><th align="right">數量</th><th align="right">單價</th><th align="right">小計</th></tr></thead><tbody>${linesHtml}</tbody></table>
-                  ${totalLineZh}
-                </div>
-              </div>
-            `,
-          }),
-        });
-      } catch (e) {
-        console.error("[ShopOrder] studio email failed", e);
-      }
-    }
+  if (!studioTo) {
+    console.warn(
+      "[ShopOrder] SHOP_ORDER_EMAIL / ADMIN_EMAIL not set — studio order notification skipped"
+    );
+    return;
   }
-}
 
-function escapeHtml(s: string) {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  const adminHtml = `
+    <div style="font-family:sans-serif;max-width:560px;color:#111;">
+      <div style="margin-bottom:24px;">
+        <p style="font-size:11px;text-transform:uppercase;color:#666;">English</p>
+        <p>A new shop order has been placed.</p>
+        <p><strong>Order ID:</strong> ${escapeHtml(orderId)}</p>
+        ${optionalField("Customer", customerName)}
+        ${optionalField("Email", customerEmail)}
+        ${optionalField("Phone", customerPhone)}
+        ${optionalField("Shipping address", shippingAddress)}
+        ${optionalField("Notes", notes)}
+        <p><strong>Bank:</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
+        <p><strong>Transfer ref (sender acct. last 5):</strong> ${escapeHtml(transferSenderLastFive)}</p>
+        <table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:14px;"><thead><tr><th align="left">Item</th><th align="left">Size</th><th align="right">Qty</th><th align="right">Price</th><th align="right">Line</th></tr></thead><tbody>${linesHtml}</tbody></table>
+        ${totalLineEn}
+        <p style="margin-top:20px;"><a href="${escapeHtml(adminOrdersUrl)}">View orders in admin</a></p>
+      </div>
+      <hr style="border:none;border-top:1px solid #ddd;margin:24px 0;" />
+      <div>
+        <p style="font-size:11px;text-transform:uppercase;color:#666;">中文</p>
+        <p>商店有新訂單。</p>
+        <p><strong>訂單編號：</strong> ${escapeHtml(orderId)}</p>
+        ${optionalField("顧客", customerName)}
+        ${optionalField("信箱", customerEmail)}
+        ${optionalField("電話", customerPhone)}
+        ${optionalField("寄送地址", shippingAddress)}
+        ${optionalField("備註", notes)}
+        <p><strong>銀行帳號：</strong> ${escapeHtml(SHOP_BANK_TRANSFER_DISPLAY)}</p>
+        <p><strong>轉出帳戶末五碼：</strong> ${escapeHtml(transferSenderLastFive)}</p>
+        <table style="border-collapse:collapse;width:100%;margin:12px 0;font-size:14px;"><thead><tr><th align="left">項目</th><th align="left">尺寸</th><th align="right">數量</th><th align="right">單價</th><th align="right">小計</th></tr></thead><tbody>${linesHtml}</tbody></table>
+        ${totalLineZh}
+        <p style="margin-top:20px;"><a href="${escapeHtml(adminOrdersUrl)}">在後台查看訂單</a></p>
+      </div>
+    </div>
+  `;
+
+  await sendEmail({
+    to: studioTo,
+    subject: `[Shop] New order · 新訂單 ${shortRef} — ${customerName}`,
+    html: adminHtml,
+  });
 }

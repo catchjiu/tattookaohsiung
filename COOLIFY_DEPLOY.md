@@ -51,8 +51,13 @@ In Coolify, go to your application → **Environment Variables** and add:
 | Variable | Value |
 |---------|-------|
 | `DATABASE_URL` | PostgreSQL connection string (e.g. `postgresql://user:pass@host:5432/db`) |
-| `ADMIN_EMAIL` | Your admin login email (e.g. `you@example.com`) |
+| `ADMIN_EMAIL` | Your admin login email (e.g. `you@example.com`) — also receives shop order & booking notifications |
 | `ADMIN_PASSWORD` | Your admin password |
+| `RESEND_API_KEY` | [Resend](https://resend.com) API key — required for booking & shop confirmation emails |
+| `EMAIL_FROM` | Verified sender in Resend (e.g. `orders@tattookaohsiung.com`) |
+| `SHOP_ORDER_EMAIL` | Optional — override where shop order alerts are sent (defaults to `ADMIN_EMAIL`) |
+| `BOOKING_EMAIL` | Optional — override where booking alerts are sent (defaults to `ADMIN_EMAIL`) |
+| `NEXT_PUBLIC_SITE_URL` | Public site URL (e.g. `https://tattookaohsiung.com`) — used in admin email links |
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anon key |
 

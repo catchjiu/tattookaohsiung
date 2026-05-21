@@ -59,7 +59,7 @@
     "totalPending": "小計將另為確認 — 部分商品可能需要客製報價。",
     "checkout": "結帳",
     "checkoutTitle": "結帳",
-    "checkoutBlurb": "請填寫資料以送出訂單。目前不提供線上付款 — 若已設定電子郵件，我們會寄送通知並與您安排付款方式。",
+    "checkoutBlurb": "請填寫資料以送出訂單。目前不提供線上付款 — 送出後您將收到確認信，我們也會與您安排付款方式。",
     "checkoutName": "姓名",
     "checkoutEmail": "電子信箱",
     "checkoutPhone": "電話",
@@ -74,7 +74,7 @@
     "submitting": "送出中…",
     "backToCart": "返回購物車",
     "orderSuccessTitle": "感謝您的訂購",
-    "orderSuccessBody": "我們已收到您的訂單，將盡快與您聯繫。",
+    "orderSuccessBody": "您的訂單已成功送出。確認信已寄至您填寫的信箱 — 我們也會盡快與您聯繫，確認付款與取貨或寄送方式。",
     "orderReference": "訂單編號",
     "backToShopFromSuccess": "返回商店",
     "selectSize": "尺寸",
@@ -136,7 +136,13 @@
     "back": "上一步",
     "next": "下一步",
     "thankYou": "感謝您",
-    "received": "我們已收到您的預約申請。將在 24–48 小時內與您聯繫。"
+    "received": "我們已收到您的預約申請。將在 24–48 小時內與您聯繫。",
+    "errors": {
+      "nameRequired": "請填寫姓名。",
+      "emailRequired": "請填寫電子信箱。",
+      "emailInvalid": "請輸入有效的電子信箱。",
+      "submitFailed": "送出失敗，請再試一次或透過 Instagram 聯絡我們。"
+    }
   },
   "styles": {
     "Traditional": "傳統",

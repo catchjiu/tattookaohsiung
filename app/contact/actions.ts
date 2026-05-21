@@ -66,7 +66,7 @@ export async function submitBooking(formData: FormData) {
             where: { id: preferred_artist_id },
           })
         : await prisma.artist.findFirst({
-            where: { status: "AVAILABLE" },
+            where: { status: { not: "INACTIVE" } },
             orderBy: { sortOrder: "asc" },
           });
 
@@ -101,7 +101,8 @@ export async function submitBooking(formData: FormData) {
         },
       });
 
-      await Promise.all([
+      // Do not block the user on email delivery — booking is already saved.
+      void Promise.all([
         sendBookingConfirmationEmail(email, name),
         sendArtistBookingNotificationEmail({
           bookingId: booking.id,
@@ -116,7 +117,9 @@ export async function submitBooking(formData: FormData) {
           preferredDate: preferred_date,
           referenceUrl: reference_url,
         }),
-      ]);
+      ]).catch((emailErr) => {
+        console.error("[Booking] Notification email failed:", emailErr);
+      });
 
       return { success: true };
   } catch (err) {

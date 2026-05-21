@@ -20,6 +20,10 @@ services:
       - ADMIN_SESSION_SECRET=${ADMIN_SESSION_SECRET:-}
       - RESEND_API_KEY=${RESEND_API_KEY:-}
       - EMAIL_FROM=${EMAIL_FROM:-}
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-}
+      - SHOP_ORDER_EMAIL=${SHOP_ORDER_EMAIL:-}
+      - BOOKING_EMAIL=${BOOKING_EMAIL:-}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-}
     env_file:
       - .env
     depends_on:
