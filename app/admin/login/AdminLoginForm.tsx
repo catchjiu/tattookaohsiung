@@ -16,7 +16,7 @@ export function AdminLoginForm() {
     setError(null);
     setLoading(true);
 
-    const { error: signInError } = await login(email, password);
+    const { error: signInError, redirectTo } = await login(email, password);
 
     setLoading(false);
 
@@ -25,7 +25,7 @@ export function AdminLoginForm() {
       return;
     }
 
-    router.push("/admin");
+    router.push(redirectTo ?? "/admin");
     router.refresh();
   }
 

@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import type { Artist } from "@/types/database";
-import { createArtist, updateArtist } from "./actions";
+import {
+  assignArtistDashboard,
+  createArtist,
+  revokeArtistDashboard,
+  updateArtist,
+} from "./actions";
 import { AvatarUpload } from "./AvatarUpload";
 
 type Props = {
@@ -24,8 +29,13 @@ function slugify(text: string) {
 export function ArtistForm({ artist, onClose }: Props) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [dashboardError, setDashboardError] = useState<string | null>(null);
+  const [dashboardLoading, setDashboardLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(artist?.avatar_url ?? null);
+  const [dashboardEmail, setDashboardEmail] = useState(artist?.dashboard_email ?? "");
+  const [dashboardPassword, setDashboardPassword] = useState("");
   const isEditing = !!artist;
+  const hasDashboard = !!artist?.dashboard_email;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -44,6 +54,42 @@ export function ArtistForm({ artist, onClose }: Props) {
     }
     router.refresh();
     onClose();
+  }
+
+  async function handleAssignDashboard() {
+    if (!artist) return;
+    setDashboardError(null);
+    setDashboardLoading(true);
+    const result = await assignArtistDashboard(
+      artist.id,
+      dashboardEmail,
+      dashboardPassword
+    );
+    setDashboardLoading(false);
+    if (result && "error" in result && result.error) {
+      setDashboardError(result.error);
+      return;
+    }
+    setDashboardPassword("");
+    router.refresh();
+  }
+
+  async function handleRevokeDashboard() {
+    if (!artist) return;
+    if (!confirm("Revoke dashboard access? The artist will no longer be able to sign in.")) {
+      return;
+    }
+    setDashboardError(null);
+    setDashboardLoading(true);
+    const result = await revokeArtistDashboard(artist.id);
+    setDashboardLoading(false);
+    if (result && "error" in result && result.error) {
+      setDashboardError(result.error);
+      return;
+    }
+    setDashboardEmail("");
+    setDashboardPassword("");
+    router.refresh();
   }
 
   return (
@@ -198,6 +244,84 @@ export function ArtistForm({ artist, onClose }: Props) {
             </div>
             <input type="hidden" name="avatar_url" value={avatarUrl ?? ""} />
           </div>
+
+          {isEditing && (
+            <div className="rounded-md border border-border bg-card-hover/50 p-4 space-y-4">
+              <div>
+                <h3 className="text-sm font-semibold text-foreground">Artist dashboard</h3>
+                <p className="mt-1 text-xs text-foreground-subtle">
+                  Lets this artist sign in to view their bookings and manage their portfolio.
+                </p>
+              </div>
+              {dashboardError && (
+                <div className="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-400">
+                  {dashboardError}
+                </div>
+              )}
+              {hasDashboard ? (
+                <div className="flex items-center justify-between gap-3 rounded-md border border-green-500/30 bg-green-500/10 px-3 py-2">
+                  <span className="text-sm text-green-400">
+                    Dashboard active — {artist.dashboard_email}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleRevokeDashboard}
+                    disabled={dashboardLoading}
+                    className="shrink-0 rounded-md border border-red-500/40 px-3 py-1.5 text-xs font-medium text-red-400 hover:bg-red-500/20 disabled:opacity-50"
+                  >
+                    Revoke
+                  </button>
+                </div>
+              ) : (
+                <p className="text-sm text-foreground-muted">No dashboard access yet.</p>
+              )}
+              <div>
+                <label className="block text-sm font-medium text-foreground-muted">
+                  Login email
+                </label>
+                <input
+                  type="email"
+                  value={dashboardEmail}
+                  onChange={(e) => setDashboardEmail(e.target.value)}
+                  placeholder="artist@example.com"
+                  autoComplete="off"
+                  className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground-muted">
+                  {hasDashboard ? "New password (optional)" : "Password *"}
+                </label>
+                <input
+                  type="password"
+                  value={dashboardPassword}
+                  onChange={(e) => setDashboardPassword(e.target.value)}
+                  placeholder={hasDashboard ? "Leave blank to keep current" : "Min. 8 characters"}
+                  autoComplete="new-password"
+                  className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleAssignDashboard}
+                disabled={
+                  dashboardLoading ||
+                  !dashboardEmail.trim() ||
+                  (!hasDashboard && dashboardPassword.length < 8) ||
+                  (hasDashboard &&
+                    dashboardPassword.length > 0 &&
+                    dashboardPassword.length < 8)
+                }
+                className="w-full rounded-md border-2 border-accent bg-accent-muted px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent hover:text-charcoal disabled:opacity-50"
+              >
+                {dashboardLoading
+                  ? "Saving..."
+                  : hasDashboard
+                    ? "Update dashboard login"
+                    : "Assign dashboard"}
+              </button>
+            </div>
+          )}
 
           <div className="flex gap-6">
             <div>

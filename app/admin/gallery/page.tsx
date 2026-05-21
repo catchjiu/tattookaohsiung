@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ArtUploadList } from "./ArtUploadList";
 
@@ -10,8 +9,7 @@ function igHandle(url: string | null): string | null {
 }
 
 export default async function AdminGalleryPage() {
-  const user = await getSession();
-  if (!user) redirect("/admin/login");
+  await requireAdmin();
 
   const [images, artists] = await Promise.all([
     prisma.portfolioImage.findMany({

@@ -1,12 +1,10 @@
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ProductList } from "./ProductList";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
 
 export default async function AdminShopPage() {
-  const user = await getSession();
-  if (!user) redirect("/admin/login");
+  await requireAdmin();
 
   const rows = await prisma.shopProduct.findMany({
     orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],

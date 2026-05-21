@@ -6,18 +6,33 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import type { ArtUpload } from "@/types/database";
 import type { Artist } from "@/types/database";
 import { ArtUploadForm } from "./ArtUploadForm";
-import { deleteArtUpload } from "./actions";
+import { deleteArtUpload as defaultDeleteArtUpload } from "./actions";
 
 type Props = {
   artUploads: (ArtUpload & { artists?: { name: string } | null })[];
   artists: Artist[];
+  fixedArtistId?: string;
+  showArtistName?: boolean;
+  allowHeroSlider?: boolean;
+  deleteArtUpload?: typeof defaultDeleteArtUpload;
+  createArtUpload?: typeof import("./actions").createArtUpload;
+  updateArtUpload?: typeof import("./actions").updateArtUpload;
 };
 
 function getArtistName(item: ArtUpload & { artists?: { name: string } | null }) {
   return item.artists?.name ?? "—";
 }
 
-export function ArtUploadList({ artUploads, artists }: Props) {
+export function ArtUploadList({
+  artUploads,
+  artists,
+  fixedArtistId,
+  showArtistName = true,
+  allowHeroSlider = true,
+  deleteArtUpload = defaultDeleteArtUpload,
+  createArtUpload,
+  updateArtUpload,
+}: Props) {
   const router = useRouter();
   const [editingItem, setEditingItem] = useState<ArtUpload | null>(null);
   const [showCreate, setShowCreate] = useState(false);
@@ -71,9 +86,11 @@ export function ArtUploadList({ artUploads, artists }: Props) {
               </div>
               <div className="p-3">
                 <div className="font-medium truncate">{item.title || "Untitled"}</div>
-                <div className="text-xs text-[var(--muted)]">
-                  {getArtistName(item)}
-                </div>
+                {showArtistName && (
+                  <div className="text-xs text-[var(--muted)]">
+                    {getArtistName(item)}
+                  </div>
+                )}
                 <div className="mt-2 flex justify-end gap-1">
                   <button
                     onClick={() => setEditingItem(item)}
@@ -101,6 +118,10 @@ export function ArtUploadList({ artUploads, artists }: Props) {
         <ArtUploadForm
           artUpload={null}
           artists={artists}
+          fixedArtistId={fixedArtistId}
+          allowHeroSlider={allowHeroSlider}
+          createArtUpload={createArtUpload}
+          updateArtUpload={updateArtUpload}
           onClose={() => setShowCreate(false)}
         />
       )}
@@ -108,6 +129,10 @@ export function ArtUploadList({ artUploads, artists }: Props) {
         <ArtUploadForm
           artUpload={editingItem}
           artists={artists}
+          fixedArtistId={fixedArtistId}
+          allowHeroSlider={allowHeroSlider}
+          createArtUpload={createArtUpload}
+          updateArtUpload={updateArtUpload}
           onClose={() => setEditingItem(null)}
         />
       )}

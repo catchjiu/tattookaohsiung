@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ArtistList } from "./ArtistList";
 
@@ -10,10 +9,10 @@ function igHandle(url: string | null): string | null {
 }
 
 export default async function AdminArtistsPage() {
-  const user = await getSession();
-  if (!user) redirect("/admin/login");
+  await requireAdmin();
 
   const artists = await prisma.artist.findMany({
+    include: { user: { select: { email: true } } },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
   });
 
@@ -31,6 +30,7 @@ export default async function AdminArtistsPage() {
     avatar_url: a.avatarUrl,
     display_order: a.sortOrder,
     is_active: a.status !== "INACTIVE",
+    dashboard_email: a.user?.email ?? null,
     created_at: a.createdAt.toISOString(),
     updated_at: a.updatedAt.toISOString(),
   }));
@@ -41,7 +41,7 @@ export default async function AdminArtistsPage() {
         Artists
       </h1>
       <p className="mt-2 text-foreground-muted">
-        Manage artist profiles (Bio, Specialty, IG Handle).
+        Manage artist profiles and assign dashboard logins for bookings and portfolio updates.
       </p>
       <div className="mt-8">
         <ArtistList artists={artistList} />

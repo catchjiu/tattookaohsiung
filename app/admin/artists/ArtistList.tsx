@@ -92,6 +92,11 @@ export function ArtistList({ artists }: Props) {
                 >
                   {artist.is_active ? "Active" : "Inactive"}
                 </span>
+                {artist.dashboard_email && (
+                  <span className="rounded-full bg-accent-muted px-2.5 py-1 text-xs font-medium text-accent">
+                    Dashboard
+                  </span>
+                )}
                 <div className="flex gap-2">
                   <button
                     onClick={() => setEditingArtist(artist)}
@@ -130,6 +135,9 @@ export function ArtistList({ artists }: Props) {
                 IG
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-foreground-muted">
+                Dashboard
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-foreground-muted">
                 Status
               </th>
               <th className="px-4 py-3 text-right text-sm font-medium text-foreground-muted">
@@ -141,7 +149,7 @@ export function ArtistList({ artists }: Props) {
             {artists.length === 0 ? (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={6}
                   className="px-4 py-12 text-center text-foreground-muted"
                 >
                   No artists yet. Click &quot;Add Artist&quot; to create one.
@@ -189,6 +197,13 @@ export function ArtistList({ artists }: Props) {
                       </a>
                     ) : (
                       <span className="text-foreground-muted">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-foreground-muted">
+                    {artist.dashboard_email ? (
+                      <span className="text-accent">{artist.dashboard_email}</span>
+                    ) : (
+                      "—"
                     )}
                   </td>
                   <td className="px-4 py-3">

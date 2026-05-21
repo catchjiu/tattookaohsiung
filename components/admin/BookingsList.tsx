@@ -3,13 +3,24 @@
 import { useState } from "react";
 import { Mail, Phone, Calendar, CalendarCheck, CheckCircle, Trash2 } from "lucide-react";
 import { BookingModal, type Booking } from "./BookingModal";
-import { updateBookingStatus, deleteBooking } from "@/app/admin/bookings/actions";
+import {
+  deleteBooking as adminDeleteBooking,
+  updateBookingStatus as adminUpdateBookingStatus,
+} from "@/app/admin/bookings/actions";
 
 type BookingsListProps = {
   bookings: Booking[];
+  showArtistName?: boolean;
+  updateBookingStatus?: typeof adminUpdateBookingStatus;
+  deleteBooking?: typeof adminDeleteBooking;
 };
 
-export function BookingsList({ bookings }: BookingsListProps) {
+export function BookingsList({
+  bookings,
+  showArtistName = true,
+  updateBookingStatus = adminUpdateBookingStatus,
+  deleteBooking = adminDeleteBooking,
+}: BookingsListProps) {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -111,7 +122,7 @@ export function BookingsList({ bookings }: BookingsListProps) {
                       {b.size && (
                         <span className="rounded bg-[var(--border)] px-2 py-0.5">{b.size}</span>
                       )}
-                      {b.artists?.name && (
+                      {showArtistName && b.artists?.name && (
                         <span className="rounded bg-[var(--accent-gold-muted)] px-2 py-0.5 text-[var(--accent-gold)]">
                           {b.artists.name}
                         </span>

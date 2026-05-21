@@ -1,12 +1,10 @@
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Users, Image, FileText, CalendarCheck, ShoppingBag, ArrowRight } from "lucide-react";
 
 export default async function AdminDashboardPage() {
-  const user = await getSession();
-  if (!user) redirect("/admin/login");
+  await requireAdmin();
 
   const [bookingCount, recentBookings, shopPendingCount, recentShopOrders] =
     await Promise.all([

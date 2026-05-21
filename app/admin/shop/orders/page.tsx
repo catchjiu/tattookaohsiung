@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { OrderStatusForm } from "./OrderStatusForm";
 
@@ -12,8 +11,7 @@ function formatTwd(n: number | null | undefined) {
 }
 
 export default async function AdminShopOrdersPage() {
-  const user = await getSession();
-  if (!user) redirect("/admin/login");
+  await requireAdmin();
 
   const orders = await prisma.shopOrder.findMany({
     orderBy: { createdAt: "desc" },

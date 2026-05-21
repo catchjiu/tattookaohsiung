@@ -1,11 +1,9 @@
-import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { BlogPostList } from "./BlogPostList";
 
 export default async function AdminBlogPage() {
-  const user = await getSession();
-  if (!user) redirect("/admin/login");
+  await requireAdmin();
 
   const rows = await prisma.blogPost.findMany({
     orderBy: { createdAt: "desc" },

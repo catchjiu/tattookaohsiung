@@ -5,16 +5,31 @@ import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import type { ArtUpload } from "@/types/database";
 import type { Artist } from "@/types/database";
-import { createArtUpload, updateArtUpload } from "./actions";
+import {
+  createArtUpload as defaultCreateArtUpload,
+  updateArtUpload as defaultUpdateArtUpload,
+} from "./actions";
 import { GalleryImageUpload } from "@/components/admin/GalleryImageUpload";
 
 type Props = {
   artUpload?: ArtUpload | null;
   artists: Artist[];
   onClose: () => void;
+  fixedArtistId?: string;
+  allowHeroSlider?: boolean;
+  createArtUpload?: typeof import("./actions").createArtUpload;
+  updateArtUpload?: typeof import("./actions").updateArtUpload;
 };
 
-export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
+export function ArtUploadForm({
+  artUpload,
+  artists,
+  onClose,
+  fixedArtistId,
+  allowHeroSlider = true,
+  createArtUpload: createAction,
+  updateArtUpload: updateAction,
+}: Props) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>(() => {
@@ -23,6 +38,9 @@ export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
     return [];
   });
   const isEditing = !!artUpload;
+  const createArtUpload = createAction ?? defaultCreateArtUpload;
+  const updateArtUpload = updateAction ?? defaultUpdateArtUpload;
+  const resolvedArtistId = fixedArtistId ?? artUpload?.artist_id ?? "";
 
   useEffect(() => {
     if (artUpload?.image_urls?.length) {
@@ -81,23 +99,27 @@ export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
             </div>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-[var(--muted)]">
-              Artist
-            </label>
-            <select
-              name="artist_id"
-              defaultValue={artUpload?.artist_id ?? ""}
-              className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
-            >
-              <option value="">— None —</option>
-              {artists.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}
-                </option>
-              ))}
-            </select>
-          </div>
+          {fixedArtistId ? (
+            <input type="hidden" name="artist_id" value={fixedArtistId} />
+          ) : (
+            <div>
+              <label className="block text-sm font-medium text-[var(--muted)]">
+                Artist
+              </label>
+              <select
+                name="artist_id"
+                defaultValue={resolvedArtistId}
+                className="mt-1 w-full rounded-md border border-[var(--border)] bg-[#121212] px-3 py-2 text-[var(--foreground)]"
+              >
+                <option value="">— None —</option>
+                {artists.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-[var(--muted)]">
@@ -210,17 +232,19 @@ export function ArtUploadForm({ artUpload, artists, onClose }: Props) {
               />
               <label className="text-sm text-[var(--muted)]">Featured</label>
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                name="show_in_hero_slider"
-                type="checkbox"
-                defaultChecked={artUpload?.show_in_hero_slider ?? false}
-                className="h-4 w-4 rounded border-[var(--border)]"
-              />
-              <label className="text-sm text-[var(--muted)]">
-                Show in Hero Slider
-              </label>
-            </div>
+            {allowHeroSlider && (
+              <div className="flex items-center gap-2">
+                <input
+                  name="show_in_hero_slider"
+                  type="checkbox"
+                  defaultChecked={artUpload?.show_in_hero_slider ?? false}
+                  className="h-4 w-4 rounded border-[var(--border)]"
+                />
+                <label className="text-sm text-[var(--muted)]">
+                  Show in Hero Slider
+                </label>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end gap-2 pt-4">

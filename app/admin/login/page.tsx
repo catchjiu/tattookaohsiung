@@ -8,17 +8,17 @@ export default async function AdminLoginPage() {
   const user = await getSession();
 
   if (user) {
-    redirect("/admin");
+    redirect(user.role === "ARTIST" ? "/artist" : "/admin");
   }
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-6">
       <div className="w-full max-w-md">
         <h1 className="font-serif text-3xl font-medium text-[var(--foreground)]">
-          Admin Login
+          Sign in
         </h1>
         <p className="mt-2 text-sm text-[var(--muted)]">
-          Sign in to manage your studio content.
+          Studio admin or artist dashboard.
         </p>
         <AdminLoginForm />
       </div>
