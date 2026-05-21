@@ -12,6 +12,15 @@ function slugify(text: string) {
     .trim();
 }
 
+function parseOptionalEmail(raw: FormDataEntryValue | null): string | null {
+  const email = (raw as string | null)?.trim() || null;
+  if (!email) return null;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return "__invalid__";
+  }
+  return email;
+}
+
 export async function createArtist(formData: FormData) {
   const name = (formData.get("name") as string)?.trim();
   const slug = ((formData.get("slug") as string) || slugify(name || "")).trim() || slugify(name || "");
@@ -20,12 +29,15 @@ export async function createArtist(formData: FormData) {
   const bioZh = (formData.get("bio_zh") as string)?.trim() || null;
   const specialty = (formData.get("specialty") as string)?.trim() || null;
   const specialtyZh = (formData.get("specialty_zh") as string)?.trim() || null;
+  const emailRaw = parseOptionalEmail(formData.get("email"));
   const igHandle = (formData.get("ig_handle") as string)?.trim()?.replace(/^@/, "") || null;
   const avatarUrl = (formData.get("avatar_url") as string)?.trim() || null;
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
   const isActive = formData.get("is_active") === "on";
 
   if (!name) return { error: "Name is required" };
+  if (emailRaw === "__invalid__") return { error: "Invalid email address" };
+  const email = emailRaw;
 
   const instagramUrl = igHandle ? `https://instagram.com/${igHandle}` : null;
   const status = isActive ? "AVAILABLE" : "INACTIVE";
@@ -40,6 +52,7 @@ export async function createArtist(formData: FormData) {
         bioZh,
         specialty,
         specialtyZh,
+        email,
         instagramUrl,
         avatarUrl,
         sortOrder,
@@ -63,12 +76,15 @@ export async function updateArtist(id: string, formData: FormData) {
   const bioZh = (formData.get("bio_zh") as string)?.trim() || null;
   const specialty = (formData.get("specialty") as string)?.trim() || null;
   const specialtyZh = (formData.get("specialty_zh") as string)?.trim() || null;
+  const emailRaw = parseOptionalEmail(formData.get("email"));
   const igHandle = (formData.get("ig_handle") as string)?.trim()?.replace(/^@/, "") || null;
   const avatarUrl = (formData.get("avatar_url") as string)?.trim() || null;
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
   const isActive = formData.get("is_active") === "on";
 
   if (!name || !slug) return { error: "Name and slug are required" };
+  if (emailRaw === "__invalid__") return { error: "Invalid email address" };
+  const email = emailRaw;
 
   const instagramUrl = igHandle ? `https://instagram.com/${igHandle}` : null;
   const status = isActive ? "AVAILABLE" : "INACTIVE";
@@ -84,6 +100,7 @@ export async function updateArtist(id: string, formData: FormData) {
         bioZh,
         specialty,
         specialtyZh,
+        email,
         instagramUrl,
         avatarUrl,
         sortOrder,

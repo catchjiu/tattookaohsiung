@@ -174,6 +174,23 @@ export function ArtistForm({ artist, onClose }: Props) {
 
           <div>
             <label className="block text-sm font-medium text-foreground-muted">
+              Booking notification email
+            </label>
+            <input
+              type="email"
+              name="email"
+              defaultValue={artist?.email ?? ""}
+              placeholder="artist@example.com"
+              autoComplete="email"
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
+            />
+            <p className="mt-1.5 text-xs text-foreground-subtle">
+              Internal only — used to notify this artist of new bookings. Not shown on the public site.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
               Avatar Photo
             </label>
             <div className="mt-2">

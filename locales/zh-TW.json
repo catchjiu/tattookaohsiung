@@ -122,7 +122,9 @@
     "referencePhoto": "參考圖片",
     "uploadPhoto": "上傳圖片",
     "uploading": "上傳中…",
-    "optionalNote": "選填。任何圖片比例皆可。",
+    "cancelCrop": "取消",
+    "applyCropUpload": "套用裁剪並上傳",
+    "optionalNote": "選填。選擇圖片後可先裁剪並縮放（4:3），再上傳。",
     "referencePreview": "參考預覽",
     "remove": "移除",
     "preferredArtist": "偏好藝術家",
@@ -185,6 +187,7 @@
     "title": "高雄寫實刺青作品集",
     "description": "瀏覽高雄專業刺青工作室的寫實刺青與細線刺青作品。點擊任一圖片可全螢幕檢視。",
     "noArtwork": "尚無作品。敬請期待。",
+    "filterAll": "全部",
     "untitled": "無題",
     "artwork": "高雄寫實刺青作品｜Casper Tattoo Kaohsiung 高雄專業刺青工作室"
   },

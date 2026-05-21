@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { uploadFile, isUploadConfigured } from "@/lib/upload";
 import { rateLimit, getClientIdentifier } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
+import { escapeHtml, sendEmail } from "@/lib/email";
+import { getSiteUrl } from "@/lib/site-url";
 
 const UPLOAD_LIMIT = 10; // per minute per IP
 const BOOKING_LIMIT = 5; // per minute per IP
@@ -86,6 +88,7 @@ export async function submitBooking(formData: FormData) {
           clientPhone: phone,
           conceptDescription: conceptDescription || "No description provided.",
           placement,
+          preferredDate: preferred_date,
           status: "PENDING",
           references: reference_url
             ? {
@@ -98,7 +101,22 @@ export async function submitBooking(formData: FormData) {
         },
       });
 
-      await sendBookingConfirmationEmail(email, name);
+      await Promise.all([
+        sendBookingConfirmationEmail(email, name),
+        sendArtistBookingNotificationEmail({
+          bookingId: booking.id,
+          artist,
+          clientName: name,
+          clientEmail: email,
+          clientPhone: phone,
+          style,
+          size,
+          description,
+          placement,
+          preferredDate: preferred_date,
+          referenceUrl: reference_url,
+        }),
+      ]);
 
       return { success: true };
   } catch (err) {
@@ -110,35 +128,70 @@ export async function submitBooking(formData: FormData) {
 }
 
 async function sendBookingConfirmationEmail(email: string, name: string) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return;
+  await sendEmail({
+    to: email,
+    subject: "Your booking request — We've received it",
+    html: `
+      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto;">
+        <p>Dear ${escapeHtml(name)},</p>
+        <p>Thank you for your booking request. We've received your message and will be in touch within 24–48 hours to discuss your vision and confirm availability.</p>
+        <p>In the meantime, feel free to share any additional reference images or ideas via email or Instagram.</p>
+        <p>Warm regards,<br/>The Studio Team</p>
+      </div>
+    `,
+  });
+}
 
-  try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        from: process.env.EMAIL_FROM || "bookings@yourdomain.com",
-        to: email,
-        subject: "Your booking request — We've received it",
-        html: `
-          <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto;">
-            <p>Dear ${name},</p>
-            <p>Thank you for your booking request. We've received your message and will be in touch within 24–48 hours to discuss your vision and confirm availability.</p>
-            <p>In the meantime, feel free to share any additional reference images or ideas via email or Instagram.</p>
-            <p>Warm regards,<br/>The Studio Team</p>
-          </div>
-        `,
-      }),
-    });
+type ArtistBookingNotification = {
+  bookingId: string;
+  artist: { id: string; name: string; email: string | null };
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string | null;
+  style: string | null;
+  size: string | null;
+  description: string | null;
+  placement: string | null;
+  preferredDate: string | null;
+  referenceUrl: string | null;
+};
 
-    if (!res.ok) {
-      console.error("[Email] Resend failed:", await res.text());
-    }
-  } catch (err) {
-    console.error("[Email] Send failed:", err);
-  }
+async function sendArtistBookingNotificationEmail(details: ArtistBookingNotification) {
+  const notifyTo =
+    details.artist.email ||
+    process.env.BOOKING_EMAIL ||
+    process.env.ADMIN_EMAIL;
+
+  if (!notifyTo) return;
+
+  const siteUrl = getSiteUrl();
+  const adminUrl = `${siteUrl}/admin/bookings`;
+  const field = (label: string, value: string | null) =>
+    `<p><strong>${escapeHtml(label)}:</strong> ${value ? escapeHtml(value) : "—"}</p>`;
+
+  const referenceBlock = details.referenceUrl
+    ? `<p><strong>Reference image:</strong> <a href="${escapeHtml(details.referenceUrl)}">${escapeHtml(details.referenceUrl)}</a></p>`
+    : "";
+
+  await sendEmail({
+    to: notifyTo,
+    subject: `New booking request — ${details.clientName}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; color:#111;">
+        <p>A new booking request has been submitted${details.artist.email ? ` for ${escapeHtml(details.artist.name)}` : ""}.</p>
+        <p><strong>Booking ID:</strong> ${escapeHtml(details.bookingId)}</p>
+        ${field("Client name", details.clientName)}
+        ${field("Client email", details.clientEmail)}
+        ${field("Client phone", details.clientPhone)}
+        ${field("Assigned artist", details.artist.name)}
+        ${field("Style", details.style)}
+        ${field("Size", details.size)}
+        ${field("Placement", details.placement)}
+        ${field("Preferred date", details.preferredDate)}
+        ${field("Description", details.description)}
+        ${referenceBlock}
+        <p style="margin-top:24px;"><a href="${escapeHtml(adminUrl)}">View in admin</a></p>
+      </div>
+    `,
+  });
 }

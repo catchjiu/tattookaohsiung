@@ -122,7 +122,9 @@
     "referencePhoto": "Reference photo",
     "uploadPhoto": "Upload photo",
     "uploading": "Uploading…",
-    "optionalNote": "Optional. Any image ratio is fine.",
+    "cancelCrop": "Cancel",
+    "applyCropUpload": "Apply crop & upload",
+    "optionalNote": "Optional. After you choose a photo you can crop and zoom (4:3) before upload.",
     "referencePreview": "Reference preview",
     "remove": "Remove",
     "preferredArtist": "Preferred artist",
@@ -185,6 +187,7 @@
     "title": "Realistic Tattoo Gallery — Kaohsiung",
     "description": "Browse our portfolio of realistic tattoos and fine-line artistry from Kaohsiung's professional tattoo studio. Click any image to view in full.",
     "noArtwork": "No artwork yet. Check back soon.",
+    "filterAll": "All",
     "untitled": "Untitled",
     "artwork": "Realistic tattoo artwork — Casper Tattoo Kaohsiung | Professional Tattoo Studio"
   },

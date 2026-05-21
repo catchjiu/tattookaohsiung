@@ -26,6 +26,7 @@ export default async function AdminArtistsPage() {
     bio_zh: a.bioZh,
     specialty: a.specialty,
     specialty_zh: a.specialtyZh,
+    email: a.email,
     ig_handle: igHandle(a.instagramUrl),
     avatar_url: a.avatarUrl,
     display_order: a.sortOrder,

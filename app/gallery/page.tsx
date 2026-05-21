@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
-import { GalleryGrid } from "@/components/gallery/GalleryGrid";
+import { GalleryWithFilters } from "@/components/gallery/GalleryWithFilters";
 import { PageHero } from "@/components/ui/PageHero";
 import { galleryTagsForLocale, galleryTitleForLocale } from "@/lib/gallery-display";
 
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
 };
 
 export default async function GalleryPage() {
-  const [images, heroImages] = await Promise.all([
+  const [images, heroImages, artists] = await Promise.all([
     prisma.portfolioImage.findMany({
       include: {
         artist: { select: { name: true, specialty: true } },
@@ -67,7 +67,15 @@ export default async function GalleryPage() {
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,
     }),
+    prisma.artist.findMany({
+      where: { status: { not: "INACTIVE" } },
+      orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+      select: { id: true, name: true, nameZh: true },
+    }),
   ]);
+
+  const artistIdsInGallery = new Set(images.map((img) => img.artistId));
+  const galleryArtists = artists.filter((artist) => artistIdsInGallery.has(artist.id));
 
   const artworks = images.map((img) => ({
     id: img.id,
@@ -75,6 +83,7 @@ export default async function GalleryPage() {
     image_url: img.url,
     image_urls: img.assets.map((a) => a.url),
     tags: galleryTagsForLocale(img, "en"),
+    artistId: img.artistId,
     artists: { name: img.artist.name, specialty: img.artist.specialty },
   }));
 
@@ -93,7 +102,7 @@ export default async function GalleryPage() {
         descriptionKey="gallery.description"
       />
       <div className="mx-auto max-w-6xl px-8 py-20">
-        <GalleryGrid artworks={artworks} />
+        <GalleryWithFilters artworks={artworks} artists={galleryArtists} />
       </div>
     </>
   );

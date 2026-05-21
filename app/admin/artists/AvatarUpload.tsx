@@ -1,55 +1,14 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Cropper, { type Area } from "react-easy-crop";
+import type { Area } from "react-easy-crop";
 import { uploadArtistAvatar } from "./upload-actions";
 import { Upload, X } from "lucide-react";
+import { ImageCropStage } from "@/components/admin/ImageCropStage";
+import { getCroppedImageBlob } from "@/lib/image-crop-canvas";
 
 const ASPECT = 3 / 4; // Homepage artist card ratio
-const OUTPUT_WIDTH = 600; // 600x800 for crisp display
-
-function createImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = url;
-  });
-}
-
-async function getCroppedImg(
-  imageSrc: string,
-  pixelCrop: Area
-): Promise<Blob> {
-  const image = await createImage(imageSrc);
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("No canvas context");
-
-  canvas.width = OUTPUT_WIDTH;
-  canvas.height = Math.round(OUTPUT_WIDTH / ASPECT);
-
-  ctx.drawImage(
-    image,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("Canvas toBlob failed"))),
-      "image/jpeg",
-      0.9
-    );
-  });
-}
+const OUTPUT_WIDTH = 600;
 
 type Props = {
   value: string | null;
@@ -58,20 +17,19 @@ type Props = {
 
 export function AvatarUpload({ value, onChange }: Props) {
   const [file, setFile] = useState<string | null>(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
-    setCroppedArea(croppedAreaPixels);
+  const handleCropPixels = useCallback((pixels: Area | null) => {
+    setCroppedArea(pixels);
   }, []);
 
   async function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
     if (!f || !f.type.startsWith("image/")) return;
     setError(null);
+    setCroppedArea(null);
     const url = URL.createObjectURL(f);
     setFile(url);
   }
@@ -79,17 +37,21 @@ export function AvatarUpload({ value, onChange }: Props) {
   function handleCancelCrop() {
     if (file) URL.revokeObjectURL(file);
     setFile(null);
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
     setCroppedArea(null);
   }
 
   async function handleConfirmCrop() {
     if (!file || !croppedArea) return;
+    const outputHeight = Math.round(OUTPUT_WIDTH / ASPECT);
     setUploading(true);
     setError(null);
     try {
-      const blob = await getCroppedImg(file, croppedArea);
+      const blob = await getCroppedImageBlob(
+        file,
+        croppedArea,
+        OUTPUT_WIDTH,
+        outputHeight
+      );
       const formData = new FormData();
       formData.append("file", blob, "avatar.jpg");
       const result = await uploadArtistAvatar(formData);
@@ -112,31 +74,19 @@ export function AvatarUpload({ value, onChange }: Props) {
   if (file) {
     return (
       <div className="space-y-4">
-        <div className="relative h-64 w-full overflow-hidden rounded-md border border-border bg-charcoal">
-          <Cropper
-            image={file}
-            crop={crop}
-            zoom={zoom}
-            aspect={ASPECT}
-            onCropChange={setCrop}
-            onCropComplete={onCropComplete}
-            onZoomChange={setZoom}
-            objectFit="contain"
-            style={{ containerStyle: { backgroundColor: "#0c0c0c" } }}
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="range"
-            min={1}
-            max={3}
-            step={0.1}
-            value={zoom}
-            onChange={(e) => setZoom(Number(e.target.value))}
-            className="flex-1"
-          />
-          <span className="text-xs text-foreground-muted">Zoom</span>
-        </div>
+        <ImageCropStage
+          imageSrc={file}
+          aspect={ASPECT}
+          showGrid
+          zoomLabelClassName="text-xs text-foreground-muted"
+          className="relative h-64 w-full overflow-hidden rounded-md border border-border bg-charcoal"
+          caption={
+            <p className="text-xs text-foreground-muted">
+              3:4 portrait — drag to reposition, slider to zoom
+            </p>
+          }
+          onCropPixelsReady={handleCropPixels}
+        />
         {error && (
           <p className="text-sm text-red-400">{error}</p>
         )}
@@ -151,7 +101,7 @@ export function AvatarUpload({ value, onChange }: Props) {
           <button
             type="button"
             onClick={handleConfirmCrop}
-            disabled={uploading}
+            disabled={uploading || !croppedArea}
             className="rounded-md border border-accent bg-accent-muted px-3 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-ivory disabled:opacity-50"
           >
             {uploading ? "Uploading…" : "Apply crop & upload"}
@@ -169,6 +119,7 @@ export function AvatarUpload({ value, onChange }: Props) {
             className="overflow-hidden rounded-md border border-border bg-card-hover"
             style={{ aspectRatio: "3/4", width: 120 }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={value}
               alt="Avatar preview"
@@ -195,7 +146,7 @@ export function AvatarUpload({ value, onChange }: Props) {
         />
       </label>
       <p className="text-xs text-foreground-subtle">
-        3:4 portrait ratio, cropped to fit homepage cards
+        3:4 portrait crop with mask & zoom — cropped to fit homepage cards
       </p>
     </div>
   );

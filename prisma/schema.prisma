@@ -60,6 +60,7 @@ model Artist {
   specialty     String?       // e.g. "Traditional", "Fine-line", "Realism"
   specialtyZh   String?       @map("specialty_zh")
   status        ArtistStatus  @default(AVAILABLE)
+  email         String?       // Internal — booking notifications only, not shown publicly
   avatarUrl     String?       @map("avatar_url")
   instagramUrl  String?       @map("instagram_url")
   twitterUrl   String?       @map("twitter_url")
@@ -256,6 +257,7 @@ model BookingRequest {
   conceptDescription String         @map("concept_description") @db.Text
   placement        String?         // Body map selection / placement notes
   placementDetails Json?           @map("placement_details") // Structured body map data
+  preferredDate    String?         @map("preferred_date")
   status           BookingStatus   @default(PENDING)
   adminNotes       String?         @map("admin_notes") @db.Text
   createdAt        DateTime        @default(now()) @map("created_at")

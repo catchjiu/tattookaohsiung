@@ -25,7 +25,7 @@ export default async function AdminBookingsPage() {
     size: null,
     description: b.conceptDescription,
     reference_url: b.references[0]?.url ?? null,
-    preferred_date: null,
+    preferred_date: b.preferredDate,
     status: b.status.toLowerCase(),
     created_at: b.createdAt.toISOString(),
     artists: { name: b.artist.name },

@@ -45,15 +45,17 @@ type Artwork = {
   image_url: string;
   image_urls?: string[];
   tags: string[] | null;
+  artistId?: string;
   artists?: ArtistMeta | ArtistMeta[] | null;
 };
 
 type Props = {
   artworks: Artwork[];
   showArtistName?: boolean;
+  className?: string;
 };
 
-export function GalleryGrid({ artworks, showArtistName = true }: Props) {
+export function GalleryGrid({ artworks, showArtistName = true, className = "mt-20" }: Props) {
   const { t } = useLanguage();
   const [lightboxItem, setLightboxItem] = useState<Artwork | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -70,7 +72,7 @@ export function GalleryGrid({ artworks, showArtistName = true }: Props) {
 
   return (
     <>
-      <div className="mt-20 columns-2 gap-8 sm:columns-3 lg:columns-4">
+      <div className={`columns-2 gap-8 sm:columns-3 lg:columns-4 ${className}`}>
         {artworks.length === 0 ? (
           <p className="col-span-full py-20 text-center text-foreground-muted">
             {t("gallery.noArtwork")}
