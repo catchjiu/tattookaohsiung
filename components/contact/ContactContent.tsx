@@ -1,16 +1,37 @@
 "use client";
 
+import { useState } from "react";
 import { Section, SectionLabel, SectionTitle } from "@/components/ui";
 import { BookingForm } from "@/components/booking/BookingForm";
+import {
+  BookingTypeSelector,
+  type BookingType,
+} from "@/components/booking/BookingTypeSelector";
+import { PermanentMakeupBookingModal } from "@/components/booking/PermanentMakeupBookingModal";
 import { ContactPageClient } from "./ContactPageClient";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 
 type Props = {
-  artists: { id: string; name: string }[];
+  tattooArtists: { id: string; name: string }[];
+  permanentMakeupArtists: { id: string; name: string }[];
 };
 
-export function ContactContent({ artists }: Props) {
+export function ContactContent({ tattooArtists, permanentMakeupArtists }: Props) {
   const { t, locale } = useLanguage();
+  const [bookingType, setBookingType] = useState<BookingType>("tattoo");
+  const [pmuModalOpen, setPmuModalOpen] = useState(false);
+
+  function handleBookingTypeChange(type: BookingType) {
+    setBookingType(type);
+    if (type === "permanent-makeup") {
+      setPmuModalOpen(true);
+    }
+  }
+
+  function handlePmuModalClose() {
+    setPmuModalOpen(false);
+    setBookingType("tattoo");
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-8">
@@ -30,8 +51,17 @@ export function ContactContent({ artists }: Props) {
         <div className="grid gap-16 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <div className="border-2 border-border bg-card p-10 md:p-12 rounded-none">
-              <BookingForm artists={artists} />
+              <BookingTypeSelector
+                value={bookingType}
+                onChange={handleBookingTypeChange}
+              />
+              <BookingForm artists={tattooArtists} />
             </div>
+            <PermanentMakeupBookingModal
+              open={pmuModalOpen}
+              onClose={handlePmuModalClose}
+              artists={permanentMakeupArtists}
+            />
           </div>
           <div className="space-y-8">
             <div className="border-t border-border pt-8">

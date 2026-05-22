@@ -6,6 +6,7 @@
     "blog": "Blog",
     "shop": "Shop",
     "contact": "Contact",
+    "permanentMakeup": "Permanent Makeup",
     "book": "Book",
     "cart": "Shopping cart"
   },
@@ -114,6 +115,26 @@
     "expect4": "Bring reference images to your session",
     "contactTitle": "Contact",
     "contactDm": "Prefer to reach out directly? DM us on Instagram"
+  },
+  "bookingType": {
+    "label": "Booking type",
+    "tattoo": "Tattoo",
+    "permanentMakeup": "Permanent Makeup"
+  },
+  "pmuBooking": {
+    "title": "Permanent Makeup Booking",
+    "subtitle": "Select your service and tell us a little about what you're looking for.",
+    "service": "Service",
+    "services": {
+      "Permanent Makeup": "Permanent Makeup",
+      "SMP": "SMP (Scalp Micropigmentation)"
+    },
+    "additionalInfo": "Additional information",
+    "additionalInfoPlaceholder": "Tell us about the look you want, any concerns, or questions you have...",
+    "submit": "Submit booking request",
+    "close": "Close",
+    "thankYou": "Thank you",
+    "received": "Your permanent makeup booking request has been received. We'll be in touch within 24–48 hours."
   },
   "booking": {
     "step1": "Your details",

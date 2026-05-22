@@ -24,6 +24,7 @@ const BASE_NAV = [
   { path: "/gallery", labelKey: "nav.gallery", dropdown: false },
   { path: "/blog", labelKey: "nav.blog", dropdown: false },
   { path: "/shop", labelKey: "nav.shop", dropdown: false },
+  { path: "/permanent-makeup", labelKey: "nav.permanentMakeup", dropdown: false },
   { path: "/contact", labelKey: "nav.contact", dropdown: true },
 ] as const;
 

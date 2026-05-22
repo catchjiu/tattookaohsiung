@@ -6,6 +6,7 @@
     "blog": "部落格",
     "shop": "商店",
     "contact": "聯絡",
+    "permanentMakeup": "半永久彩妝",
     "book": "預約",
     "cart": "購物車"
   },
@@ -114,6 +115,26 @@
     "expect4": "請攜帶參考圖片至諮詢",
     "contactTitle": "聯絡方式",
     "contactDm": "想直接聯繫？請在 Instagram 私訊我們"
+  },
+  "bookingType": {
+    "label": "預約類型",
+    "tattoo": "刺青",
+    "permanentMakeup": "半永久彩妝"
+  },
+  "pmuBooking": {
+    "title": "半永久彩妝預約",
+    "subtitle": "請選擇服務項目，並告訴我們您的需求。",
+    "service": "服務項目",
+    "services": {
+      "Permanent Makeup": "半永久彩妝",
+      "SMP": "SMP 紋髮（頭皮點刺）"
+    },
+    "additionalInfo": "補充說明",
+    "additionalInfoPlaceholder": "請描述您想要的風格、疑問或特殊需求...",
+    "submit": "送出預約申請",
+    "close": "關閉",
+    "thankYou": "感謝您",
+    "received": "我們已收到您的半永久彩妝預約申請。將在 24–48 小時內與您聯繫。"
   },
   "booking": {
     "step1": "您的資料",

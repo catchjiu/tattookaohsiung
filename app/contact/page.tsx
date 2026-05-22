@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
+import {
+  permanentMakeupArtistWhere,
+  tattooArtistWhere,
+} from "@/lib/artist-job";
 
 export const dynamic = "force-dynamic";
 import { ContactContent } from "@/components/contact/ContactContent";
@@ -31,11 +35,23 @@ export const metadata: Metadata = {
 };
 
 export default async function ContactPage() {
-  const artists = await prisma.artist.findMany({
-    where: { status: { not: "INACTIVE" } },
-    select: { id: true, name: true },
-    orderBy: { sortOrder: "asc" },
-  });
+  const [tattooArtists, permanentMakeupArtists] = await Promise.all([
+    prisma.artist.findMany({
+      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
+      select: { id: true, name: true },
+      orderBy: { sortOrder: "asc" },
+    }),
+    prisma.artist.findMany({
+      where: { status: { not: "INACTIVE" }, ...permanentMakeupArtistWhere },
+      select: { id: true, name: true },
+      orderBy: { sortOrder: "asc" },
+    }),
+  ]);
 
-  return <ContactContent artists={artists} />;
+  return (
+    <ContactContent
+      tattooArtists={tattooArtists}
+      permanentMakeupArtists={permanentMakeupArtists}
+    />
+  );
 }
