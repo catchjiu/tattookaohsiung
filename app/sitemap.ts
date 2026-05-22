@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
+import { tattooArtistWhere } from "@/lib/artist-job";
 
 const SITE_URL = getSiteUrl();
 
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [artists, posts, shopProducts] = await Promise.all([
     prisma.artist.findMany({
-      where: { status: { not: "INACTIVE" } },
+      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
       select: { slug: true, updatedAt: true },
     }),
     prisma.blogPost.findMany({
@@ -72,6 +73,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/permanent-makeup`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
     // ── Traditional Chinese (/zh-TW/*) ───────────────────────────────────
     {
       url: `${SITE_URL}/zh-TW`,
@@ -96,6 +103,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/permanent-makeup`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.75,
     },
     {
       url: `${SITE_URL}/zh-TW/blog`,

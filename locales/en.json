@@ -37,7 +37,17 @@
     "label": "Boutique",
     "title": "Shop",
     "description": "Studio products and curated pieces from Casper Tattoo Kaohsiung.",
-    "showMore": "View all shop items"
+    "showMore": "View all shop items",
+    "permanentMakeup": "Permanent Makeup"
+  },
+  "permanentMakeup": {
+    "label": "Cosmetic Artistry",
+    "title": "Permanent Makeup",
+    "description": "Meet our permanent makeup artists and explore their dedicated portfolios of microblading, lip blush, and cosmetic tattoo work.",
+    "artistRole": "Permanent Makeup Artist",
+    "portfolio": "Portfolio",
+    "noArtists": "Permanent makeup artists will be listed here soon.",
+    "noPortfolio": "Portfolio coming soon."
   },
   "bookingCTA": {
     "label": "Concierge",

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
 import { ComingSoon } from "@/components/home/ComingSoon";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
+import { tattooArtistWhere, tattooPortfolioWhere } from "@/lib/artist-job";
 
 export const dynamic = "force-dynamic";
 
@@ -97,12 +98,12 @@ const zhStructuredData = {
 export default async function ZhTWHomePage() {
   const [artists, portfolioImages, shopRows] = await Promise.all([
     prisma.artist.findMany({
-      where: { status: { not: "INACTIVE" } },
+      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
       select: { id: true, name: true, specialty: true, avatarUrl: true, slug: true },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     prisma.portfolioImage.findMany({
-      where: { showInHeroSlider: true },
+      where: { showInHeroSlider: true, ...tattooPortfolioWhere },
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,

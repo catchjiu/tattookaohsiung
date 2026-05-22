@@ -59,6 +59,7 @@ model Artist {
   bioZh         String?       @db.Text @map("bio_zh")
   specialty     String?       // e.g. "Traditional", "Fine-line", "Realism"
   specialtyZh   String?       @map("specialty_zh")
+  job           ArtistJob     @default(TATTOO_ARTIST)
   status        ArtistStatus  @default(AVAILABLE)
   email         String?       // Internal — booking notifications only, not shown publicly
   avatarUrl     String?       @map("avatar_url")
@@ -74,6 +75,11 @@ model Artist {
   bookingRequests BookingRequest[]
 
   @@map("artists")
+}
+
+enum ArtistJob {
+  TATTOO_ARTIST
+  PERMANENT_MAKEUP
 }
 
 enum ArtistStatus {

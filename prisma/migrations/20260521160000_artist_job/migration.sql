@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "ArtistJob" AS ENUM ('TATTOO_ARTIST', 'PERMANENT_MAKEUP');
+
+-- AlterTable
+ALTER TABLE "artists" ADD COLUMN "job" "ArtistJob" NOT NULL DEFAULT 'TATTOO_ARTIST';

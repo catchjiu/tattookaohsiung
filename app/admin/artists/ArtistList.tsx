@@ -6,6 +6,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import type { Artist } from "@/types/database";
 import { ArtistForm } from "./ArtistForm";
 import { deleteArtist } from "./actions";
+import { artistJobLabel } from "@/lib/artist-job";
 
 type Props = {
   artists: Artist[];
@@ -70,6 +71,13 @@ export function ArtistList({ artists }: Props) {
                   {artist.specialty && (
                     <div className="mt-1 text-sm text-foreground-muted">{artist.specialty}</div>
                   )}
+                  {artist.job && (
+                    <div className="mt-2">
+                      <span className="rounded-full bg-accent-muted px-2.5 py-1 text-xs font-medium text-accent">
+                        {artistJobLabel(artist.job)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               {artist.ig_handle && (
@@ -132,6 +140,9 @@ export function ArtistList({ artists }: Props) {
                 Specialty
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-foreground-muted">
+                Job
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-foreground-muted">
                 IG
               </th>
               <th className="px-4 py-3 text-left text-sm font-medium text-foreground-muted">
@@ -149,7 +160,7 @@ export function ArtistList({ artists }: Props) {
             {artists.length === 0 ? (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={7}
                   className="px-4 py-12 text-center text-foreground-muted"
                 >
                   No artists yet. Click &quot;Add Artist&quot; to create one.
@@ -184,6 +195,11 @@ export function ArtistList({ artists }: Props) {
                   </td>
                   <td className="px-4 py-3 text-sm text-foreground-muted">
                     {artist.specialty || "—"}
+                  </td>
+                  <td className="px-4 py-3 text-sm">
+                    <span className="rounded-full bg-accent-muted px-2 py-0.5 text-xs text-accent">
+                      {artistJobLabel(artist.job ?? "TATTOO_ARTIST")}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-sm">
                     {artist.ig_handle ? (

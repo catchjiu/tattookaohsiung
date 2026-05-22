@@ -4,6 +4,7 @@ import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { parseArtistJob } from "@/lib/artist-job";
 
 async function requireAdminAction(): Promise<{ error: string } | null> {
   const session = await getSession();
@@ -44,6 +45,7 @@ export async function createArtist(formData: FormData) {
   const avatarUrl = (formData.get("avatar_url") as string)?.trim() || null;
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
   const isActive = formData.get("is_active") === "on";
+  const job = parseArtistJob(formData.get("job"));
 
   if (!name) return { error: "Name is required" };
   if (emailRaw === "__invalid__") return { error: "Invalid email address" };
@@ -62,6 +64,7 @@ export async function createArtist(formData: FormData) {
         bioZh,
         specialty,
         specialtyZh,
+        job,
         email,
         instagramUrl,
         avatarUrl,
@@ -74,6 +77,8 @@ export async function createArtist(formData: FormData) {
   }
   revalidatePath("/admin/artists");
   revalidatePath("/artists");
+  revalidatePath("/gallery");
+  revalidatePath("/permanent-makeup");
   revalidatePath("/");
   return { success: true };
 }
@@ -91,6 +96,7 @@ export async function updateArtist(id: string, formData: FormData) {
   const avatarUrl = (formData.get("avatar_url") as string)?.trim() || null;
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
   const isActive = formData.get("is_active") === "on";
+  const job = parseArtistJob(formData.get("job"));
 
   if (!name || !slug) return { error: "Name and slug are required" };
   if (emailRaw === "__invalid__") return { error: "Invalid email address" };
@@ -110,6 +116,7 @@ export async function updateArtist(id: string, formData: FormData) {
         bioZh,
         specialty,
         specialtyZh,
+        job,
         email,
         instagramUrl,
         avatarUrl,
@@ -122,6 +129,8 @@ export async function updateArtist(id: string, formData: FormData) {
   }
   revalidatePath("/admin/artists");
   revalidatePath("/artists");
+  revalidatePath("/gallery");
+  revalidatePath("/permanent-makeup");
   revalidatePath("/");
   return { success: true };
 }
@@ -145,6 +154,8 @@ export async function deleteArtist(id: string) {
   }
   revalidatePath("/admin/artists");
   revalidatePath("/artists");
+  revalidatePath("/gallery");
+  revalidatePath("/permanent-makeup");
   revalidatePath("/");
   return { success: true };
 }

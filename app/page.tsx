@@ -5,6 +5,7 @@ import { getSiteUrl } from "@/lib/site-url";
 export const dynamic = "force-dynamic";
 import { ComingSoon } from "@/components/home/ComingSoon";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
+import { tattooArtistWhere, tattooPortfolioWhere } from "@/lib/artist-job";
 
 export const metadata: Metadata = {
   title: "Casper Tattoo Kaohsiung | Professional Tattoo Studio — Realism & Fine-Line",
@@ -111,7 +112,7 @@ const structuredData = {
 export default async function HomePage() {
   const [artists, portfolioImages, shopRows] = await Promise.all([
     prisma.artist.findMany({
-      where: { status: { not: "INACTIVE" } },
+      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
       select: {
         id: true,
         name: true,
@@ -122,7 +123,7 @@ export default async function HomePage() {
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     prisma.portfolioImage.findMany({
-      where: { showInHeroSlider: true },
+      where: { showInHeroSlider: true, ...tattooPortfolioWhere },
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,

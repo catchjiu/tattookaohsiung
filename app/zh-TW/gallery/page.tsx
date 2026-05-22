@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
 import { GalleryWithFilters } from "@/components/gallery/GalleryWithFilters";
 import { PageHero } from "@/components/ui/PageHero";
+import { tattooArtistWhere, tattooPortfolioWhere } from "@/lib/artist-job";
 import { galleryTagsForLocale, galleryTitleForLocale } from "@/lib/gallery-display";
 
 export const dynamic = "force-dynamic";
@@ -52,6 +53,7 @@ export const metadata: Metadata = {
 export default async function ZhTWGalleryPage() {
   const [images, heroImages, artists] = await Promise.all([
     prisma.portfolioImage.findMany({
+      where: tattooPortfolioWhere,
       include: {
         artist: { select: { name: true, specialty: true } },
         assets: { orderBy: { sortOrder: "asc" }, select: { url: true } },
@@ -59,13 +61,13 @@ export default async function ZhTWGalleryPage() {
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
     }),
     prisma.portfolioImage.findMany({
-      where: { showInHeroSlider: true },
+      where: { showInHeroSlider: true, ...tattooPortfolioWhere },
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,
     }),
     prisma.artist.findMany({
-      where: { status: { not: "INACTIVE" } },
+      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
       select: { id: true, name: true, nameZh: true },
     }),

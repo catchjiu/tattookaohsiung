@@ -7,6 +7,7 @@ export type Artist = {
   bio_zh?: string | null;
   specialty: string | null;
   specialty_zh?: string | null;
+  job?: "TATTOO_ARTIST" | "PERMANENT_MAKEUP";
   email?: string | null;
   ig_handle: string | null;
   avatar_url: string | null;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ArtistsContent } from "@/components/artists/ArtistsContent";
 import { PageHero } from "@/components/ui/PageHero";
+import { tattooArtistWhere, tattooPortfolioWhere } from "@/lib/artist-job";
 
 export const dynamic = "force-dynamic";
 
@@ -33,11 +34,11 @@ export const metadata: Metadata = {
 export default async function ZhTWArtistsPage() {
   const [artists, heroImages] = await Promise.all([
     prisma.artist.findMany({
-      where: { status: { not: "INACTIVE" } },
+      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     prisma.portfolioImage.findMany({
-      where: { showInHeroSlider: true },
+      where: { showInHeroSlider: true, ...tattooPortfolioWhere },
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArtistDetailContent } from "@/components/artists/ArtistDetailContent";
 import { galleryTagsForLocale, galleryTitleForLocale } from "@/lib/gallery-display";
+import { PERMANENT_MAKEUP_JOB } from "@/lib/artist-job";
 
 export const dynamic = "force-dynamic";
 
@@ -69,6 +70,9 @@ export default async function ArtistGalleryPage({
   });
 
   if (!artist) notFound();
+  if (artist.job === PERMANENT_MAKEUP_JOB) {
+    redirect("/permanent-makeup");
+  }
 
   const artworks = artist.portfolioImages.map((img) => ({
     id: img.id,

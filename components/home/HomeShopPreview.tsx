@@ -13,8 +13,8 @@ type Props = {
 export function HomeShopPreview({ products }: Props) {
   const { t, locale } = useLanguage();
   const shopBase = locale === "zh-TW" ? "/zh-TW/shop" : "/shop";
-
-  if (!products.length) return null;
+  const permanentMakeupBase =
+    locale === "zh-TW" ? "/zh-TW/permanent-makeup" : "/permanent-makeup";
 
   return (
     <section className="border-t border-border bg-background py-32 md:py-40">
@@ -37,69 +37,79 @@ export function HomeShopPreview({ products }: Props) {
           </p>
         </motion.div>
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((product, i) => {
-            const priceDisplay = formatProductPrice(
-              product.priceTwd,
-              product.priceLabel
-            );
-            return (
-              <motion.article
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="group flex flex-col border border-border bg-card transition-colors hover:border-accent hover:bg-card-hover"
-              >
-                <Link
-                  href={`${shopBase}/${product.slug}`}
-                  className="block flex-1"
+        {products.length > 0 && (
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {products.map((product, i) => {
+              const priceDisplay = formatProductPrice(
+                product.priceTwd,
+                product.priceLabel
+              );
+              return (
+                <motion.article
+                  key={product.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
+                  className="group flex flex-col border border-border bg-card transition-colors hover:border-accent hover:bg-card-hover"
                 >
-                  <div className="relative aspect-[4/5] overflow-hidden bg-charcoal">
-                    {product.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-sm text-foreground-subtle">
-                        {t("shop.noImage")}
-                      </div>
-                    )}
-                  </div>
-                  <div className="border-t border-border bg-background p-5 transition-colors group-hover:bg-card-hover">
-                    <h3 className="font-serif text-lg font-medium tracking-tight text-foreground">
-                      {product.name}
-                    </h3>
-                    {priceDisplay ? (
-                      <p className="mt-1 text-[13px] tracking-wide text-accent">
-                        {priceDisplay}
-                      </p>
-                    ) : null}
-                    <span className="mt-4 inline-block text-[12px] font-medium tracking-[0.15em] uppercase text-foreground-muted transition-colors group-hover:text-accent">
-                      {t("shop.viewDetails")}
-                    </span>
-                  </div>
-                </Link>
-              </motion.article>
-            );
-          })}
-        </div>
+                  <Link
+                    href={`${shopBase}/${product.slug}`}
+                    className="block flex-1"
+                  >
+                    <div className="relative aspect-[4/5] overflow-hidden bg-charcoal">
+                      {product.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-sm text-foreground-subtle">
+                          {t("shop.noImage")}
+                        </div>
+                      )}
+                    </div>
+                    <div className="border-t border-border bg-background p-5 transition-colors group-hover:bg-card-hover">
+                      <h3 className="font-serif text-lg font-medium tracking-tight text-foreground">
+                        {product.name}
+                      </h3>
+                      {priceDisplay ? (
+                        <p className="mt-1 text-[13px] tracking-wide text-accent">
+                          {priceDisplay}
+                        </p>
+                      ) : null}
+                      <span className="mt-4 inline-block text-[12px] font-medium tracking-[0.15em] uppercase text-foreground-muted transition-colors group-hover:text-accent">
+                        {t("shop.viewDetails")}
+                      </span>
+                    </div>
+                  </Link>
+                </motion.article>
+              );
+            })}
+          </div>
+        )}
 
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="mt-16 text-center"
+          className="mt-16 flex flex-col items-center gap-6 text-center"
         >
+          {products.length > 0 && (
+            <Link
+              href={shopBase}
+              className="inline-block border-b border-accent pb-1 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:text-foreground"
+            >
+              {t("homeShop.showMore")}
+            </Link>
+          )}
           <Link
-            href={shopBase}
-            className="inline-block border-b border-accent pb-1 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:text-foreground"
+            href={permanentMakeupBase}
+            className="inline-block border border-accent px-8 py-3 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:bg-accent hover:text-charcoal"
           >
-            {t("homeShop.showMore")}
+            {t("homeShop.permanentMakeup")}
           </Link>
         </motion.div>
       </div>

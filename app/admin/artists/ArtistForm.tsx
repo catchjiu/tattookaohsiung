@@ -10,6 +10,7 @@ import {
   revokeArtistDashboard,
   updateArtist,
 } from "./actions";
+import { ARTIST_JOBS, artistJobLabel } from "@/lib/artist-job";
 import { AvatarUpload } from "./AvatarUpload";
 
 type Props = {
@@ -204,6 +205,26 @@ export function ArtistForm({ artist, onClose }: Props) {
               placeholder="例如：寫實、細線、傳統"
               className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground placeholder:text-foreground-subtle"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
+              Job *
+            </label>
+            <select
+              name="job"
+              defaultValue={artist?.job ?? "TATTOO_ARTIST"}
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground"
+            >
+              {ARTIST_JOBS.map((job) => (
+                <option key={job} value={job}>
+                  {artistJobLabel(job)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1.5 text-xs text-foreground-subtle">
+              Permanent makeup artists appear on the dedicated PMU page and are excluded from the tattoo gallery.
+            </p>
           </div>
 
           <div>

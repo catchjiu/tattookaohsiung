@@ -37,7 +37,17 @@
     "label": "精選商品",
     "title": "商店",
     "description": "Casper Tattoo 高雄刺青工作室精選商品與周邊。",
-    "showMore": "查看更多商品"
+    "showMore": "查看更多商品",
+    "permanentMakeup": "紋繡／半永久彩妝"
+  },
+  "permanentMakeup": {
+    "label": "紋繡藝術",
+    "title": "半永久彩妝",
+    "description": "認識我們的紋繡師，瀏覽霧眉、紋唇等半永久彩妝專屬作品集。",
+    "artistRole": "紋繡師",
+    "portfolio": "作品集",
+    "noArtists": "紋繡師資訊即將更新。",
+    "noPortfolio": "作品集即將更新。"
   },
   "bookingCTA": {
     "label": "預約諮詢",
