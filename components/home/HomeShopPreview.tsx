@@ -13,8 +13,8 @@ type Props = {
 export function HomeShopPreview({ products }: Props) {
   const { t, locale } = useLanguage();
   const shopBase = locale === "zh-TW" ? "/zh-TW/shop" : "/shop";
-  const permanentMakeupBase =
-    locale === "zh-TW" ? "/zh-TW/permanent-makeup" : "/permanent-makeup";
+
+  if (!products.length) return null;
 
   return (
     <section className="border-t border-border bg-background py-32 md:py-40">
@@ -37,9 +37,8 @@ export function HomeShopPreview({ products }: Props) {
           </p>
         </motion.div>
 
-        {products.length > 0 && (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product, i) => {
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {products.map((product, i) => {
               const priceDisplay = formatProductPrice(
                 product.priceTwd,
                 product.priceLabel
@@ -87,29 +86,20 @@ export function HomeShopPreview({ products }: Props) {
                   </Link>
                 </motion.article>
               );
-            })}
-          </div>
-        )}
+          })}
+        </div>
 
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="mt-16 flex flex-col items-center gap-6 text-center"
+          className="mt-16 text-center"
         >
-          {products.length > 0 && (
-            <Link
-              href={shopBase}
-              className="inline-block border-b border-accent pb-1 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:text-foreground"
-            >
-              {t("homeShop.showMore")}
-            </Link>
-          )}
           <Link
-            href={permanentMakeupBase}
-            className="inline-block border border-accent px-8 py-3 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:bg-accent hover:text-charcoal"
+            href={shopBase}
+            className="inline-block border-b border-accent pb-1 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:text-foreground"
           >
-            {t("homeShop.permanentMakeup")}
+            {t("homeShop.showMore")}
           </Link>
         </motion.div>
       </div>

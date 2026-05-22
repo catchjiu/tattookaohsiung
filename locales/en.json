@@ -12,7 +12,8 @@
   "hero": {
     "location": "Kaohsiung",
     "tagline": "Professional tattoo studio in Kaohsiung. Precision realism and fine-line artistry where every detail matters.",
-    "bookSession": "Book a Session"
+    "bookSession": "Book a Session",
+    "permanentMakeup": "Permanent Makeup"
   },
   "footer": {
     "tagline": "Professional tattoo studio Kaohsiung — precision realism & fine-line.",
@@ -37,8 +38,7 @@
     "label": "Boutique",
     "title": "Shop",
     "description": "Studio products and curated pieces from Casper Tattoo Kaohsiung.",
-    "showMore": "View all shop items",
-    "permanentMakeup": "Permanent Makeup"
+    "showMore": "View all shop items"
   },
   "permanentMakeup": {
     "label": "Cosmetic Artistry",

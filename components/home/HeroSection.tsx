@@ -16,6 +16,8 @@ export function HeroSection({ imageUrls = [] }: Props) {
   const { t, locale } = useLanguage();
 
   const shopHref = locale === "zh-TW" ? "/zh-TW/shop" : "/shop";
+  const permanentMakeupHref =
+    locale === "zh-TW" ? "/zh-TW/permanent-makeup" : "/permanent-makeup";
 
   return (
     <section className="relative min-h-[100dvh] overflow-hidden bg-charcoal">
@@ -47,7 +49,7 @@ export function HeroSection({ imageUrls = [] }: Props) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.75, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-14 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6"
+            className="mt-14 flex flex-col items-center gap-4 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-6"
           >
             <Link
               href="/contact"
@@ -65,6 +67,12 @@ export function HeroSection({ imageUrls = [] }: Props) {
               className="inline-flex items-center justify-center rounded-none border-2 border-ivory/40 px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase text-ivory/90 transition-colors hover:border-ivory/60 hover:bg-ivory/5 hover:text-ivory"
             >
               {t("nav.shop").toUpperCase()}
+            </Link>
+            <Link
+              href={permanentMakeupHref}
+              className="inline-flex items-center justify-center rounded-none border-2 border-ivory/40 px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase text-ivory/90 transition-colors hover:border-ivory/60 hover:bg-ivory/5 hover:text-ivory"
+            >
+              {t("hero.permanentMakeup").toUpperCase()}
             </Link>
           </motion.div>
         </div>

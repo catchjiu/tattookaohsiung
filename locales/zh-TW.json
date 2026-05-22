@@ -12,7 +12,8 @@
   "hero": {
     "location": "高雄",
     "tagline": "高雄專業刺青工作室｜精準寫實刺青與細線條藝術，每個細節都至關重要。",
-    "bookSession": "預約諮詢"
+    "bookSession": "預約諮詢",
+    "permanentMakeup": "紋繡／半永久彩妝"
   },
   "footer": {
     "tagline": "高雄專業刺青工作室｜寫實刺青・細線刺青・客製化設計。",
@@ -37,8 +38,7 @@
     "label": "精選商品",
     "title": "商店",
     "description": "Casper Tattoo 高雄刺青工作室精選商品與周邊。",
-    "showMore": "查看更多商品",
-    "permanentMakeup": "紋繡／半永久彩妝"
+    "showMore": "查看更多商品"
   },
   "permanentMakeup": {
     "label": "紋繡藝術",
