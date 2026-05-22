@@ -25,6 +25,8 @@ COPY . .
 
 # Prisma generate (schema only — DATABASE_URL not needed for generate)
 ENV DATABASE_URL="postgresql://placeholder:5432/db"
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS="--max-old-space-size=1536"
 RUN npx prisma generate
 
 RUN npm run build
