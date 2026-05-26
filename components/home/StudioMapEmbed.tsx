@@ -15,12 +15,12 @@ export function StudioMapEmbed() {
   const address = locale === "zh-TW" ? STUDIO_ADDRESS_ZH : STUDIO_ADDRESS_EN;
 
   return (
-    <div className="overflow-hidden border-2 border-border bg-card">
-      <div className="relative aspect-[4/3] w-full min-h-[280px]">
+    <div className="w-full min-w-0 max-w-full overflow-hidden border border-border bg-card">
+      <div className="relative aspect-[4/3] w-full max-w-full min-h-[240px] sm:min-h-[280px]">
         <iframe
           title={t("testimonials.mapTitle")}
           src={STUDIO_MAP_EMBED_URL}
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 h-full w-full max-w-full border-0"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen

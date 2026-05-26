@@ -10,7 +10,7 @@ type Props = {
 };
 
 export async function ReviewsAndLocationSection({ locale }: Props) {
-  const placeData = await getGooglePlaceReviews(locale);
+  const { data: placeData, status } = await getGooglePlaceReviews(locale);
   const googleReviewsUrl = getGoogleReviewsUrl(placeData);
 
   return (
@@ -19,6 +19,7 @@ export async function ReviewsAndLocationSection({ locale }: Props) {
       rating={placeData?.rating ?? null}
       reviewCount={placeData?.reviewCount ?? null}
       googleReviewsUrl={googleReviewsUrl}
+      loadStatus={status}
       showApiHint={
         !isGooglePlacesConfigured() && process.env.NODE_ENV === "development"
       }

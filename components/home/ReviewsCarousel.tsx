@@ -33,10 +33,10 @@ function ReviewCard({
   const initial = review.author.trim().charAt(0).toUpperCase() || "?";
 
   return (
-    <article className="flex h-full flex-col border border-border bg-background p-7 transition-colors hover:border-accent/30">
+    <article className="flex h-full min-w-0 flex-col border border-border bg-background p-6 transition-colors hover:border-accent/30 sm:p-7">
       <Quote size={24} strokeWidth={1.25} className="text-accent/50" aria-hidden />
       <StarRating rating={review.rating} />
-      <blockquote className="mt-4 flex-1 text-[15px] leading-relaxed text-foreground">
+      <blockquote className="mt-4 flex-1 break-words text-[15px] leading-relaxed text-foreground">
         &ldquo;{review.text}&rdquo;
       </blockquote>
       <footer className="mt-6 flex items-center gap-3 border-t border-border pt-5">
@@ -76,6 +76,7 @@ type Props = {
   googleReviewsUrl: string;
   rating: number | null;
   reviewCount: number | null;
+  statusMessage?: string;
 };
 
 export function ReviewsCarousel({
@@ -83,6 +84,7 @@ export function ReviewsCarousel({
   googleReviewsUrl,
   rating,
   reviewCount,
+  statusMessage,
 }: Props) {
   const { t } = useLanguage();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -121,8 +123,10 @@ export function ReviewsCarousel({
 
   if (reviews.length === 0) {
     return (
-      <div className="border border-border bg-card p-8 text-center">
-        <p className="text-foreground-muted">{t("testimonials.noReviews")}</p>
+      <div className="w-full border border-border bg-card p-6 text-center sm:p-8">
+        <p className="text-foreground-muted">
+          {statusMessage ?? t("testimonials.noReviews")}
+        </p>
         <Link
           href={googleReviewsUrl}
           target="_blank"
@@ -137,7 +141,7 @@ export function ReviewsCarousel({
   }
 
   return (
-    <div>
+    <div className="w-full min-w-0 max-w-full">
       {(rating != null || reviewCount != null) && (
         <div className="mb-6 flex flex-wrap items-center gap-3">
           {rating != null && (
@@ -156,7 +160,7 @@ export function ReviewsCarousel({
         </div>
       )}
 
-      <div className="relative">
+      <div className="relative w-full min-w-0 max-w-full overflow-hidden">
         {pageCount > 1 && (
           <>
             <button
@@ -182,7 +186,7 @@ export function ReviewsCarousel({
 
         <div
           ref={scrollRef}
-          className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="flex w-full max-w-full snap-x snap-mandatory gap-5 overflow-x-auto overscroll-x-contain pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           onScroll={() => {
             const el = scrollRef.current;
             if (!el) return;
@@ -203,7 +207,7 @@ export function ReviewsCarousel({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="w-full shrink-0 snap-start lg:w-[calc(50%-10px)]"
+              className="box-border w-full max-w-full shrink-0 grow-0 basis-full snap-start lg:basis-[calc(50%-0.625rem)] lg:max-w-[calc(50%-0.625rem)]"
             >
               <ReviewCard review={review} sourceLabel={t("testimonials.googleSource")} />
             </motion.div>
