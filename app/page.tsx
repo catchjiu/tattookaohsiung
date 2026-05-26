@@ -4,6 +4,7 @@ import { getSiteUrl } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 import { ComingSoon } from "@/components/home/ComingSoon";
+import { ReviewsAndLocationSection } from "@/components/home/ReviewsAndLocationSection";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
 import { tattooPortfolioWhere } from "@/lib/artist-job";
 
@@ -156,6 +157,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <ComingSoon
+        reviewsSlot={<ReviewsAndLocationSection locale="en" />}
         artists={artists.map((a) => ({
           id: a.id,
           name: a.name,

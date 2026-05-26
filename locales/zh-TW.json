@@ -44,6 +44,23 @@
     "description": "Casper Tattoo 高雄刺青工作室精選商品與周邊。",
     "showMore": "查看更多商品"
   },
+  "testimonials": {
+    "label": "評價",
+    "title": "客戶好評",
+    "description": "來自 Google 地圖的真實評價，以及工作室位置。",
+    "googleReviews": "Google 評價",
+    "locationTitle": "工作室位置",
+    "viewAllGoogle": "在 Google 查看所有評價",
+    "googleSource": "評價來自 Google 地圖",
+    "openInMaps": "在 Google 地圖中開啟",
+    "mapTitle": "Casper Tattoo 高雄刺青 — Google 地圖",
+    "noReviews": "設定 API 金鑰後將自動顯示 Google 評價。您仍可前往 Google 地圖查看。",
+    "reviewCount": "Google 評價 {count} 則",
+    "previous": "上一頁評價",
+    "next": "下一頁評價",
+    "page": "評價頁",
+    "apiHint": "請在伺服器環境變數設定 GOOGLE_PLACES_API_KEY 以自動載入 Google 評價。"
+  },
   "permanentMakeup": {
     "label": "紋繡藝術",
     "title": "半永久彩妝",

@@ -44,6 +44,23 @@
     "description": "Studio products and curated pieces from Casper Tattoo Kaohsiung.",
     "showMore": "View all shop items"
   },
+  "testimonials": {
+    "label": "Reviews",
+    "title": "What Clients Say",
+    "description": "Real reviews from Google Maps and our studio location in Zuoying, Kaohsiung.",
+    "googleReviews": "Google Reviews",
+    "locationTitle": "Find Us",
+    "viewAllGoogle": "View all reviews on Google",
+    "googleSource": "Review from Google Maps",
+    "openInMaps": "Open in Google Maps",
+    "mapTitle": "Casper Tattoo Kaohsiung on Google Maps",
+    "noReviews": "Reviews load from Google when your API key is configured. You can still read reviews on Google Maps.",
+    "reviewCount": "{count} Google reviews",
+    "previous": "Previous reviews",
+    "next": "Next reviews",
+    "page": "Review page",
+    "apiHint": "Add GOOGLE_PLACES_API_KEY to your server environment to display live Google reviews."
+  },
   "permanentMakeup": {
     "label": "Cosmetic Artistry",
     "title": "Permanent Makeup",

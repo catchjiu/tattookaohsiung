@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
 import { ComingSoon } from "@/components/home/ComingSoon";
+import { ReviewsAndLocationSection } from "@/components/home/ReviewsAndLocationSection";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
 import { tattooPortfolioWhere } from "@/lib/artist-job";
 
@@ -144,6 +145,7 @@ export default async function ZhTWHomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(zhStructuredData) }}
       />
       <ComingSoon
+        reviewsSlot={<ReviewsAndLocationSection locale="zh-TW" />}
         artists={artists.map((a) => ({
           id: a.id,
           name: a.nameZh ?? a.name,

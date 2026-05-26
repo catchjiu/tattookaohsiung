@@ -4,6 +4,7 @@ import { HeroSection } from "./HeroSection";
 import { ArtistShowcase } from "./ArtistShowcase";
 import { HomeShopPreview } from "./HomeShopPreview";
 import { BookingCTA } from "./BookingCTA";
+import type { ReactNode } from "react";
 import type { ShopProductCard } from "@/components/shop/ShopContent";
 import type { ArtistJobValue } from "@/lib/artist-job";
 
@@ -21,18 +22,22 @@ type Props = {
   products?: ShopProductCard[];
   /** Gallery image URLs for hero carousel background */
   imageUrls?: string[];
+  /** Server-rendered slot (e.g. reviews + map) between shop and booking CTA */
+  reviewsSlot?: ReactNode;
 };
 
 export function ComingSoon({
   artists = [],
   products = [],
   imageUrls = [],
+  reviewsSlot,
 }: Props) {
   return (
     <>
       <HeroSection imageUrls={imageUrls} />
       <ArtistShowcase artists={artists} />
       <HomeShopPreview products={products} />
+      {reviewsSlot}
       <BookingCTA />
     </>
   );
