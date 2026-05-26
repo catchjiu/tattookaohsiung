@@ -83,6 +83,7 @@ export default async function PermanentMakeupPageZhTW() {
         labelKey="permanentMakeup.label"
         titleKey="permanentMakeup.title"
         descriptionKey="permanentMakeup.description"
+        bookNow
       />
       <PermanentMakeupContent artists={artistData} />
     </>

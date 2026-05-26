@@ -1,4 +1,7 @@
 {
+  "common": {
+    "bookNow": "立即預約"
+  },
   "nav": {
     "home": "首頁",
     "artists": "藝術家",

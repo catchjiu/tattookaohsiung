@@ -85,6 +85,7 @@ export default async function PermanentMakeupPage() {
         labelKey="permanentMakeup.label"
         titleKey="permanentMakeup.title"
         descriptionKey="permanentMakeup.description"
+        bookNow
       />
       <PermanentMakeupContent artists={artistData} />
     </>

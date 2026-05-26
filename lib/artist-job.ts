@@ -33,3 +33,14 @@ export const tattooPortfolioWhere: Prisma.PortfolioImageWhereInput = {
 export const permanentMakeupPortfolioWhere: Prisma.PortfolioImageWhereInput = {
   artist: { job: PERMANENT_MAKEUP_JOB },
 };
+
+export function artistProfileHref(
+  artist: { slug: string; job: ArtistJobValue },
+  locale: "en" | "zh-TW"
+): string {
+  const prefix = locale === "zh-TW" ? "/zh-TW" : "";
+  if (artist.job === PERMANENT_MAKEUP_JOB) {
+    return `${prefix}/permanent-makeup#${artist.slug}`;
+  }
+  return `${prefix}/artists/${artist.slug}`;
+}

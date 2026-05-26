@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getSiteUrl } from "@/lib/site-url";
 import { ComingSoon } from "@/components/home/ComingSoon";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
-import { tattooArtistWhere, tattooPortfolioWhere } from "@/lib/artist-job";
+import { tattooPortfolioWhere } from "@/lib/artist-job";
 
 export const dynamic = "force-dynamic";
 
@@ -98,8 +98,17 @@ const zhStructuredData = {
 export default async function ZhTWHomePage() {
   const [artists, portfolioImages, shopRows] = await Promise.all([
     prisma.artist.findMany({
-      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
-      select: { id: true, name: true, specialty: true, avatarUrl: true, slug: true },
+      where: { status: { not: "INACTIVE" } },
+      select: {
+        id: true,
+        name: true,
+        nameZh: true,
+        specialty: true,
+        specialtyZh: true,
+        avatarUrl: true,
+        slug: true,
+        job: true,
+      },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     prisma.portfolioImage.findMany({
@@ -137,10 +146,11 @@ export default async function ZhTWHomePage() {
       <ComingSoon
         artists={artists.map((a) => ({
           id: a.id,
-          name: a.name,
-          specialty: a.specialty,
+          name: a.nameZh ?? a.name,
+          specialty: a.specialtyZh ?? a.specialty,
           avatar_url: a.avatarUrl,
           slug: a.slug,
+          job: a.job,
         }))}
         products={shopRows.map((p) => ({
           id: p.id,

@@ -1,18 +1,29 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+
+const CYAN = "#00e5ff";
 
 type Props = {
   imageUrls: string[];
   labelKey: string;
   titleKey: string;
   descriptionKey?: string;
+  bookNow?: boolean;
 };
 
-export function PageHero({ imageUrls, labelKey, titleKey, descriptionKey }: Props) {
-  const { t } = useLanguage();
+export function PageHero({
+  imageUrls,
+  labelKey,
+  titleKey,
+  descriptionKey,
+  bookNow = false,
+}: Props) {
+  const { t, locale } = useLanguage();
+  const contactHref = locale === "zh-TW" ? "/zh-TW/contact" : "/contact";
 
   return (
     <section className="relative flex min-h-[62vh] items-end overflow-hidden bg-charcoal pb-16 pt-20">
@@ -47,6 +58,27 @@ export function PageHero({ imageUrls, labelKey, titleKey, descriptionKey }: Prop
             >
               {t(descriptionKey)}
             </motion.p>
+          )}
+
+          {bookNow && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.55 }}
+              className="mt-10"
+            >
+              <Link
+                href={contactHref}
+                className="inline-flex items-center justify-center rounded-none border-2 px-10 py-4 text-[13px] font-semibold tracking-[0.15em] uppercase transition-colors hover:opacity-90"
+                style={{
+                  borderColor: CYAN,
+                  backgroundColor: CYAN,
+                  color: "#0a0a0a",
+                }}
+              >
+                {t("common.bookNow")}
+              </Link>
+            </motion.div>
           )}
         </div>
       </div>

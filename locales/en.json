@@ -1,4 +1,7 @@
 {
+  "common": {
+    "bookNow": "Book Now"
+  },
   "nav": {
     "home": "Home",
     "artists": "Artists",

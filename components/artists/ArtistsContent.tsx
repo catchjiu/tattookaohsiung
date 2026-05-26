@@ -5,6 +5,11 @@ import { ArtistAvatar } from "@/components/ui/ArtistAvatar";
 import { Section, SectionLabel, SectionTitle } from "@/components/ui";
 import { ArtistsPageClient } from "./ArtistsPageClient";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import {
+  artistProfileHref,
+  PERMANENT_MAKEUP_JOB,
+  type ArtistJobValue,
+} from "@/lib/artist-job";
 
 function igHandle(url: string | null): string | null {
   if (!url) return null;
@@ -19,6 +24,7 @@ type Artist = {
   specialty: string | null;
   avatarUrl: string | null;
   instagramUrl: string | null;
+  job: ArtistJobValue;
 };
 
 type Props = {
@@ -27,7 +33,7 @@ type Props = {
 };
 
 export function ArtistsContent({ artists, showHeader = true }: Props) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
 
   return (
     <div className="mx-auto max-w-6xl px-8">
@@ -55,7 +61,7 @@ export function ArtistsContent({ artists, showHeader = true }: Props) {
             {artists.map((artist) => (
               <Link
                 key={artist.id}
-                href={`/artists/${artist.slug}`}
+                href={artistProfileHref(artist, locale)}
                 className="group block overflow-hidden bg-card transition-colors hover:bg-card-hover"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
@@ -72,7 +78,10 @@ export function ArtistsContent({ artists, showHeader = true }: Props) {
                     {artist.name}
                   </h2>
                   <p className="mt-1 text-[13px] tracking-wide text-accent">
-                    {artist.specialty || t("artists.tattooArtist")}
+                    {artist.specialty ||
+                      (artist.job === PERMANENT_MAKEUP_JOB
+                        ? t("permanentMakeup.artistRole")
+                        : t("artists.tattooArtist"))}
                   </p>
                   {igHandle(artist.instagramUrl) && (
                     <p className="mt-3 text-[13px] text-foreground-muted">

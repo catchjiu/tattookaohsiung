@@ -4,6 +4,11 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArtistAvatar } from "@/components/ui/ArtistAvatar";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import {
+  artistProfileHref,
+  PERMANENT_MAKEUP_JOB,
+  type ArtistJobValue,
+} from "@/lib/artist-job";
 
 type Artist = {
   id: string;
@@ -11,6 +16,7 @@ type Artist = {
   specialty: string | null;
   avatar_url: string | null;
   slug: string;
+  job: ArtistJobValue;
 };
 
 type Props = {
@@ -18,7 +24,8 @@ type Props = {
 };
 
 export function ArtistShowcase({ artists }: Props) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const artistsPath = locale === "zh-TW" ? "/zh-TW/artists" : "/artists";
   const displayArtists =
     artists.length > 0
       ? artists
@@ -29,6 +36,7 @@ export function ArtistShowcase({ artists }: Props) {
             specialty: "Traditional & Fine-line",
             avatar_url: null,
             slug: "artist-one",
+            job: "TATTOO_ARTIST" as const,
           },
           {
             id: "2",
@@ -36,6 +44,7 @@ export function ArtistShowcase({ artists }: Props) {
             specialty: "Realism & Blackwork",
             avatar_url: null,
             slug: "artist-two",
+            job: "TATTOO_ARTIST" as const,
           },
           {
             id: "3",
@@ -43,6 +52,7 @@ export function ArtistShowcase({ artists }: Props) {
             specialty: "Japanese & Neo-traditional",
             avatar_url: null,
             slug: "artist-three",
+            job: "TATTOO_ARTIST" as const,
           },
         ];
 
@@ -77,7 +87,10 @@ export function ArtistShowcase({ artists }: Props) {
               transition={{ duration: 0.5, delay: i * 0.08 }}
               className="group"
             >
-              <Link href={`/artists/${artist.slug}`} className="block">
+              <Link
+                href={artistProfileHref(artist, locale)}
+                className="block"
+              >
                 <div className="relative overflow-hidden bg-card-hover">
                   <div className="aspect-[4/5] overflow-hidden">
                     <ArtistAvatar
@@ -91,7 +104,10 @@ export function ArtistShowcase({ artists }: Props) {
                       {artist.name}
                     </h3>
                     <p className="mt-1 text-[13px] tracking-wide text-accent">
-                      {artist.specialty || t("artistShowcase.tattooArtist")}
+                      {artist.specialty ||
+                        (artist.job === PERMANENT_MAKEUP_JOB
+                          ? t("permanentMakeup.artistRole")
+                          : t("artistShowcase.tattooArtist"))}
                     </p>
                     <span className="mt-4 inline-block text-[12px] font-medium tracking-[0.15em] uppercase text-foreground-muted transition-colors group-hover:text-accent">
                       {t("artistShowcase.viewPortfolio")}
@@ -110,7 +126,7 @@ export function ArtistShowcase({ artists }: Props) {
           className="mt-16 text-center"
         >
           <Link
-            href="/artists"
+            href={artistsPath}
             className="inline-block border-b border-accent pb-1 text-[13px] font-medium tracking-[0.15em] uppercase text-accent transition-colors hover:text-foreground"
           >
             {t("artistShowcase.viewAll")}

@@ -5,6 +5,7 @@ import { ArtistShowcase } from "./ArtistShowcase";
 import { HomeShopPreview } from "./HomeShopPreview";
 import { BookingCTA } from "./BookingCTA";
 import type { ShopProductCard } from "@/components/shop/ShopContent";
+import type { ArtistJobValue } from "@/lib/artist-job";
 
 type Artist = {
   id: string;
@@ -12,6 +13,7 @@ type Artist = {
   specialty: string | null;
   avatar_url: string | null;
   slug: string;
+  job: ArtistJobValue;
 };
 
 type Props = {

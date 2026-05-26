@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 import { ArtistsContent } from "@/components/artists/ArtistsContent";
 import { PageHero } from "@/components/ui/PageHero";
-import { tattooArtistWhere, tattooPortfolioWhere } from "@/lib/artist-job";
+import { tattooPortfolioWhere } from "@/lib/artist-job";
 
 export const metadata: Metadata = {
   title: "Professional Tattoo Artists Kaohsiung | Casper & Stan",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 export default async function ArtistsPage() {
   const [artists, heroImages] = await Promise.all([
     prisma.artist.findMany({
-      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
+      where: { status: { not: "INACTIVE" } },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     prisma.portfolioImage.findMany({
@@ -55,6 +55,7 @@ export default async function ArtistsPage() {
         labelKey="artists.label"
         titleKey="artists.title"
         descriptionKey="artists.description"
+        bookNow
       />
       <ArtistsContent
         artists={artists.map((a) => ({
@@ -64,6 +65,7 @@ export default async function ArtistsPage() {
           specialty: a.specialty,
           avatarUrl: a.avatarUrl,
           instagramUrl: a.instagramUrl,
+          job: a.job,
         }))}
         showHeader={false}
       />

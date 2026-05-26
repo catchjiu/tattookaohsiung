@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ArtistsContent } from "@/components/artists/ArtistsContent";
 import { PageHero } from "@/components/ui/PageHero";
-import { tattooArtistWhere, tattooPortfolioWhere } from "@/lib/artist-job";
+import { tattooPortfolioWhere } from "@/lib/artist-job";
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
 export default async function ZhTWArtistsPage() {
   const [artists, heroImages] = await Promise.all([
     prisma.artist.findMany({
-      where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
+      where: { status: { not: "INACTIVE" } },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
     }),
     prisma.portfolioImage.findMany({
@@ -52,6 +52,7 @@ export default async function ZhTWArtistsPage() {
         labelKey="artists.label"
         titleKey="artists.title"
         descriptionKey="artists.description"
+        bookNow
       />
       <ArtistsContent
         artists={artists.map((a) => ({
@@ -61,6 +62,7 @@ export default async function ZhTWArtistsPage() {
           specialty: a.specialtyZh ?? a.specialty,
           avatarUrl: a.avatarUrl,
           instagramUrl: a.instagramUrl,
+          job: a.job,
         }))}
         showHeader={false}
       />
