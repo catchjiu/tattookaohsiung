@@ -7,9 +7,11 @@
     "artists": "Artists",
     "gallery": "Gallery",
     "blog": "Blog",
+    "video": "Video",
     "shop": "Shop",
     "contact": "Contact",
     "permanentMakeup": "Permanent Makeup",
+    "faq": "FAQ",
     "book": "Book",
     "cart": "Shopping cart"
   },
@@ -43,6 +45,12 @@
     "title": "Shop",
     "description": "Studio products and curated pieces from Casper Tattoo Kaohsiung.",
     "showMore": "View all shop items"
+  },
+  "homeGallery": {
+    "label": "Portfolio",
+    "title": "Gallery",
+    "description": "Browse a selection of realistic tattoos and fine-line artistry from our Kaohsiung studio.",
+    "showMore": "View full gallery"
   },
   "testimonials": {
     "label": "Reviews",
@@ -265,8 +273,88 @@
     "noPosts": "No posts yet. Check back soon.",
     "readMore": "Read more →"
   },
+  "video": {
+    "label": "Studio",
+    "title": "Videos",
+    "description": "Watch studio walkthroughs, tattoo process videos, and aftercare guides.",
+    "noVideos": "No videos yet. Check back soon.",
+    "watchVideo": "Watch video →",
+    "backToVideos": "← Back to Videos"
+  },
   "metadata": {
     "title": "Casper Tattoo Kaohsiung | Professional Tattoo Studio — Realistic & Fine-Line",
     "description": "Casper Tattoo Kaohsiung — professional tattoo studio specialising in realistic tattoos and fine-line artistry. Tattoo Kaohsiung | Kaohsiung tattoo | professional tattoo artist Kaohsiung."
+  },
+  "faq": {
+    "label": "Help",
+    "title": "Frequently Asked Questions",
+    "description": "Quick answers to the most common questions about getting tattooed at our Kaohsiung studio.",
+    "pageTitle": "15 Most Frequently Asked Tattoo Questions",
+    "pageDescription": "Everything you need to know before booking — from pricing and pain to healing and aftercare.",
+    "viewMore": "View all questions",
+    "stillHaveQuestions": "Still have questions? We're happy to help.",
+    "bookConsultation": "Book a consultation",
+    "items": [
+      {
+        "question": "How much does a tattoo cost in Kaohsiung?",
+        "answer": "Tattoo pricing depends on the size, placement, detail level, and time required. Small tattoos may take less than an hour, while large custom pieces can require multiple sessions. Contact us for a personalized quote."
+      },
+      {
+        "question": "Does getting a tattoo hurt?",
+        "answer": "Pain levels vary depending on the location of the tattoo and your individual pain tolerance. Most clients describe the sensation as manageable, and our artists work to make the experience as comfortable as possible."
+      },
+      {
+        "question": "How long does a tattoo take to heal?",
+        "answer": "Most tattoos heal on the surface within 2–4 weeks. Complete healing beneath the skin can take several months. Following proper aftercare is essential for the best results."
+      },
+      {
+        "question": "What should I do before my tattoo appointment?",
+        "answer": "Get a good night's sleep, stay hydrated, eat a proper meal, and avoid alcohol for at least 24 hours before your appointment."
+      },
+      {
+        "question": "How do I take care of my new tattoo?",
+        "answer": "Keep the tattoo clean, follow your artist's aftercare instructions, avoid direct sunlight, and do not pick or scratch the healing skin."
+      },
+      {
+        "question": "Can I bring my own tattoo design?",
+        "answer": "Yes. We can tattoo your design or work with you to customize and improve it for better flow, readability, and long-term appearance."
+      },
+      {
+        "question": "How old do I need to be to get a tattoo in Taiwan?",
+        "answer": "Clients must meet the legal age requirements in Taiwan. Valid identification may be required before your appointment."
+      },
+      {
+        "question": "Can I exercise after getting a tattoo?",
+        "answer": "It is generally recommended to avoid intense exercise, swimming, and activities that cause excessive sweating for the first few days after getting tattooed."
+      },
+      {
+        "question": "Will my tattoo fade over time?",
+        "answer": "All tattoos naturally fade with age. Proper aftercare, sunscreen use, and quality tattoo work help maintain the tattoo's appearance for many years."
+      },
+      {
+        "question": "What areas of the body hurt the most for tattoos?",
+        "answer": "Areas with thin skin or close proximity to bone, such as ribs, feet, hands, and elbows, are often considered more sensitive."
+      },
+      {
+        "question": "How do I choose the right tattoo artist?",
+        "answer": "Look for an artist whose portfolio matches the style you want. Experience, healed work, professionalism, and client reviews are also important factors."
+      },
+      {
+        "question": "Can tattoos be covered up or reworked?",
+        "answer": "Many old, faded, or unwanted tattoos can be covered up or redesigned. A consultation is the best way to determine your options."
+      },
+      {
+        "question": "How many sessions will my tattoo require?",
+        "answer": "Small tattoos may be completed in one session, while larger projects such as sleeves, back pieces, or realism tattoos often require multiple sessions."
+      },
+      {
+        "question": "Is it safe to get a tattoo?",
+        "answer": "Professional tattoo studios follow strict hygiene and sterilization procedures. Choosing a reputable studio is essential for a safe tattoo experience."
+      },
+      {
+        "question": "Can I get a tattoo while on vacation in Taiwan?",
+        "answer": "Yes. Many travelers get tattoos while visiting Taiwan. We recommend scheduling your appointment early in your trip to allow time for initial healing before returning home."
+      }
+    ]
   }
 }

@@ -1,7 +1,7 @@
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Users, Image, FileText, CalendarCheck, ShoppingBag, ArrowRight } from "lucide-react";
+import { Users, Image, FileText, Video, CalendarCheck, ShoppingBag, ArrowRight } from "lucide-react";
 import { formatTwdOrDash } from "@/lib/format-price";
 
 export default async function AdminDashboardPage() {
@@ -48,6 +48,7 @@ export default async function AdminDashboardPage() {
     { href: "/admin/artists", label: "Artists", icon: Users },
     { href: "/admin/gallery", label: "Gallery", icon: Image },
     { href: "/admin/blog", label: "Blog", icon: FileText },
+    { href: "/admin/video", label: "Videos", icon: Video },
     {
       href: "/admin/shop",
       label: "Shop",

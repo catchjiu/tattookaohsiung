@@ -9,6 +9,7 @@ import {
   Users,
   Image,
   FileText,
+  Video,
   CalendarCheck,
   ShoppingBag,
   LogOut,
@@ -21,6 +22,7 @@ const navItems = [
   { href: "/admin/artists", label: "Artists", icon: Users },
   { href: "/admin/gallery", label: "Gallery", icon: Image },
   { href: "/admin/blog", label: "Blog", icon: FileText },
+  { href: "/admin/video", label: "Videos", icon: Video },
   { href: "/admin/shop", label: "Shop", icon: ShoppingBag },
   { href: "/admin/bookings", label: "Bookings", icon: CalendarCheck },
 ];

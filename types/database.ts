@@ -56,6 +56,24 @@ export type BlogPost = {
   updated_at: string;
 };
 
+export type Video = {
+  id: string;
+  slug: string;
+  title: string;
+  title_zh?: string | null;
+  excerpt: string | null;
+  excerpt_zh?: string | null;
+  content: string;
+  content_zh?: string | null;
+  youtube_url: string;
+  youtube_id: string;
+  sort_order: number;
+  is_published: boolean;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type ShopProductSizeStock = {
   size: string;
   quantity: number;

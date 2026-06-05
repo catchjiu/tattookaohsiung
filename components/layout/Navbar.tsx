@@ -23,8 +23,10 @@ const BASE_NAV = [
   { path: "/artists", labelKey: "nav.artists", dropdown: false },
   { path: "/gallery", labelKey: "nav.gallery", dropdown: false },
   { path: "/blog", labelKey: "nav.blog", dropdown: false },
+  { path: "/video", labelKey: "nav.video", dropdown: false },
   { path: "/shop", labelKey: "nav.shop", dropdown: false },
   { path: "/permanent-makeup", labelKey: "nav.permanentMakeup", dropdown: false },
+  { path: "/faq", labelKey: "nav.faq", dropdown: false },
   { path: "/contact", labelKey: "nav.contact", dropdown: true },
 ] as const;
 

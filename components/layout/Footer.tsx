@@ -9,7 +9,9 @@ const FOOTER_PATHS = [
   { path: "/artists", labelKey: "nav.artists" },
   { path: "/gallery", labelKey: "nav.gallery" },
   { path: "/blog", labelKey: "nav.blog" },
+  { path: "/video", labelKey: "nav.video" },
   { path: "/shop", labelKey: "nav.shop" },
+  { path: "/faq", labelKey: "nav.faq" },
   { path: "/contact", labelKey: "footer.bookSession" },
 ];
 

@@ -146,6 +146,29 @@ model BlogPost {
   @@map("blog_posts")
 }
 
+model Video {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  titleZh     String?   @map("title_zh")
+  excerpt     String?   @db.Text
+  excerptZh   String?   @db.Text @map("excerpt_zh")
+  content     String    @default("") @db.Text
+  contentZh   String?   @db.Text @map("content_zh")
+  youtubeUrl  String    @map("youtube_url")
+  youtubeId   String    @map("youtube_id")
+  sortOrder   Int       @default(0) @map("sort_order")
+  isPublished Boolean   @default(false) @map("is_published")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([isPublished, publishedAt])
+  @@index([isPublished, sortOrder])
+  @@index([slug])
+  @@map("videos")
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Shop (products, cart checkout, orders)
 // ─────────────────────────────────────────────────────────────────────────────

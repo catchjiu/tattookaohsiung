@@ -28,6 +28,7 @@ import {
 import { uploadBlogImage } from "@/app/admin/blog/upload-actions";
 import { ImageCropStage } from "@/components/admin/ImageCropStage";
 import { getCroppedImageBlob } from "@/lib/image-crop-canvas";
+import { extractYoutubeId } from "@/lib/youtube";
 
 type RichTextEditorProps = {
   content: string;
@@ -37,18 +38,6 @@ type RichTextEditorProps = {
 const INLINE_ASPECT = 16 / 9;
 const INLINE_OUT_W = 1600;
 const INLINE_OUT_H = 900;
-
-function extractYoutubeId(url: string): string | null {
-  const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s?]+)/,
-    /youtube\.com\/shorts\/([^&\s?]+)/,
-  ];
-  for (const p of patterns) {
-    const m = url.match(p);
-    if (m) return m[1];
-  }
-  return null;
-}
 
 function Toolbar({
   editor,

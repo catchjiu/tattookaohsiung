@@ -5,6 +5,7 @@ import { ComingSoon } from "@/components/home/ComingSoon";
 import { ReviewsAndLocationSection } from "@/components/home/ReviewsAndLocationSection";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
 import { tattooPortfolioWhere } from "@/lib/artist-job";
+import { galleryTagsForLocale, galleryTitleForLocale } from "@/lib/gallery-display";
 
 export const dynamic = "force-dynamic";
 
@@ -97,7 +98,7 @@ const zhStructuredData = {
 };
 
 export default async function ZhTWHomePage() {
-  const [artists, portfolioImages, shopRows] = await Promise.all([
+  const [artists, portfolioImages, galleryImages, shopRows] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" } },
       select: {
@@ -117,6 +118,15 @@ export default async function ZhTWHomePage() {
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,
+    }),
+    prisma.portfolioImage.findMany({
+      where: tattooPortfolioWhere,
+      include: {
+        artist: { select: { name: true, nameZh: true, specialty: true, specialtyZh: true } },
+        assets: { orderBy: { sortOrder: "asc" }, select: { url: true } },
+      },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      take: 8,
     }),
     prisma.shopProduct.findMany({
       where: { isPublished: true },
@@ -146,6 +156,17 @@ export default async function ZhTWHomePage() {
       />
       <ComingSoon
         reviewsSlot={<ReviewsAndLocationSection locale="zh-TW" />}
+        galleryArtworks={galleryImages.map((img) => ({
+          id: img.id,
+          title: galleryTitleForLocale(img, "zh-TW"),
+          image_url: img.url,
+          image_urls: img.assets.map((a) => a.url),
+          tags: galleryTagsForLocale(img, "zh-TW"),
+          artists: {
+            name: img.artist.nameZh ?? img.artist.name,
+            specialty: img.artist.specialtyZh ?? img.artist.specialty,
+          },
+        }))}
         artists={artists.map((a) => ({
           id: a.id,
           name: a.nameZh ?? a.name,

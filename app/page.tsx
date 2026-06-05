@@ -7,6 +7,7 @@ import { ComingSoon } from "@/components/home/ComingSoon";
 import { ReviewsAndLocationSection } from "@/components/home/ReviewsAndLocationSection";
 import { coerceSizeOptions } from "@/lib/shop-size-options";
 import { tattooPortfolioWhere } from "@/lib/artist-job";
+import { galleryTagsForLocale, galleryTitleForLocale } from "@/lib/gallery-display";
 
 export const metadata: Metadata = {
   title: "Casper Tattoo Kaohsiung | Professional Tattoo Studio — Realism & Fine-Line",
@@ -111,7 +112,7 @@ const structuredData = {
 };
 
 export default async function HomePage() {
-  const [artists, portfolioImages, shopRows] = await Promise.all([
+  const [artists, portfolioImages, galleryImages, shopRows] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" } },
       select: {
@@ -129,6 +130,15 @@ export default async function HomePage() {
       select: { url: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
       take: 12,
+    }),
+    prisma.portfolioImage.findMany({
+      where: tattooPortfolioWhere,
+      include: {
+        artist: { select: { name: true, specialty: true } },
+        assets: { orderBy: { sortOrder: "asc" }, select: { url: true } },
+      },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      take: 8,
     }),
     prisma.shopProduct.findMany({
       where: { isPublished: true },
@@ -158,6 +168,14 @@ export default async function HomePage() {
       />
       <ComingSoon
         reviewsSlot={<ReviewsAndLocationSection locale="en" />}
+        galleryArtworks={galleryImages.map((img) => ({
+          id: img.id,
+          title: galleryTitleForLocale(img, "en"),
+          image_url: img.url,
+          image_urls: img.assets.map((a) => a.url),
+          tags: galleryTagsForLocale(img, "en"),
+          artists: { name: img.artist.name, specialty: img.artist.specialty },
+        }))}
         artists={artists.map((a) => ({
           id: a.id,
           name: a.name,

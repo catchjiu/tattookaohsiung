@@ -8,12 +8,16 @@ const SITE_URL = getSiteUrl();
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [artists, posts, shopProducts] = await Promise.all([
+  const [artists, posts, videos, shopProducts] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
       select: { slug: true, updatedAt: true },
     }),
     prisma.blogPost.findMany({
+      where: { isPublished: true, publishedAt: { not: null, lte: new Date() } },
+      select: { slug: true, updatedAt: true },
+    }),
+    prisma.video.findMany({
       where: { isPublished: true, publishedAt: { not: null, lte: new Date() } },
       select: { slug: true, updatedAt: true },
     }),
@@ -50,6 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: `${SITE_URL}/video`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
       url: `${SITE_URL}/shop`,
       lastModified: new Date(),
       changeFrequency: "weekly",
@@ -72,6 +82,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/faq`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.75,
     },
     {
       url: `${SITE_URL}/permanent-makeup`,
@@ -105,6 +121,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${SITE_URL}/zh-TW/faq`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.75,
+    },
+    {
       url: `${SITE_URL}/zh-TW/permanent-makeup`,
       lastModified: new Date(),
       changeFrequency: "monthly",
@@ -112,6 +134,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${SITE_URL}/zh-TW/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/video`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.7,
@@ -151,6 +179,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]);
 
+  const videoRoutes: MetadataRoute.Sitemap = videos.flatMap((video) => [
+    {
+      url: `${SITE_URL}/video/${video.slug}`,
+      lastModified: video.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/zh-TW/video/${video.slug}`,
+      lastModified: video.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+  ]);
+
   const blogRoutes: MetadataRoute.Sitemap = posts.flatMap((post) => [
     {
       url: `${SITE_URL}/blog/${post.slug}`,
@@ -181,5 +224,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]);
 
-  return [...staticRoutes, ...artistRoutes, ...blogRoutes, ...shopRoutes];
+  return [...staticRoutes, ...artistRoutes, ...blogRoutes, ...videoRoutes, ...shopRoutes];
 }
