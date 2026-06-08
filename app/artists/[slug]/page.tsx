@@ -122,6 +122,8 @@ export default async function ArtistGalleryPage({
           name: artist.name,
           slug: artist.slug,
           specialty: artist.specialty,
+          bio: artist.bio,
+          bioZh: artist.bioZh,
           avatarUrl: artist.avatarUrl,
           instagramUrl: artist.instagramUrl,
         }}

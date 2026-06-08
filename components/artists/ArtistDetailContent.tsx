@@ -4,6 +4,7 @@ import Link from "next/link";
 import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { ArtistAvatar } from "@/components/ui/ArtistAvatar";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { artistBioForLocale } from "@/lib/artist-display";
 
 function igHandle(url: string | null): string | null {
   if (!url) return null;
@@ -24,6 +25,8 @@ type Props = {
     name: string;
     slug: string;
     specialty: string | null;
+    bio: string | null;
+    bioZh: string | null;
     avatarUrl: string | null;
     instagramUrl: string | null;
   };
@@ -31,7 +34,8 @@ type Props = {
 };
 
 export function ArtistDetailContent({ artist, artworks }: Props) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
+  const displayBio = artistBioForLocale(artist, locale);
   const count = artworks.length;
   const pieceWord = count === 1 ? t("artistDetail.piece") : t("artistDetail.pieces");
 
@@ -44,7 +48,7 @@ export function ArtistDetailContent({ artist, artworks }: Props) {
         {t("artistDetail.backToArtists")}
       </Link>
 
-      <div className="mb-16 flex flex-col gap-8 sm:flex-row sm:items-end sm:gap-12">
+      <div className="mb-16 flex flex-col gap-8 sm:flex-row sm:items-start sm:gap-12">
         <div className="h-36 w-36 shrink-0 overflow-hidden bg-card-hover">
           <ArtistAvatar
             src={artist.avatarUrl}
@@ -54,7 +58,7 @@ export function ArtistDetailContent({ artist, artworks }: Props) {
             className="h-full w-full object-cover"
           />
         </div>
-        <div>
+        <div className="max-w-2xl">
           <h1 className="font-serif text-4xl font-medium tracking-tight text-foreground md:text-5xl">
             {artist.name}
           </h1>
@@ -72,6 +76,11 @@ export function ArtistDetailContent({ artist, artworks }: Props) {
             >
               @{igHandle(artist.instagramUrl)}
             </a>
+          )}
+          {displayBio && (
+            <p className="mt-6 text-[17px] leading-relaxed text-foreground-muted whitespace-pre-line">
+              {displayBio}
+            </p>
           )}
         </div>
       </div>

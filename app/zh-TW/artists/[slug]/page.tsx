@@ -115,6 +115,8 @@ export default async function ZhTWArtistPage({
           name: displayName,
           slug: artist.slug,
           specialty: displaySpecialty,
+          bio: artist.bio,
+          bioZh: artist.bioZh,
           avatarUrl: artist.avatarUrl,
           instagramUrl: artist.instagramUrl,
         }}
