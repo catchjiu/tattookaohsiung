@@ -11,12 +11,14 @@ import {
   LogOut,
   Menu,
   X,
+  User,
 } from "lucide-react";
 
 const navItems = [
   { href: "/artist", label: "Dashboard", icon: LayoutDashboard },
   { href: "/artist/bookings", label: "My Bookings", icon: CalendarCheck },
   { href: "/artist/gallery", label: "My Portfolio", icon: Image },
+  { href: "/artist/profile", label: "My Profile", icon: User },
 ];
 
 export function ArtistSidebar({ artistName }: { artistName: string }) {

@@ -5,6 +5,10 @@ import { GalleryGrid } from "@/components/gallery/GalleryGrid";
 import { ArtistAvatar } from "@/components/ui/ArtistAvatar";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { artistBioForLocale } from "@/lib/artist-display";
+import {
+  formatBookedUntil,
+  isCurrentlyBooked,
+} from "@/lib/artist-availability";
 
 function igHandle(url: string | null): string | null {
   if (!url) return null;
@@ -29,6 +33,7 @@ type Props = {
     bioZh: string | null;
     avatarUrl: string | null;
     instagramUrl: string | null;
+    bookedUntil: string | null;
   };
   artworks: Artwork[];
 };
@@ -38,6 +43,8 @@ export function ArtistDetailContent({ artist, artworks }: Props) {
   const displayBio = artistBioForLocale(artist, locale);
   const count = artworks.length;
   const pieceWord = count === 1 ? t("artistDetail.piece") : t("artistDetail.pieces");
+  const bookedUntilDate = artist.bookedUntil ? new Date(artist.bookedUntil) : null;
+  const showBookedUntil = isCurrentlyBooked(bookedUntilDate);
 
   return (
     <div className="mx-auto max-w-6xl px-8 py-24 md:py-32">
@@ -65,6 +72,12 @@ export function ArtistDetailContent({ artist, artworks }: Props) {
           {artist.specialty && (
             <p className="mt-2 text-[15px] tracking-wide text-accent">
               {artist.specialty}
+            </p>
+          )}
+          {showBookedUntil && bookedUntilDate && (
+            <p className="mt-3 inline-flex items-center rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-[13px] font-medium tracking-wide text-amber-200">
+              {t("artistDetail.bookedUntil")}{" "}
+              {formatBookedUntil(bookedUntilDate, locale)}
             </p>
           )}
           {igHandle(artist.instagramUrl) && (

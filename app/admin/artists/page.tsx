@@ -32,6 +32,7 @@ export default async function AdminArtistsPage() {
     display_order: a.sortOrder,
     is_active: a.status !== "INACTIVE",
     dashboard_email: a.user?.email ?? null,
+    booked_until: a.bookedUntil?.toISOString() ?? null,
     created_at: a.createdAt.toISOString(),
     updated_at: a.updatedAt.toISOString(),
   }));

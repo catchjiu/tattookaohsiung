@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { parseArtistJob } from "@/lib/artist-job";
+import { parseBookedUntilInput } from "@/lib/artist-availability";
 
 async function requireAdminAction(): Promise<{ error: string } | null> {
   const session = await getSession();
@@ -46,9 +47,18 @@ export async function createArtist(formData: FormData) {
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
   const isActive = formData.get("is_active") === "on";
   const job = parseArtistJob(formData.get("job"));
+  const bookedUntil = parseBookedUntilInput(
+    (formData.get("booked_until") as string | null) || null
+  );
 
   if (!name) return { error: "Name is required" };
   if (emailRaw === "__invalid__") return { error: "Invalid email address" };
+  if (
+    (formData.get("booked_until") as string | null)?.trim() &&
+    !bookedUntil
+  ) {
+    return { error: "Invalid booked until date" };
+  }
   const email = emailRaw;
 
   const instagramUrl = igHandle ? `https://instagram.com/${igHandle}` : null;
@@ -70,6 +80,7 @@ export async function createArtist(formData: FormData) {
         avatarUrl,
         sortOrder,
         status,
+        bookedUntil,
       },
     });
   } catch (err) {
@@ -97,9 +108,18 @@ export async function updateArtist(id: string, formData: FormData) {
   const sortOrder = parseInt((formData.get("display_order") as string) || "0", 10);
   const isActive = formData.get("is_active") === "on";
   const job = parseArtistJob(formData.get("job"));
+  const bookedUntil = parseBookedUntilInput(
+    (formData.get("booked_until") as string | null) || null
+  );
 
   if (!name || !slug) return { error: "Name and slug are required" };
   if (emailRaw === "__invalid__") return { error: "Invalid email address" };
+  if (
+    (formData.get("booked_until") as string | null)?.trim() &&
+    !bookedUntil
+  ) {
+    return { error: "Invalid booked until date" };
+  }
   const email = emailRaw;
 
   const instagramUrl = igHandle ? `https://instagram.com/${igHandle}` : null;
@@ -122,6 +142,7 @@ export async function updateArtist(id: string, formData: FormData) {
         avatarUrl,
         sortOrder,
         status,
+        bookedUntil,
       },
     });
   } catch (err) {

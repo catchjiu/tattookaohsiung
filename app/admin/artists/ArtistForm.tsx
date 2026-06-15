@@ -11,6 +11,7 @@ import {
   updateArtist,
 } from "./actions";
 import { ARTIST_JOBS, artistJobLabel } from "@/lib/artist-job";
+import { bookedUntilInputValue } from "@/lib/artist-availability";
 import { AvatarUpload } from "./AvatarUpload";
 
 type Props = {
@@ -253,6 +254,25 @@ export function ArtistForm({ artist, onClose }: Props) {
             />
             <p className="mt-1.5 text-xs text-foreground-subtle">
               Internal only — used to notify this artist of new bookings. Not shown on the public site.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground-muted">
+              Booked until
+            </label>
+            <input
+              name="booked_until"
+              type="date"
+              defaultValue={
+                artist?.booked_until
+                  ? bookedUntilInputValue(new Date(artist.booked_until))
+                  : ""
+              }
+              className="mt-1.5 w-full min-h-[44px] rounded-md border-2 border-border bg-card-hover px-3 py-3 text-base text-foreground"
+            />
+            <p className="mt-1.5 text-xs text-foreground-subtle">
+              Optional. Shown on the public profile when books are full. Leave blank for available.
             </p>
           </div>
 

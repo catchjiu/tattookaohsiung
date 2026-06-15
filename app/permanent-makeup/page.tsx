@@ -69,6 +69,7 @@ export default async function PermanentMakeupPage() {
     specialtyZh: artist.specialtyZh,
     avatarUrl: artist.avatarUrl,
     instagramUrl: artist.instagramUrl,
+    bookedUntil: artist.bookedUntil?.toISOString() ?? null,
     artworks: artist.portfolioImages.map((img) => ({
       id: img.id,
       title: galleryTitleForLocale(img, "en"),

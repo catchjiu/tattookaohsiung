@@ -126,6 +126,7 @@ export default async function ArtistGalleryPage({
           bioZh: artist.bioZh,
           avatarUrl: artist.avatarUrl,
           instagramUrl: artist.instagramUrl,
+          bookedUntil: artist.bookedUntil?.toISOString() ?? null,
         }}
         artworks={artworks}
       />

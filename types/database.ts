@@ -14,6 +14,7 @@ export type Artist = {
   display_order: number;
   is_active: boolean;
   dashboard_email?: string | null;
+  booked_until?: string | null;
   created_at: string;
   updated_at: string;
 };

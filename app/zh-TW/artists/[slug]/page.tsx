@@ -119,6 +119,7 @@ export default async function ZhTWArtistPage({
           bioZh: artist.bioZh,
           avatarUrl: artist.avatarUrl,
           instagramUrl: artist.instagramUrl,
+          bookedUntil: artist.bookedUntil?.toISOString() ?? null,
         }}
         artworks={artist.portfolioImages.map((img) => ({
           id: img.id,

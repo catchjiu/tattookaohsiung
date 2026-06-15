@@ -61,6 +61,7 @@ model Artist {
   specialtyZh   String?       @map("specialty_zh")
   job           ArtistJob     @default(TATTOO_ARTIST)
   status        ArtistStatus  @default(AVAILABLE)
+  bookedUntil   DateTime?     @map("booked_until")
   email         String?       // Internal — booking notifications only, not shown publicly
   avatarUrl     String?       @map("avatar_url")
   instagramUrl  String?       @map("instagram_url")

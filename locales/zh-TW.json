@@ -255,7 +255,8 @@
     "portfolio": "作品集",
     "piece": "件",
     "pieces": "件",
-    "inThisCollection": "在此作品集中。"
+    "inThisCollection": "在此作品集中。",
+    "bookedUntil": "預約已滿至"
   },
   "gallery": {
     "label": "作品集",

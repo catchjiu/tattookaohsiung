@@ -255,7 +255,8 @@
     "portfolio": "Portfolio",
     "piece": "piece",
     "pieces": "pieces",
-    "inThisCollection": "in this collection."
+    "inThisCollection": "in this collection.",
+    "bookedUntil": "Booked until"
   },
   "gallery": {
     "label": "Portfolio",

@@ -8,6 +8,10 @@ import {
   artistSpecialtyForLocale,
 } from "@/lib/artist-display";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import {
+  formatBookedUntil,
+  isCurrentlyBooked,
+} from "@/lib/artist-availability";
 
 function igHandle(url: string | null): string | null {
   if (!url) return null;
@@ -34,6 +38,7 @@ export type PermanentMakeupArtist = {
   specialtyZh: string | null;
   avatarUrl: string | null;
   instagramUrl: string | null;
+  bookedUntil: string | null;
   artworks: Artwork[];
 };
 
@@ -62,6 +67,10 @@ export function PermanentMakeupContent({ artists }: Props) {
               count === 1
                 ? t("artistDetail.piece")
                 : t("artistDetail.pieces");
+            const bookedUntilDate = artist.bookedUntil
+              ? new Date(artist.bookedUntil)
+              : null;
+            const showBookedUntil = isCurrentlyBooked(bookedUntilDate);
 
             return (
               <section
@@ -86,6 +95,12 @@ export function PermanentMakeupContent({ artists }: Props) {
                     <p className="mt-2 text-[15px] tracking-wide text-accent">
                       {displaySpecialty || t("permanentMakeup.artistRole")}
                     </p>
+                    {showBookedUntil && bookedUntilDate && (
+                      <p className="mt-3 inline-flex items-center rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-1.5 text-[13px] font-medium tracking-wide text-amber-200">
+                        {t("artistDetail.bookedUntil")}{" "}
+                        {formatBookedUntil(bookedUntilDate, locale)}
+                      </p>
+                    )}
                     {handle && (
                       <a
                         href={`https://instagram.com/${handle}`}
