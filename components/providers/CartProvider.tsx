@@ -20,6 +20,9 @@ type CartContextValue = {
   lines: CartLine[];
   itemCount: number;
   ready: boolean;
+  isOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
   addItem: (productId: string, quantity?: number, size?: string | null) => void;
   setQuantity: (
     productId: string,
@@ -55,11 +58,15 @@ function sameLine(a: CartLine, productId: string, size: string | null): boolean 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setLines(readStorage());
     setReady(true);
   }, []);
+
+  const openCart = useCallback(() => setIsOpen(true), []);
+  const closeCart = useCallback(() => setIsOpen(false), []);
 
   const addItem = useCallback(
     (productId: string, quantity = 1, size?: string | null) => {
@@ -81,6 +88,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         writeStorage(next);
         return next;
       });
+      setIsOpen(true);
     },
     []
   );
@@ -133,12 +141,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
       lines,
       itemCount,
       ready,
+      isOpen,
+      openCart,
+      closeCart,
       addItem,
       setQuantity,
       removeLine,
       clearCart,
     }),
-    [lines, itemCount, ready, addItem, setQuantity, removeLine, clearCart]
+    [
+      lines,
+      itemCount,
+      ready,
+      isOpen,
+      openCart,
+      closeCart,
+      addItem,
+      setQuantity,
+      removeLine,
+      clearCart,
+    ]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

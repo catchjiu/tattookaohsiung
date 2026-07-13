@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import "./globals.css";
 import { LanguageProvider } from "@/components/providers/LanguageProvider";
 import { CartProvider } from "@/components/providers/CartProvider";
+import { CartDrawer } from "@/components/shop/CartDrawer";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { getSiteUrl } from "@/lib/site-url";
@@ -250,6 +251,7 @@ export default async function RootLayout({
             <Navbar />
             <main className="pt-16">{children}</main>
             <Footer />
+            <CartDrawer />
           </CartProvider>
         </LanguageProvider>
       </body>

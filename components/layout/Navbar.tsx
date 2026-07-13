@@ -41,7 +41,11 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const { t, locale } = useLanguage();
-  const { itemCount, ready: cartReady } = useCart();
+  const {
+    itemCount,
+    ready: cartReady,
+    openCart,
+  } = useCart();
 
   const phone = locale === "zh-TW" ? t("footer.phoneZh") : t("footer.phoneEn");
   const phoneHref = `tel:+886${locale === "zh-TW" ? "980495145" : "967071750"}`;
@@ -191,8 +195,9 @@ export function Navbar() {
           </ul>
 
           <div className="flex items-center gap-4">
-            <Link
-              href={`${p}/cart`}
+            <button
+              type="button"
+              onClick={openCart}
               className="relative flex p-2 text-foreground-muted transition-colors hover:text-foreground"
               aria-label={t("nav.cart")}
             >
@@ -202,7 +207,7 @@ export function Navbar() {
                   {itemCount > 99 ? "99+" : itemCount}
                 </span>
               ) : null}
-            </Link>
+            </button>
             <LanguageToggle />
           </div>
         </div>
@@ -233,9 +238,12 @@ export function Navbar() {
           >
             <div className="px-8 py-6">
               <div className="mb-6 flex items-center justify-end gap-4">
-                <Link
-                  href={`${p}/cart`}
-                  onClick={() => setMobileOpen(false)}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    openCart();
+                  }}
                   className="relative flex p-2 text-foreground-muted transition-colors hover:text-foreground"
                   aria-label={t("nav.cart")}
                 >
@@ -245,7 +253,7 @@ export function Navbar() {
                       {itemCount > 99 ? "99+" : itemCount}
                     </span>
                   ) : null}
-                </Link>
+                </button>
                 <LanguageToggle />
               </div>
 
