@@ -3,16 +3,11 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useLanguage } from "@/components/providers/LanguageProvider";
-import { HeroSlider } from "./HeroSlider";
+import { HeroVideoBackground } from "./HeroVideoBackground";
 
 const CYAN = "#00e5ff";
 
-type Props = {
-  /** Gallery image URLs for hero background carousel */
-  imageUrls?: string[];
-};
-
-export function HeroSection({ imageUrls = [] }: Props) {
+export function HeroSection() {
   const { t, locale } = useLanguage();
 
   const shopHref = locale === "zh-TW" ? "/zh-TW/shop" : "/shop";
@@ -21,7 +16,7 @@ export function HeroSection({ imageUrls = [] }: Props) {
 
   return (
     <section className="relative min-h-[100dvh] overflow-hidden bg-charcoal">
-      <HeroSlider imageUrls={imageUrls} intervalMs={5000} />
+      <HeroVideoBackground />
 
       <div className="relative z-10 flex min-h-[100dvh] flex-col justify-end px-8 pb-24 pt-32 md:px-16 lg:px-24">
         <div className="mx-auto w-full max-w-4xl text-center">

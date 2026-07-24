@@ -32,8 +32,6 @@ type Props = {
   artists?: Artist[];
   galleryArtworks?: GalleryPreviewArtwork[];
   products?: ShopProductCard[];
-  /** Gallery image URLs for hero carousel background */
-  imageUrls?: string[];
   /** Server-rendered slot (e.g. reviews + map) between shop and booking CTA */
   reviewsSlot?: ReactNode;
 };
@@ -42,12 +40,11 @@ export function ComingSoon({
   artists = [],
   galleryArtworks = [],
   products = [],
-  imageUrls = [],
   reviewsSlot,
 }: Props) {
   return (
     <>
-      <HeroSection imageUrls={imageUrls} />
+      <HeroSection />
       <ArtistShowcase artists={artists} />
       <HomeGalleryPreview artworks={galleryArtworks} />
       <HomeShopPreview products={products} />
