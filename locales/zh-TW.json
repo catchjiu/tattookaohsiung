@@ -52,6 +52,12 @@
     "description": "精選高雄寫實刺青與細線刺青作品。",
     "showMore": "查看完整作品集"
   },
+  "homeIntro": {
+    "label": "工作室",
+    "title": "歡迎來到 Casper Tattoo",
+    "description": "帶您走進高雄刺青工作室 — 認識空間、藝術家，以及我們創作的作品。"
+  },
+
   "testimonials": {
     "label": "評價",
     "title": "客戶好評",

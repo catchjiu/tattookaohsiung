@@ -112,7 +112,7 @@ const structuredData = {
 };
 
 export default async function HomePage() {
-  const [artists, galleryImages, shopRows] = await Promise.all([
+  const [artists, portfolioImages, galleryImages, shopRows] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" } },
       select: {
@@ -124,6 +124,12 @@ export default async function HomePage() {
         job: true,
       },
       orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+    }),
+    prisma.portfolioImage.findMany({
+      where: { showInHeroSlider: true, ...tattooPortfolioWhere },
+      select: { url: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      take: 12,
     }),
     prisma.portfolioImage.findMany({
       where: tattooPortfolioWhere,
@@ -151,6 +157,8 @@ export default async function HomePage() {
       },
     }),
   ]);
+
+  const imageUrls = portfolioImages.map((img) => img.url);
 
   return (
     <>
@@ -187,6 +195,7 @@ export default async function HomePage() {
           stockQuantity: p.stockQuantity,
           sizeOptions: coerceSizeOptions(p.sizeOptions as unknown),
         }))}
+        imageUrls={imageUrls}
       />
     </>
   );

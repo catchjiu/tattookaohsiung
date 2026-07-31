@@ -1,6 +1,7 @@
 "use client";
 
 import { HeroSection } from "./HeroSection";
+import { HomeVideoIntro } from "./HomeVideoIntro";
 import { ArtistShowcase } from "./ArtistShowcase";
 import { HomeGalleryPreview } from "./HomeGalleryPreview";
 import { HomeShopPreview } from "./HomeShopPreview";
@@ -32,6 +33,8 @@ type Props = {
   artists?: Artist[];
   galleryArtworks?: GalleryPreviewArtwork[];
   products?: ShopProductCard[];
+  /** Gallery image URLs for hero carousel background */
+  imageUrls?: string[];
   /** Server-rendered slot (e.g. reviews + map) between shop and booking CTA */
   reviewsSlot?: ReactNode;
 };
@@ -40,11 +43,13 @@ export function ComingSoon({
   artists = [],
   galleryArtworks = [],
   products = [],
+  imageUrls = [],
   reviewsSlot,
 }: Props) {
   return (
     <>
-      <HeroSection />
+      <HeroSection imageUrls={imageUrls} />
+      <HomeVideoIntro />
       <ArtistShowcase artists={artists} />
       <HomeGalleryPreview artworks={galleryArtworks} />
       <HomeShopPreview products={products} />

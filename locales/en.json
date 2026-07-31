@@ -52,6 +52,12 @@
     "description": "Browse a selection of realistic tattoos and fine-line artistry from our Kaohsiung studio.",
     "showMore": "View full gallery"
   },
+  "homeIntro": {
+    "label": "Studio",
+    "title": "Welcome to Casper Tattoo",
+    "description": "A quick look inside our Kaohsiung studio — meet the space, the artists, and the work we create."
+  },
+
   "testimonials": {
     "label": "Reviews",
     "title": "What Clients Say",
