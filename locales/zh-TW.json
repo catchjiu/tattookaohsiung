@@ -149,8 +149,8 @@
     "description": "分享您的想法，我們將一起打造獨一無二的作品。我們的多步驟表單幫助我們了解您的構想。",
     "whatToExpect": "預期流程",
     "expect1": "我們將在 24–48 小時內回覆",
-    "expect2": "諮詢可親臨或視訊進行",
-    "expect3": "訂金可保留您的時段",
+    "expect2": "需先進行諮詢（可親臨或視訊），確認後才會安排刺青",
+    "expect3": "確認預約或開始設計刺青之前，必須先支付訂金",
     "expect4": "請攜帶參考圖片至諮詢",
     "contactTitle": "聯絡方式",
     "contactDm": "想直接聯繫？請在 Instagram 私訊我們"
@@ -207,17 +207,45 @@
     "noPreference": "無偏好",
     "whenBook": "希望預約的時間？",
     "whenPlaceholder": "例如：下個月、時間彈性",
-    "reviewSubmit": "請確認您的資料後送出。我們將與您聯繫確認時段。",
+    "whenPlaceholderAfter": "例如：{date} 之後",
+    "artistNoticeLabel": "所選藝術家的預約資訊",
+    "availabilityTitle": "藝術家檔期",
+    "availability": {
+      "available": "{name} 目前可接受新預約申請。",
+      "booked": "{name} 目前預約已滿至 {date}。請選擇此日期之後的時段。",
+      "closed": "{name} 目前不開放新預約。您仍可送出申請，若有空檔我們會與您聯繫。",
+      "closedWithDate": "{name} 目前不開放新預約（已滿至 {date}）。您仍可送出申請，若有空檔我們會與您聯繫。",
+      "waitlist": "{name} 目前僅接受候補。送出申請即加入候補名單。",
+      "waitlistWithDate": "{name} 目前至 {date} 僅接受候補。送出申請即加入候補名單。"
+    },
+    "optionBookedUntil": "預約已滿至 {date}",
+    "optionStatus": {
+      "available": "可預約",
+      "booked": "檔期已滿",
+      "closed": "暫停接案",
+      "waitlist": "僅候補"
+    },
+    "consultationTitle": "需先進行諮詢",
+    "consultationBody": "此表單為諮詢申請，並非已確認的刺青預約。我們會先了解您的構想，確認適合後才會安排時段。",
+    "consultationPoint1": "將討論部位、尺寸、風格，以及是否適合施作。",
+    "consultationPoint2": "諮詢可親臨工作室或視訊進行。",
+    "consultationPoint3": "客製設計不會在諮詢階段開始。",
+    "depositTitle": "需先支付訂金",
+    "depositBody": "確認預約或開始設計刺青之前，必須先支付訂金。送出此表單並不會保留時段，需完成訂金後才算確認。",
+    "confirmPolicy": "送出申請前，請確認您已了解工作室流程。",
+    "policyCheckbox": "我了解需先進行諮詢，且在確認預約或開始刺青設計之前必須支付訂金。",
+    "reviewSubmit": "請確認您的資料後送出。我們將與您聯繫安排諮詢。",
     "submit": "送出預約申請",
     "back": "上一步",
     "next": "下一步",
     "thankYou": "感謝您",
-    "received": "我們已收到您的預約申請。將在 24–48 小時內與您聯繫。",
+    "received": "我們已收到您的預約申請。將在 24–48 小時內與您聯繫安排諮詢。請注意：確認預約或開始設計刺青之前需先支付訂金。",
     "errors": {
       "nameRequired": "請填寫姓名。",
       "emailRequired": "請填寫電子信箱。",
       "emailInvalid": "請輸入有效的電子信箱。",
-      "submitFailed": "送出失敗，請再試一次或透過 Instagram 聯絡我們。"
+      "submitFailed": "送出失敗，請再試一次或透過 Instagram 聯絡我們。",
+      "policyRequired": "請確認您已了解諮詢與訂金規定。"
     }
   },
   "styles": {

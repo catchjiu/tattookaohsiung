@@ -30,3 +30,32 @@ export function formatBookedUntil(
     timeZone: "UTC",
   });
 }
+
+export type ArtistAvailabilityKind =
+  | "available"
+  | "booked"
+  | "closed"
+  | "waitlist";
+
+export function getArtistAvailability(input: {
+  bookedUntil?: Date | string | null;
+  status?: string | null;
+}): { kind: ArtistAvailabilityKind; bookedUntil: Date | null } {
+  const bookedUntilDate = input.bookedUntil
+    ? input.bookedUntil instanceof Date
+      ? input.bookedUntil
+      : new Date(input.bookedUntil)
+    : null;
+  const bookedDate = isCurrentlyBooked(bookedUntilDate) ? bookedUntilDate : null;
+
+  if (input.status === "BOOKS_CLOSED") {
+    return { kind: "closed", bookedUntil: bookedDate };
+  }
+  if (input.status === "WAITLIST_ONLY") {
+    return { kind: "waitlist", bookedUntil: bookedDate };
+  }
+  if (bookedDate) {
+    return { kind: "booked", bookedUntil: bookedDate };
+  }
+  return { kind: "available", bookedUntil: null };
+}

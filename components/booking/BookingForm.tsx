@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronRight, Check, PenLine } from "lucide-react";
 import { submitBooking } from "@/app/contact/actions";
 import { BookingReferenceUpload } from "./BookingReferenceUpload";
 import { BodyMapSelector } from "./BodyMapSelector";
+import { ArtistBookingNotice } from "./ArtistBookingNotice";
+import type { BookingArtistOption } from "./booking-artist";
 import { Input, Textarea, Select, FormField, Button } from "@/components/ui";
 import { useLanguage } from "@/components/providers/LanguageProvider";
+import { artistNameForLocale } from "@/lib/artist-display";
+import {
+  formatBookedUntil,
+  getArtistAvailability,
+} from "@/lib/artist-availability";
 
 const STEPS = [
   { id: 1, titleKey: "booking.step1", key: "details" },
@@ -20,17 +27,28 @@ const STYLES = ["Traditional", "Fine-line", "Realism", "Blackwork", "Japanese", 
 const SIZES = ["Small (under 1 hour)", "Medium (1–3 hours)", "Large (half day)", "Full sleeve / day"];
 
 type Props = {
-  artists: { id: string; name: string }[];
+  artists: BookingArtistOption[];
 };
 
 export function BookingForm({ artists }: Props) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [step, setStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [referenceUrl, setReferenceUrl] = useState<string | null>(null);
   const [placementRegions, setPlacementRegions] = useState<string[]>([]);
+  const [selectedArtistId, setSelectedArtistId] = useState("");
+  const [policyAcknowledged, setPolicyAcknowledged] = useState(false);
+
+  const selectedArtist = useMemo(
+    () => artists.find((artist) => artist.id === selectedArtistId) ?? null,
+    [artists, selectedArtistId]
+  );
+
+  const selectedAvailability = selectedArtist
+    ? getArtistAvailability(selectedArtist)
+    : null;
 
   const formId = "booking-form";
 
@@ -74,6 +92,11 @@ export function BookingForm({ artists }: Props) {
     e.preventDefault();
     setError(null);
     if (!validateStep(4)) return;
+    if (!policyAcknowledged) {
+      setError(t("booking.errors.policyRequired"));
+      setStep(4);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -244,23 +267,49 @@ export function BookingForm({ artists }: Props) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
-            className="space-y-4"
+            className="space-y-6"
           >
             <h3 className="font-serif text-lg font-medium text-accent">
               {t("booking.step3Title")}
             </h3>
             <FormField label={t("booking.preferredArtist")}>
-              <Select name="preferred_artist_id">
+              <Select
+                name="preferred_artist_id"
+                value={selectedArtistId}
+                onChange={(e) => setSelectedArtistId(e.target.value)}
+              >
                 <option value="">{t("booking.noPreference")}</option>
-                {artists.map((a) => (
-                  <option key={a.id} value={a.id}>{a.name}</option>
-                ))}
+                {artists.map((artist) => {
+                  const displayName = artistNameForLocale(artist, locale);
+                  const availability = getArtistAvailability(artist);
+                  const dateLabel = availability.bookedUntil
+                    ? formatBookedUntil(availability.bookedUntil, locale)
+                    : "";
+                  const suffix =
+                    availability.kind === "booked" && dateLabel
+                      ? t("booking.optionBookedUntil").replace("{date}", dateLabel)
+                      : t(`booking.optionStatus.${availability.kind}`);
+                  return (
+                    <option key={artist.id} value={artist.id}>
+                      {displayName} — {suffix}
+                    </option>
+                  );
+                })}
               </Select>
             </FormField>
+            {selectedArtist ? <ArtistBookingNotice artist={selectedArtist} /> : null}
             <FormField label={t("booking.whenBook")}>
               <Input
                 name="preferred_date"
-                placeholder={t("booking.whenPlaceholder")}
+                placeholder={
+                  selectedAvailability?.kind === "booked" &&
+                  selectedAvailability.bookedUntil
+                    ? t("booking.whenPlaceholderAfter").replace(
+                        "{date}",
+                        formatBookedUntil(selectedAvailability.bookedUntil, locale)
+                      )
+                    : t("booking.whenPlaceholder")
+                }
               />
             </FormField>
           </motion.div>
@@ -280,6 +329,24 @@ export function BookingForm({ artists }: Props) {
             <p className="text-foreground-muted">
               {t("booking.reviewSubmit")}
             </p>
+            <div className="rounded-sm border-2 border-amber-500/30 bg-amber-500/10 p-5 space-y-3">
+              <p className="text-[15px] leading-relaxed text-amber-100/90">
+                {t("booking.confirmPolicy")}
+              </p>
+              <label className="flex items-start gap-3 text-[14px] leading-relaxed text-foreground">
+                <input
+                  type="checkbox"
+                  name="policy_acknowledged"
+                  checked={policyAcknowledged}
+                  onChange={(e) => {
+                    setPolicyAcknowledged(e.target.checked);
+                    if (e.target.checked) setError(null);
+                  }}
+                  className="mt-1 h-4 w-4 shrink-0 rounded border-border bg-card-hover text-accent"
+                />
+                <span>{t("booking.policyCheckbox")}</span>
+              </label>
+            </div>
             <Button
               type="submit"
               variant="primary"

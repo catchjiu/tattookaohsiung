@@ -149,9 +149,9 @@
     "description": "Share your vision and we'll craft something extraordinary together. Our multi-step form helps us understand your ideas.",
     "whatToExpect": "What to expect",
     "expect1": "We'll respond within 24–48 hours",
-    "expect2": "Consultation can be in-person or via video",
-    "expect3": "A deposit secures your spot",
-    "expect4": "Bring reference images to your session",
+    "expect2": "A consultation is required first — in person or by video — before any tattoo is confirmed",
+    "expect3": "A deposit is required before we confirm your appointment or begin designing your tattoo",
+    "expect4": "Bring reference images to your consultation",
     "contactTitle": "Contact",
     "contactDm": "Prefer to reach out directly? DM us on Instagram"
   },
@@ -207,17 +207,45 @@
     "noPreference": "No preference",
     "whenBook": "When would you like to book?",
     "whenPlaceholder": "e.g. Next month, flexible",
-    "reviewSubmit": "Review your details and submit. We'll be in touch to confirm your session.",
+    "whenPlaceholderAfter": "e.g. after {date}",
+    "artistNoticeLabel": "Selected artist booking details",
+    "availabilityTitle": "Artist availability",
+    "availability": {
+      "available": "{name} is currently accepting new booking requests.",
+      "booked": "{name} is currently booked until {date}. Please request a date after this.",
+      "closed": "{name} is not currently accepting new bookings. You can still send a request and we'll follow up if a space opens.",
+      "closedWithDate": "{name} is not currently accepting new bookings (booked until {date}). You can still send a request and we'll follow up if a space opens.",
+      "waitlist": "{name} is currently waitlist only. Submitting a request adds you to the waitlist.",
+      "waitlistWithDate": "{name} is currently waitlist only until {date}. Submitting a request adds you to the waitlist."
+    },
+    "optionBookedUntil": "booked until {date}",
+    "optionStatus": {
+      "available": "available",
+      "booked": "booked",
+      "closed": "books closed",
+      "waitlist": "waitlist only"
+    },
+    "consultationTitle": "Consultation required",
+    "consultationBody": "This form is a consultation request — not a confirmed tattoo appointment. We'll review your idea first and only then discuss scheduling.",
+    "consultationPoint1": "We'll go over placement, size, style, and whether the work is a good fit.",
+    "consultationPoint2": "Consultations can be in person at the studio or by video.",
+    "consultationPoint3": "Custom design work does not begin at the consultation stage.",
+    "depositTitle": "Deposit required",
+    "depositBody": "A deposit is required before we confirm your appointment or begin designing your tattoo. Submitting this form does not hold a date until the deposit is paid.",
+    "confirmPolicy": "Please confirm you understand the studio process before sending this request.",
+    "policyCheckbox": "I understand a consultation is required, and that a deposit must be paid before my appointment is confirmed or any tattoo design work begins.",
+    "reviewSubmit": "Review your details and submit. We'll be in touch to arrange a consultation.",
     "submit": "Submit booking request",
     "back": "Back",
     "next": "Next",
     "thankYou": "Thank you",
-    "received": "Your booking request has been received. We'll be in touch within 24–48 hours.",
+    "received": "Your booking request has been received. We'll be in touch within 24–48 hours to arrange a consultation. A deposit is required before we confirm your appointment or begin designing your tattoo.",
     "errors": {
       "nameRequired": "Please enter your name.",
       "emailRequired": "Please enter your email.",
       "emailInvalid": "Please enter a valid email address.",
-      "submitFailed": "Something went wrong. Please try again or contact us on Instagram."
+      "submitFailed": "Something went wrong. Please try again or contact us on Instagram.",
+      "policyRequired": "Please confirm you understand the consultation and deposit requirements."
     }
   },
   "styles": {

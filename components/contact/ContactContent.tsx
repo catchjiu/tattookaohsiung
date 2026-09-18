@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Section, SectionLabel, SectionTitle } from "@/components/ui";
 import { BookingForm } from "@/components/booking/BookingForm";
+import type { BookingArtistOption } from "@/components/booking/booking-artist";
 import {
   BookingTypeSelector,
   type BookingType,
@@ -12,7 +13,7 @@ import { ContactPageClient } from "./ContactPageClient";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 
 type Props = {
-  tattooArtists: { id: string; name: string }[];
+  tattooArtists: BookingArtistOption[];
   permanentMakeupArtists: { id: string; name: string }[];
 };
 

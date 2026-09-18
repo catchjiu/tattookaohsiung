@@ -5,6 +5,7 @@ import {
   tattooArtistWhere,
 } from "@/lib/artist-job";
 import { ContactContent } from "@/components/contact/ContactContent";
+import { toBookingArtistOption } from "@/components/booking/booking-artist";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +38,7 @@ export default async function ZhTWContactPage() {
   const [tattooArtists, permanentMakeupArtists] = await Promise.all([
     prisma.artist.findMany({
       where: { status: { not: "INACTIVE" }, ...tattooArtistWhere },
-      select: { id: true, name: true },
+      select: { id: true, name: true, nameZh: true, bookedUntil: true, status: true },
       orderBy: { sortOrder: "asc" },
     }),
     prisma.artist.findMany({
@@ -49,7 +50,7 @@ export default async function ZhTWContactPage() {
 
   return (
     <ContactContent
-      tattooArtists={tattooArtists}
+      tattooArtists={tattooArtists.map(toBookingArtistOption)}
       permanentMakeupArtists={permanentMakeupArtists}
     />
   );
